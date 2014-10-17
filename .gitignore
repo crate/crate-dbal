@@ -1,0 +1,8 @@
+vendor
+build
+report
+composer.lock
+composer.phar
+.idea
+.project
+.vagrant
