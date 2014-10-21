@@ -25,6 +25,7 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\Index;
 use Doctrine\DBAL\Schema\TableDiff;
+use Doctrine\DBAL\Types\Type;
 
 class CratePlatform extends AbstractPlatform
 {
@@ -396,9 +397,9 @@ class CratePlatform extends AbstractPlatform
             'bool'          => 'boolean',
             'boolean'       => 'boolean',
             'string'        => 'string',
-            'timestamp'     => 'datetime',
             'float'         => 'float',
             'double'        => 'float',
+            'timestamp'     => 'timestamp',
         );
     }
 

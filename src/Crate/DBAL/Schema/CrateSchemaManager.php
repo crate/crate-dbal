@@ -59,4 +59,4 @@ class CrateSchemaManager extends AbstractSchemaManager {
     }
 
 
-} 
+}

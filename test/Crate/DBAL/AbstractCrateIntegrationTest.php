@@ -21,33 +21,32 @@
  */
 namespace Crate\DBAL;
 
-class ConnectionTest extends AbstractCrateIntegrationTest
-{
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Types\Type;
+use Doctrine\Tests\DbalTestCase;
 
-    public function testGetDriver()
+abstract class AbstractCrateIntegrationTest extends DbalTestCase {
+
+    protected $_conn = null;
+
+    public function setUp()
     {
-        $this->assertInstanceOf('Crate\DBAL\Driver\PDOCrate\Driver', $this->_conn->getDriver());
+        // TODO: register custom types correctly!!!
+        try {
+            Type::addType('timestamp', 'Crate\DBAL\Types\TimestampType');
+        } catch(DBALException $ex) {}
+
+        $params = array(
+            'driverClass' => 'Crate\DBAL\Driver\PDOCrate\Driver',
+            'host' => 'localhost',
+            'port' => '4200'
+        );
+        $this->_conn = \Doctrine\DBAL\DriverManager::getConnection($params);
     }
 
-    public function testStatement()
+    public function execute($stmt)
     {
-        $sql = 'SELECT * FROM sys.cluster';
-        $stmt = $this->_conn->prepare($sql);
-        $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
-        $this->assertInstanceOf('Crate\PDO\PDOStatement', $stmt->getWrappedStatement());
-
-    }
-
-    public function testConnect()
-    {
-        $this->assertTrue($this->_conn->connect());
-
-        $stmt = $this->_conn->query('select * from sys.cluster');
-        $this->assertEquals(1, $stmt->rowCount());
-
-        $row = $stmt->fetch();
-        $this->assertEquals('crate', $row['name']);
+        return $this->_conn->query($stmt);
     }
 
 }
-
