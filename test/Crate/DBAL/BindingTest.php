@@ -22,6 +22,7 @@
 namespace Crate\DBAL;
 
 use Crate\DBAL\Types\TimestampType;
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Types\Type;
 
 class BindingTest extends AbstractCrateIntegrationTest
@@ -103,7 +104,7 @@ class BindingTest extends AbstractCrateIntegrationTest
     {
         try {
             $this->execute("DROP TABLE foo");
-        } catch (Exception $ex) {}
+        } catch (DBALException $ex) {}
 
         $this->execute("CREATE TABLE foo (id int, ts timestamp) with (number_of_replicas=0)");
         $this->execute("INSERT INTO foo (id, ts) VALUES (1, 1413901591000)");
