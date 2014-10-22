@@ -19,20 +19,26 @@
  * with Crate these terms will supersede the license and you may use the
  * software solely pursuant to the terms of the relevant commercial agreement.
  */
+
 namespace Crate\DBAL\Types;
 
-use DateTime;
 use Doctrine\DBAL\Types\Type,
     Doctrine\DBAL\Platforms\AbstractPlatform;
 
-/**
- * Type that maps a Crate SQL TIMESTAMP (aka Long) to a PHP DateTime object.
- */
 
-class TimestampType extends Type
+/**
+ * Type that maps a PHP associative array (map) to an object SQL type.
+ *
+ * TODO: Add support for strict|dynamic|ignored object types
+ *
+ */
+class MapType extends Type
 {
-    const NAME = 'timestamp';
-    const S_TO_MS = 1000;
+
+    const NAME = 'map';
+    const STRICT = 'strict';
+    const DYNAMIC = 'dynamic';
+    const IGNORE = 'ignore';
 
     /**
      * Gets the name of this type.
@@ -46,23 +52,15 @@ class TimestampType extends Type
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
-        return ($value !== null && $value instanceof DateTime)
-            ? $value->getTimestamp()*self::S_TO_MS : null;
+        if (!is_array($value) || (count($value) > 0 && !(array_keys($value) !== range(0, count($value) - 1)))) {
+            return null;
+        }
+        return $value;
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        if ($value === null || $value instanceof DateTime) {
-            return $value;
-        }
-
-        if (!is_int($value)) {
-            return null;
-        }
-
-        $val = new DateTime();
-        $val->setTimestamp($value/self::S_TO_MS);
-        return $val;
+        return $value;
     }
 
     /**
@@ -75,6 +73,7 @@ class TimestampType extends Type
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
         assert($platform instanceof CratePlatform, $this->__toString() . ' requires Crate');
-        return $platform->getDateTimeTypeDeclarationSQL($fieldDeclaration);
+        return $platform->getMapTypeDeclarationSQL($fieldDeclaration);
     }
+
 }

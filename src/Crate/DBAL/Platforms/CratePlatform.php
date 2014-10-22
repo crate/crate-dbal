@@ -21,6 +21,8 @@
  */
 namespace Crate\DBAL\Platforms;
 
+use Crate\DBAL\Types\MapType;
+use Crate\DBAL\Types\TimestampType;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Event\SchemaCreateTableColumnEventArgs;
 use Doctrine\DBAL\Event\SchemaCreateTableEventArgs;
@@ -33,6 +35,27 @@ use Doctrine\DBAL\Types\Type;
 
 class CratePlatform extends AbstractPlatform
 {
+
+    const TIMESTAMP_FORMAT =  'Y-m-d\TH:i:s';
+    const TIMESTAMP_FORMAT_TZ =  'Y-m-d\TH:i:sO';
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        // todo: register and override new types
+        $this->initializeDoctrineTypeMappings();
+        if (!Type::hasType(MapType::NAME)) {
+            Type::addType(MapType::NAME, 'Crate\DBAL\Types\MapType');
+        }
+        if (!Type::hasType(TimestampType::NAME)) {
+            Type::addType(TimestampType::NAME, 'Crate\DBAL\Types\TimestampType');
+        }
+        Type::overrideType('array', 'Crate\DBAL\Types\ArrayType');
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -109,12 +132,17 @@ class CratePlatform extends AbstractPlatform
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getListDatabasesSQL()
     {
         return 'SELECT table_name FROM information_schema.tables';
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     public function getListTablesSQL()
     {
         return "SELECT table_name, schema_name
@@ -122,6 +150,9 @@ class CratePlatform extends AbstractPlatform
         //        FROM information_schema.tables WHERE schema_name != 'information_schema'";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getListTableColumnsSQL($table, $database = null)
     {
         return "SELECT column_name as field, data_type as type from information_schema.columns";
@@ -240,7 +271,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      *
-     * Postgres wants boolean values converted to the strings 'true'/'false'.
+     * Crate wants boolean values converted to the strings 'true'/'false'.
      */
     public function convertBooleans($item)
     {
@@ -348,6 +379,30 @@ class CratePlatform extends AbstractPlatform
     }
 
     /**
+     * Gets the SQL snippet used to declare an OBJECT column type.
+     *
+     * @param array $field
+     *
+     * @return string
+     */
+    public function getMapTypeDeclarationSQL(array $field)
+    {
+        return 'OBJECT';
+    }
+
+    /**
+     * Gets the SQL snippet used to declare an ARRAY column type.
+     *
+     * @param array $field
+     *
+     * @return string
+     */
+    public function getArrayTypeDeclarationSQL(array $field)
+    {
+        return 'ARRAY';
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getName()
@@ -368,17 +423,17 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getDateTimeFormatString()
+    public function getDateTimeTzFormatString()
     {
-        return 'Y-m-d\TH:i:s';
+        return self::TIMESTAMP_FORMAT_TZ;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getDateTimeTzFormatString()
+    public function getDateTimeFormatString()
     {
-        return 'Y-m-d\TH:i:sZ O';
+        return self::TIMESTAMP_FORMAT;
     }
 
     /**
@@ -386,7 +441,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getDateFormatString()
     {
-        return 'Y-m-d\TH:i:s';
+        return self::TIMESTAMP_FORMAT;
     }
 
     /**
@@ -394,9 +449,8 @@ class CratePlatform extends AbstractPlatform
      */
     public function getTimeFormatString()
     {
-        return 'Y-m-d\TH:i:s';
+        return self::TIMESTAMP_FORMAT;
     }
-
 
     /**
      * {@inheritDoc}

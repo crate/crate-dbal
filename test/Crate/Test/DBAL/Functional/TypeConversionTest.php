@@ -22,70 +22,157 @@
 
 namespace Crate\Test\DBAL\Functional;
 
-use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Crate\DBAL\Platforms\CratePlatform;
 use Crate\DBAL\Types\TimestampType;
+use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Crate\DBAL\Types\ArrayType;
+use Crate\DBAL\Types\MapType;
 use Doctrine\DBAL\Types\Type;
 
-class TypeConversionTestCase extends DBALFunctionalTestCase {
+class TypeConversionTestCase extends \PHPUnit_Framework_TestCase {
 
     private $platform;
 
     public function setUp()
     {
-        DBALFunctionalTestCase::setUp();
-        $this->platform = $this->_conn->getDatabasePlatform();
+        $this->platform = new CratePlatform();
     }
 
     public function testTimestampType()
     {
-        $type = Type::getType(TimestampType::NAME);
+        $input = new \DateTime("2014-10-21 15:23:38");
 
-        $ts = 1413905018;
-        $input = new \DateTime();
-        $input->setTimestamp($ts); // "2014-10-21 15:23:38"
-
-        // to DB value
+        // datetimetz
+        $type = Type::getType(Type::DATETIMETZ);
+        $expected = "2014-10-21T15:23:38+0000";
         $output = $type->convertToDatabaseValue($input, $this->platform);
-        $this->assertEquals($output, $ts*1000);
-
-        // to PHP value
+        $this->assertEquals($output, $expected);
         $inputRestored = $type->convertToPHPValue($output, $this->platform);
         $this->assertEquals($inputRestored, $input);
+        $inputRestored = $type->convertToPHPValue($input, $this->platform);
+        $this->assertEquals($inputRestored, $input);
 
+        // datetime
+        $type = Type::getType(Type::DATETIME);
+        $expected = "2014-10-21T15:23:38";
+        $output = $type->convertToDatabaseValue($input, $this->platform);
+        $this->assertEquals($output, $expected);
+        $inputRestored = $type->convertToPHPValue($output, $this->platform);
+        $this->assertEquals($inputRestored, $input);
+        $inputRestored = $type->convertToPHPValue($input, $this->platform);
+        $this->assertEquals($inputRestored, $input);
+
+        // date
+        $type = Type::getType(Type::DATE);
+        $expected = "2014-10-21T15:23:38";
+        $output = $type->convertToDatabaseValue($input, $this->platform);
+        $this->assertEquals($output, $expected);
+        $inputRestored = $type->convertToPHPValue($output, $this->platform);
+        $this->assertEquals($inputRestored, $input);
+        $inputRestored = $type->convertToPHPValue($input, $this->platform);
+        $this->assertEquals($inputRestored, $input);
+
+        // time
+        $type = Type::getType(Type::TIME);
+        $expected = "2014-10-21T15:23:38";
+        $output = $type->convertToDatabaseValue($input, $this->platform);
+        $this->assertEquals($output, $expected);
+        $inputRestored = $type->convertToPHPValue($output, $this->platform);
+        $this->assertEquals($inputRestored, $input);
+        $inputRestored = $type->convertToPHPValue($input, $this->platform);
+        $this->assertEquals($inputRestored, $input);
+
+        // timestamp
+        $type = Type::getType(TimestampType::NAME);
+        $expected = 1413905018000;
+        $output = $type->convertToDatabaseValue($input, $this->platform);
+        $this->assertEquals($output, $expected);
+        $inputRestored = $type->convertToPHPValue($output, $this->platform);
+        $this->assertEquals($inputRestored, $input);
         $inputRestored = $type->convertToPHPValue($input, $this->platform);
         $this->assertEquals($inputRestored, $input);
     }
 
     public function testTimestampTypeNull()
     {
-        $type = Type::getType(TimestampType::NAME);
+        $types = array(Type::getType(Type::DATETIMETZ),
+            Type::getType(Type::DATETIME),
+            Type::getType(Type::DATE),
+            Type::getType(Type::TIME),
+            Type::getType(TimestampType::NAME)
+        );
+        foreach ($types as $type) {
+            // to DB value
+            $value = $type->convertToDatabaseValue(null, $this->platform);
+            $this->assertEquals($value, null);
 
-        // to DB value
-        $value = $type->convertToDatabaseValue(null, $this->platform);
-        $this->assertEquals($value, null);
-
-        // to PHP value
-        $value = $type->convertToPHPValue(null, $this->platform);
-        $this->assertEquals($value, null);
+            // to PHP value
+            $value = $type->convertToPHPValue(null, $this->platform);
+            $this->assertEquals($value, null);
+        }
     }
 
-    public function testTimestampTypeInvalid()
+    public function testMapType()
     {
-        $type = Type::getType(TimestampType::NAME);
+        $type = Type::getType(MapType::NAME);
 
         // to DB value
-        $value = $type->convertToDatabaseValue("invalid", $this->platform);
-        $this->assertEquals($value, null);
+        $output = $type->convertToDatabaseValue(array('foo'=>'bar'), $this->platform);
+        $this->assertEquals($output, array('foo'=>'bar'));
 
-        // to PHP value
-        $value = $type->convertToPHPValue("invalid", $this->platform);
-        $this->assertEquals($value, null);
+        $output = $type->convertToDatabaseValue(array(), $this->platform);
+        $this->assertEquals($output, array());
+    }
+
+    public function testMapTypeNullValue()
+    {
+        $type = Type::getType(MapType::NAME);
+
+        // to DB value
+        $output = $type->convertToDatabaseValue(null, $this->platform);
+        $this->assertEquals($output, null);
+    }
+
+    public function testMapTypeInvalid()
+    {
+        $type = Type::getType(MapType::NAME);
+
+        // to DB value
+        $notAMap = array('foo', 'bar');
+        $output = $type->convertToDatabaseValue($notAMap, $this->platform);
+        $this->assertEquals($output, null);
+
     }
 
     public function testArrayType()
     {
-        $type = Type::getType(Type::SIMPLE_ARRAY);
+        $type = Type::getType(ArrayType::NAME);
 
+        // to DB value
+        $output = $type->convertToDatabaseValue(array('foo', 'bar'), $this->platform);
+        $this->assertEquals($output, array('foo', 'bar'));
+
+        $output = $type->convertToDatabaseValue(array(), $this->platform);
+        $this->assertEquals($output, array());
+    }
+
+    public function testArrayTypeNullValue()
+    {
+        $type = Type::getType(ArrayType::NAME);
+
+        // to DB value
+        $output = $type->convertToDatabaseValue(null, $this->platform);
+        $this->assertEquals($output, null);
+    }
+
+    public function testArrayTypeInvalid()
+    {
+        $type = Type::getType(ArrayType::NAME);
+
+        // to DB value
+        $notAnArray = array('foo'=>'bar');
+        $output = $type->convertToDatabaseValue($notAnArray, $this->platform);
+        $this->assertEquals($output, null);
     }
 
 }

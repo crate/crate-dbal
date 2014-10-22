@@ -21,9 +21,6 @@
  */
 namespace Crate\Test\DBAL;
 
-use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\Types\Type;
-
 abstract class DBALFunctionalTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -53,11 +50,6 @@ abstract class DBALFunctionalTestCase extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        // TODO: register custom types correctly!!!
-        try {
-            Type::addType('timestamp', 'Crate\DBAL\Types\TimestampType');
-        } catch(DBALException $ex) {}
-
         if ( ! isset(self::$_sharedConn)) {
             $params = array(
                 'driverClass' => 'Crate\DBAL\Driver\PDOCrate\Driver',
@@ -117,4 +109,8 @@ abstract class DBALFunctionalTestCase extends \PHPUnit_Framework_TestCase
         $this->_conn->query('REFRESH TABLE ' . $table_name);
     }
 
+    public function prepareStatement($sql)
+    {
+        return $this->_conn->prepare($sql);
+    }
 }

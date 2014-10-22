@@ -22,9 +22,7 @@
 namespace Crate\Test\DBAL\Functional;
 
 use Crate\Test\DBAL\DBALFunctionalTestCase;
-use Crate\DBAL\Types\TimestampType;
 use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\Types\Type;
 
 class BindingTestCase extends DBALFunctionalTestCase
 {
@@ -34,15 +32,13 @@ class BindingTestCase extends DBALFunctionalTestCase
 
         $name = 'crate';
 
-        $sql = 'SELECT * FROM sys.cluster WHERE name = ?';
-        $stmt = $this->_conn->prepare($sql);
+        $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = ?');
         $stmt->bindParam(1, $name);
         $stmt->execute();
 
         $noName = 'i0ejfNlzSFCloGYtSzddTw';
 
-        $sql = 'SELECT * FROM sys.cluster WHERE name = ? OR master_node = ?';
-        $stmt = $this->_conn->prepare($sql);
+        $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = ? OR master_node = ?');
         $stmt->bindParam(1, $name);
         $stmt->bindParam(2, $noName);
         $stmt->execute();
@@ -52,13 +48,11 @@ class BindingTestCase extends DBALFunctionalTestCase
     public function testBindPositionalValue()
     {
 
-        $sql = 'SELECT * FROM sys.cluster WHERE name = ?';
-        $stmt = $this->_conn->prepare($sql);
+        $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = ?');
         $stmt->bindValue(1, 'crate');
         $stmt->execute();
 
-        $sql = 'SELECT * FROM sys.cluster WHERE name = ? OR master_node = ?';
-        $stmt = $this->_conn->prepare($sql);
+        $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = ? OR master_node = ?');
         $stmt->bindValue(1, 'crate');
         $stmt->bindValue(2, 'i0ejfNlzSFCloGYtSzddTw');
         $stmt->execute();
@@ -70,15 +64,13 @@ class BindingTestCase extends DBALFunctionalTestCase
 
         $name = 'crate';
 
-        $sql = 'SELECT * FROM sys.cluster WHERE name = :name';
-        $stmt = $this->_conn->prepare($sql);
+        $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = :name');
         $stmt->bindParam('name', $name);
         $stmt->execute();
 
         $noName = 'i0ejfNlzSFCloGYtSzddTw';
 
-        $sql = 'SELECT * FROM sys.cluster WHERE name = :name OR master_node = :master_node';
-        $stmt = $this->_conn->prepare($sql);
+        $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = :name OR master_node = :master_node');
         $stmt->bindParam('name', $name);
         $stmt->bindParam('master_node', $noName);
         $stmt->execute();
@@ -88,13 +80,11 @@ class BindingTestCase extends DBALFunctionalTestCase
     public function testBindNamedValue()
     {
 
-        $sql = 'SELECT * FROM sys.cluster WHERE name = :name';
-        $stmt = $this->_conn->prepare($sql);
+        $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = :name');
         $stmt->bindValue('name', 'crate');
         $stmt->execute();
 
-        $sql = 'SELECT * FROM sys.cluster WHERE name = :name OR master_node = :master_node';
-        $stmt = $this->_conn->prepare($sql);
+        $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = :name OR master_node = :master_node');
         $stmt->bindValue('name', 'crate');
         $stmt->bindValue('master_node', 'i0ejfNlzSFCloGYtSzddTw');
         $stmt->execute();
@@ -113,28 +103,21 @@ class BindingTestCase extends DBALFunctionalTestCase
         $this->execute("INSERT INTO foo (id, ts) VALUES (3, 1413901593000)");
         $this->execute("REFRESH TABLE foo");
 
-        $date = new \DateTime();
-        $date->setTimestamp(1413901592);
+        $date = new \DateTime("2014-10-21 14:26:32"); // => 1413901592000
 
-        $sql = 'SELECT * FROM foo WHERE ts > ?';
-        $stmt = $this->_conn->prepare($sql);
-
-        $stmt->bindValue(1, $date, 'timestamp');
+        $stmt = $this->prepareStatement('SELECT * FROM foo WHERE ts > ?');
+        $stmt->bindValue(1, $date, 'datetimetz');
         $stmt->execute();
         $row = $stmt->fetchAll();
         $this->assertEquals($row[0]['id'], 3);
         $this->assertEquals($row[0]['ts'], 1413901593000);
 
-        $stmt->bindValue(1, $date, Type::getType(TimestampType::NAME));
+        $stmt = $this->prepareStatement('SELECT * FROM foo WHERE ts < ?');
+        $stmt->bindValue(1, $date, 'datetime');
         $stmt->execute();
-        $row = $stmt->fetch();
-        $this->assertEquals($row['id'], 3);
-        $this->assertEquals($row['ts'], 1413901593000);
-    }
-
-    public function testBindArray()
-    {
-
+        $row = $stmt->fetchAll();
+        $this->assertEquals($row[0]['id'], 1);
+        $this->assertEquals($row[0]['ts'], 1413901591000);
     }
 
     public function testBindObject()
