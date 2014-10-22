@@ -21,6 +21,7 @@
  */
 namespace Crate\DBAL\Types;
 
+use DateTime;
 use Doctrine\DBAL\Types\Type,
     Doctrine\DBAL\Platforms\AbstractPlatform;
 
@@ -40,21 +41,22 @@ class TimestampType extends Type
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
-        return ($value !== null || !($value instanceof \DateTime))
+        return ($value !== null && $value instanceof DateTime)
             ? $value->getTimestamp()*self::S_TO_MS : null;
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        if ($value === null || $value instanceof \DateTime) {
+        if ($value === null || $value instanceof DateTime) {
             return $value;
         }
 
-        $val = \DateTime($value/self::S_TO_MS);
-        var_dump($val);
-        if ( ! $val) {
-            throw ConversionException::conversionFailedFormat($value, $this->getName(), $platform->getDateTimeFormatString());
+        if (!is_int($value)) {
+            return null;
         }
+
+        $val = new DateTime();
+        $val->setTimestamp($value/self::S_TO_MS);
         return $val;
     }
 

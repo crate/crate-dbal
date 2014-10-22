@@ -29,7 +29,6 @@ class DataAccessTest extends AbstractCrateIntegrationTest
             $sm->createTable($table);
 
             $this->_conn->insert('fetch_table', array('test_int' => 1, 'test_string' => 'foo', 'test_datetime' => '2010-01-01T10:10:10'));
-            //$this->_conn->query('refresh table fetch_table');
             $this->refresh('fetch_table');
         }
     }
