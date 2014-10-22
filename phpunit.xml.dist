@@ -12,7 +12,7 @@
     syntaxCheck="true"
 >
     <testsuite name="Crate-DBAL unit tests">
-        <directory>./test/Crate/DBAL</directory>
+        <directory>./test/Crate/Test</directory>
     </testsuite>
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">

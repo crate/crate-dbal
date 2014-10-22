@@ -20,18 +20,19 @@
  * software solely pursuant to the terms of the relevant commercial agreement.
  */
 
-namespace Crate\DBAL;
+namespace Crate\Test\DBAL\Functional;
 
+use Crate\Test\DBAL\DBALFunctionalTestCase;
 use Crate\DBAL\Types\TimestampType;
 use Doctrine\DBAL\Types\Type;
 
-class TypeConversionTest extends AbstractCrateIntegrationTest {
+class TypeConversionTestCase extends DBALFunctionalTestCase {
 
     private $platform;
 
     public function setUp()
     {
-        AbstractCrateIntegrationTest::setUp();
+        DBALFunctionalTestCase::setUp();
         $this->platform = $this->_conn->getDatabasePlatform();
     }
 

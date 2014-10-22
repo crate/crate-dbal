@@ -20,7 +20,7 @@
  * software solely pursuant to the terms of the relevant commercial agreement.
  */
 
-namespace Crate\Tests\DBAL\Platforms;
+namespace Crate\Test\DBAL\Platforms;
 
 use Crate\DBAL\Platforms\CratePlatform;
 use Doctrine\Common\EventManager;

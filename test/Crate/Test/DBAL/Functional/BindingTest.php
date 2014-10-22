@@ -19,13 +19,14 @@
  * with Crate these terms will supersede the license and you may use the
  * software solely pursuant to the terms of the relevant commercial agreement.
  */
-namespace Crate\DBAL;
+namespace Crate\Test\DBAL\Functional;
 
+use Crate\Test\DBAL\DBALFunctionalTestCase;
 use Crate\DBAL\Types\TimestampType;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Types\Type;
 
-class BindingTest extends AbstractCrateIntegrationTest
+class BindingTestCase extends DBALFunctionalTestCase
 {
 
     public function testBindPositionalParam()

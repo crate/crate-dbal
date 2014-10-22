@@ -22,7 +22,7 @@
     },
     "autoload-dev": {
         "psr-0": {
-            "Crate\\DBAL\\": "test",
+            "Crate\\Test": "test",
             "Doctrine\\Tests": "vendor/doctrine/dbal/tests"
         }
     }

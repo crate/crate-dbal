@@ -19,9 +19,11 @@
  * with Crate these terms will supersede the license and you may use the
  * software solely pursuant to the terms of the relevant commercial agreement.
  */
-namespace Crate\DBAL;
+namespace Crate\Test\DBAL\Functional;
 
-class ConnectionTest extends AbstractCrateIntegrationTest
+use Crate\Test\DBAL\DBALFunctionalTestCase;
+
+class ConnectionTestCase extends DBALFunctionalTestCase
 {
     public function setUp()
     {
