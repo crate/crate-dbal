@@ -58,5 +58,15 @@ class CrateSchemaManager extends AbstractSchemaManager {
         return new Column($tableColumn['field'], \Doctrine\DBAL\Types\Type::getType($type), $options);
     }
 
+    protected function _getPortableTablesList($tables)
+    {
+        $tableNames = array();
+        foreach ($tables as $tableRow) {
+            $tableRow = array_change_key_case($tableRow, \CASE_LOWER);
+            $tableNames[] = $tableRow['table_name'];
+        }
+        return $tableNames;
+    }
+
 
 }

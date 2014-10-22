@@ -145,8 +145,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getListTablesSQL()
     {
-        return "SELECT table_name, schema_name
-                FROM information_schema.tables";
+        return "SELECT table_name, schema_name FROM information_schema.tables";
         //        FROM information_schema.tables WHERE schema_name != 'information_schema'";
     }
 

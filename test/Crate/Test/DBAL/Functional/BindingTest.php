@@ -93,9 +93,9 @@ class BindingTestCase extends DBALFunctionalTestCase
 
     public function testBindTimestamp()
     {
-        try {
+        if ($this->_conn->getSchemaManager()->tablesExist("foo")) {
             $this->execute("DROP TABLE foo");
-        } catch (DBALException $ex) {}
+        }
 
         $this->execute("CREATE TABLE foo (id int, ts timestamp) with (number_of_replicas=0)");
         $this->execute("INSERT INTO foo (id, ts) VALUES (1, 1413901591000)");
