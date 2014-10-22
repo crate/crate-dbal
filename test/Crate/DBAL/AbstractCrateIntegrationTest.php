@@ -23,11 +23,26 @@ namespace Crate\DBAL;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\Tests\DbalTestCase;
+use Doctrine\Tests\DbalFunctionalTestCase;
 
-abstract class AbstractCrateIntegrationTest extends DbalTestCase {
+abstract class AbstractCrateIntegrationTest extends DbalFunctionalTestCase {
+
+    /**
+     * Shared connection when a TestCase is run alone (outside of it's functional suite)
+     *
+     * @var \Doctrine\DBAL\Connection
+     */
+    private static $_sharedConn;
 
     protected $_conn = null;
+
+    protected function resetSharedConn()
+    {
+        if (self::$_sharedConn) {
+            self::$_sharedConn->close();
+            self::$_sharedConn = null;
+        }
+    }
 
     public function setUp()
     {
@@ -36,17 +51,28 @@ abstract class AbstractCrateIntegrationTest extends DbalTestCase {
             Type::addType('timestamp', 'Crate\DBAL\Types\TimestampType');
         } catch(DBALException $ex) {}
 
-        $params = array(
-            'driverClass' => 'Crate\DBAL\Driver\PDOCrate\Driver',
-            'host' => 'localhost',
-            'port' => '4200'
-        );
-        $this->_conn = \Doctrine\DBAL\DriverManager::getConnection($params);
+        if ( ! isset(self::$_sharedConn)) {
+            $params = array(
+                'driverClass' => 'Crate\DBAL\Driver\PDOCrate\Driver',
+                'host' => 'localhost',
+                'port' => '4200'
+            );
+            self::$_sharedConn = \Doctrine\DBAL\DriverManager::getConnection($params);
+        }
+        $this->_conn = self::$_sharedConn;
+
+        $this->_sqlLoggerStack = new \Doctrine\DBAL\Logging\DebugStack();
+        $this->_conn->getConfiguration()->setSQLLogger($this->_sqlLoggerStack);
     }
 
     public function execute($stmt)
     {
         return $this->_conn->query($stmt);
+    }
+
+    public function refresh($table_name)
+    {
+        $this->_conn->query('REFRESH TABLE ' . $table_name);
     }
 
 }

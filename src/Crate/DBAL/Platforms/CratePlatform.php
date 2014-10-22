@@ -22,8 +22,12 @@
 namespace Crate\DBAL\Platforms;
 
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Event\SchemaCreateTableColumnEventArgs;
+use Doctrine\DBAL\Event\SchemaCreateTableEventArgs;
+use Doctrine\DBAL\Events;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\Index;
+use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
 use Doctrine\DBAL\Types\Type;
 
@@ -364,10 +368,35 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
+    public function getDateTimeFormatString()
+    {
+        return 'Y-m-d\TH:i:s';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getDateTimeTzFormatString()
     {
-        return 'Y-m-d H:i:sO';
+        return 'Y-m-d\TH:i:sZ O';
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDateFormatString()
+    {
+        return 'Y-m-d\TH:i:s';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTimeFormatString()
+    {
+        return 'Y-m-d\TH:i:s';
+    }
+
 
     /**
      * {@inheritDoc}
@@ -426,4 +455,112 @@ class CratePlatform extends AbstractPlatform
     {
         throw DBALException::notSupported(__METHOD__);
     }
+
+    /**
+     * {@inheritDoc}
+     * Gets the SQL statement(s) to create a table with the specified name, columns and constraints
+     * on this platform.
+     *
+     * @param string $table The name of the table.
+     * @param integer $createFlags
+     *
+     * @return array The sequence of SQL statements.
+     */
+    public function getCreateTableSQL(Table $table, $createFlags = self::CREATE_INDEXES)
+    {
+        if ( ! is_int($createFlags)) {
+            throw new \InvalidArgumentException("Second argument of CratePlatform::getCreateTableSQL() has to be integer.");
+        }
+
+        if (count($table->getColumns()) === 0) {
+            throw DBALException::noColumnsSpecifiedForTable($table->getName());
+        }
+
+        $tableName = $table->getQuotedName($this);
+        $options = $table->getOptions();
+        $options['uniqueConstraints'] = array();
+        $options['indexes'] = array();
+        $options['primary'] = array();
+
+        if (($createFlags&self::CREATE_INDEXES) > 0) {
+            foreach ($table->getIndexes() as $index) {
+                /* @var $index Index */
+                if ($index->isPrimary()) {
+                    $platform = $this;
+                    $options['primary'] = array_map(function ($columnName) use ($table, $platform) {
+                        return $table->getColumn($columnName)->getQuotedName($platform);
+                    }, $index->getColumns());
+                    $options['primary_index'] = $index;
+                } else {
+                    $options['indexes'][$index->getName()] = $index;
+                }
+            }
+        }
+
+        $columnSql = array();
+        $columns = array();
+
+        foreach ($table->getColumns() as $column) {
+            /* @var \Doctrine\DBAL\Schema\Column $column */
+
+            if (null !== $this->_eventManager && $this->_eventManager->hasListeners(Events::onSchemaCreateTableColumn)) {
+                $eventArgs = new SchemaCreateTableColumnEventArgs($column, $table, $this);
+                $this->_eventManager->dispatchEvent(Events::onSchemaCreateTableColumn, $eventArgs);
+
+                $columnSql = array_merge($columnSql, $eventArgs->getSql());
+
+                if ($eventArgs->isDefaultPrevented()) {
+                    continue;
+                }
+            }
+
+            $columnData = array();
+            $columnData['name'] = $column->getQuotedName($this);
+            $columnData['type'] = $column->getType();
+            $columnData['length'] = $column->getLength();
+            $columnData['notnull'] = $column->getNotNull();
+            $columnData['fixed'] = $column->getFixed();
+            $columnData['unique'] = false; // TODO: what do we do about this?
+            $columnData['version'] = $column->hasPlatformOption("version") ? $column->getPlatformOption('version') : false;
+
+            if (strtolower($columnData['type']) == "string" && $columnData['length'] === null) {
+                $columnData['length'] = 255;
+            }
+
+            $columnData['unsigned'] = $column->getUnsigned();
+            $columnData['precision'] = $column->getPrecision();
+            $columnData['scale'] = $column->getScale();
+            $columnData['default'] = $column->getDefault();
+            $columnData['columnDefinition'] = $column->getColumnDefinition();
+            $columnData['autoincrement'] = $column->getAutoincrement();
+            $columnData['comment'] = $this->getColumnComment($column);
+
+            if (in_array($column->getName(), $options['primary'])) {
+                $columnData['primary'] = true;
+            }
+
+            $columns[$columnData['name']] = $columnData;
+        }
+
+        if (null !== $this->_eventManager && $this->_eventManager->hasListeners(Events::onSchemaCreateTable)) {
+            $eventArgs = new SchemaCreateTableEventArgs($table, $columns, $options, $this);
+            $this->_eventManager->dispatchEvent(Events::onSchemaCreateTable, $eventArgs);
+
+            if ($eventArgs->isDefaultPrevented()) {
+                return array_merge($eventArgs->getSql(), $columnSql);
+            }
+        }
+
+        $sql = $this->_getCreateTableSQL($tableName, $columns, $options);
+        if ($this->supportsCommentOnStatement()) {
+            foreach ($table->getColumns() as $column) {
+                if ($this->getColumnComment($column)) {
+                    $sql[] = $this->getCommentOnColumnSQL($tableName, $column->getName(), $this->getColumnComment($column));
+                }
+            }
+        }
+
+        return array_merge($sql, $columnSql);
+    }
+
 }

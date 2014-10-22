@@ -23,6 +23,17 @@ namespace Crate\DBAL;
 
 class ConnectionTest extends AbstractCrateIntegrationTest
 {
+    public function setUp()
+    {
+        $this->resetSharedConn();
+        parent::setUp();
+    }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+        $this->resetSharedConn();
+    }
 
     public function testGetDriver()
     {
