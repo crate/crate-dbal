@@ -119,9 +119,41 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
+    public function supportsIndexes()
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function supportsCommentOnStatement()
     {
-        return true;
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function supportsForeignKeyConstraints()
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function supportsForeignKeyOnUpdate()
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function supportsViews()
+    {
+        return false;
     }
 
     /**
@@ -145,8 +177,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getListTablesSQL()
     {
-        return "SELECT table_name, schema_name FROM information_schema.tables";
-        //        FROM information_schema.tables WHERE schema_name != 'information_schema'";
+        return "SELECT table_name, schema_name FROM information_schema.tables WHERE schema_name = 'doc' OR schema_name = 'blob'";
     }
 
     /**
@@ -154,7 +185,25 @@ class CratePlatform extends AbstractPlatform
      */
     public function getListTableColumnsSQL($table, $database = null)
     {
-        return "SELECT column_name as field, data_type as type from information_schema.columns";
+        $t = explode('.', $table);
+        if (count($t) == 1) {
+            array_unshift($t, 'doc');
+        }
+        // todo: make safe
+        return "SELECT * from information_schema.columns WHERE table_name = '$t[1]' AND schema_name = '$t[0]'";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getListTableConstraintsSQL($table, $database = null)
+    {
+        $t = explode('.', $table);
+        if (count($t) == 1) {
+            array_unshift($t, 'doc');
+        }
+        // todo: make safe
+        return "SELECT constraint_name, constraint_type from information_schema.table_constraints WHERE table_name = '$t[1]' AND schema_name = '$t[0]' AND constraint_type = 'PRIMARY_KEY'";
     }
 
     /**
@@ -242,10 +291,6 @@ class CratePlatform extends AbstractPlatform
             $columnDef = $typeDecl;
         }
 
-        if ($this->supportsInlineColumnComments() && isset($field['comment']) && $field['comment']) {
-            $columnDef .= " COMMENT '" . $field['comment'] . "'";
-        }
-
         return $name . ' ' . $columnDef;
     }
 
@@ -261,10 +306,7 @@ class CratePlatform extends AbstractPlatform
             throw new \InvalidArgumentException("Incomplete definition. 'columns' required.");
         }
 
-        $indexColumnDef = 'INDEX ' . $name . ' using fulltext ';
-        $indexColumnDef .= '('. $this->getIndexFieldDeclarationListSQL($columns) . ')';
-
-        return $indexColumnDef;
+        return 'INDEX ' . $name . ' USING FULLTEXT ('. $this->getIndexFieldDeclarationListSQL($columns) . ')';
     }
 
     /**
@@ -319,6 +361,14 @@ class CratePlatform extends AbstractPlatform
     public function getSmallIntTypeDeclarationSQL(array $field)
     {
         return 'SHORT';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFloatDeclarationSQL(array $field)
+    {
+        return 'FLOAT';
     }
 
     /**
@@ -476,6 +526,7 @@ class CratePlatform extends AbstractPlatform
             'short'         => 'smallint',
             'integer'       => 'integer',
             'int'           => 'integer',
+            'long'          => 'integer',
             'bool'          => 'boolean',
             'boolean'       => 'boolean',
             'string'        => 'string',
@@ -614,6 +665,22 @@ class CratePlatform extends AbstractPlatform
         }
 
         return array_merge($sql, $columnSql);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCreateDatabaseSQL($database)
+    {
+        throw DBALException::notSupported(__METHOD__);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDropDatabaseSQL($database)
+    {
+        throw DBALException::notSupported(__METHOD__);
     }
 
 }
