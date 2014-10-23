@@ -41,13 +41,6 @@ class DataAccessTestCase extends DBALFunctionalTestCase
             self::$generated = true;
             /* @var $sm \Doctrine\DBAL\Schema\AbstractSchemaManager */
             $sm = $this->_conn->getSchemaManager();
-            if ($sm->tablesExist('fetch_table')) {
-                try {
-                    $sm->dropTable('fetch_table');
-                } catch (DBALException $e) {
-                    $this->fail($e->getMessage());
-                }
-            }
             $table = new \Doctrine\DBAL\Schema\Table("fetch_table");
             $table->addColumn('test_int', 'integer');
             $table->addColumn('test_string', 'string');
@@ -63,9 +56,8 @@ class DataAccessTestCase extends DBALFunctionalTestCase
 
     public function tearDown()
     {
-        parent::tearDown();
         if (self::$generated === true) {
-            $this->execute('drop table fetch_table');
+            $this->_conn->getSchemaManager()->dropTable('fetch_table');
             self::$generated = false;
         }
     }

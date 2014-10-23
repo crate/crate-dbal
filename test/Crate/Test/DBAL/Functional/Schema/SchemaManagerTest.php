@@ -39,7 +39,8 @@ class SchemaManagerTest extends DBALFunctionalTestCase
 
     public function tearDown()
     {
-        parent::tearDown();
+        foreach ($this->_sm->listTableNames() as $tableName)
+        $this->_sm->dropTable($tableName);
     }
 
     public function testListTables()
