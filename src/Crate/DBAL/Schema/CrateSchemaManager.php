@@ -95,6 +95,9 @@ class CrateSchemaManager extends AbstractSchemaManager {
         return new Column($tableColumn['column_name'], \Doctrine\DBAL\Types\Type::getType($type), $options);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected function _getPortableTablesList($tables)
     {
         $tableNames = array();
@@ -104,6 +107,5 @@ class CrateSchemaManager extends AbstractSchemaManager {
         }
         return $tableNames;
     }
-
 
 }

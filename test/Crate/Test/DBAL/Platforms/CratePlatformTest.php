@@ -25,6 +25,7 @@ namespace Crate\Test\DBAL\Platforms;
 use Crate\DBAL\Platforms\CratePlatform;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Events;
+use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
 use Doctrine\Tests\DBAL\Platforms\AbstractPlatformTestCase;
 
@@ -121,6 +122,19 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $tableDiff->addedColumns['added'] = new \Doctrine\DBAL\Schema\Column('added', \Doctrine\DBAL\Types\Type::getType('integer'), array());
 
         $this->_platform->getAlterTableSQL($tableDiff);
+    }
+
+    public function testGenerateTableWithMultiColumnUniqueIndex()
+    {
+        $this->markTestSkipped("Custom index creation currently not supported");
+
+        $table = new Table('test');
+        $table->addColumn('foo', 'string', array('notnull' => false, 'length' => 255));
+        $table->addColumn('bar', 'string', array('notnull' => false, 'length' => 255));
+        $table->addUniqueIndex(array("foo", "bar"));
+
+        $sql = $this->_platform->getCreateTableSQL($table);
+        $this->assertEquals($this->getGenerateTableWithMultiColumnUniqueIndexSql(), $sql);
     }
 
 }

@@ -264,9 +264,12 @@ class CratePlatform extends AbstractPlatform
 
 
         if (isset($options['indexes']) && ! empty($options['indexes'])) {
+            // TODO: support custom index creation (only string columns are valid)
+            /*
             foreach ($options['indexes'] as $index) {
                 $queryFields .= ', ' . $this->getIndexColumnDeclarationSQL($index);
             }
+            */
         }
 
         if (isset($options['foreignKeys'])) {
@@ -525,14 +528,17 @@ class CratePlatform extends AbstractPlatform
         $this->doctrineTypeMapping = array(
             'short'         => 'smallint',
             'integer'       => 'integer',
+            'long'          => 'bigint',
             'int'           => 'integer',
-            'long'          => 'integer',
             'bool'          => 'boolean',
             'boolean'       => 'boolean',
             'string'        => 'string',
             'float'         => 'float',
             'double'        => 'float',
             'timestamp'     => 'timestamp',
+            'object'        => 'map',
+            'object_array'  => 'array',
+            'string_array'  => 'array'
         );
     }
 
