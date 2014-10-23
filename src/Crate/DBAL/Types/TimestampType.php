@@ -74,7 +74,6 @@ class TimestampType extends Type
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        assert($platform instanceof CratePlatform, $this->__toString() . ' requires Crate');
         return $platform->getDateTimeTypeDeclarationSQL($fieldDeclaration);
     }
 }

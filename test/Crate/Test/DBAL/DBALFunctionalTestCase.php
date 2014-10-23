@@ -64,6 +64,10 @@ abstract class DBALFunctionalTestCase extends \PHPUnit_Framework_TestCase
         $this->_conn->getConfiguration()->setSQLLogger($this->_sqlLoggerStack);
     }
 
+    public function tearDown()
+    {
+    }
+
     protected function onNotSuccessfulTest(\Exception $e)
     {
         if ($e instanceof \PHPUnit_Framework_AssertionFailedError) {
