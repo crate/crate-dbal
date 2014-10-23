@@ -9,11 +9,13 @@
     "require": {
         "php":     "~5.4",
         "doctrine/dbal": "2.3.5",
+        "doctrine/orm": "2.3.5",
         "crate/crate-pdo": "0.0.2"
     },
     "autoload": {
         "psr-0": {
-            "Crate\\DBAL": "src"
+            "Crate\\DBAL": "src",
+            "": "doctrine_tests/src"
         }
     },
     "require-dev": {
