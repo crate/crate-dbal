@@ -347,7 +347,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getIntegerTypeDeclarationSQL(array $field)
     {
-        return 'INT';
+        return 'INTEGER';
     }
 
     /**
@@ -355,7 +355,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getBigIntTypeDeclarationSQL(array $field)
     {
-        return 'DOUBLE';
+        return 'LONG';
     }
 
     /**
@@ -371,7 +371,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getFloatDeclarationSQL(array $field)
     {
-        return 'FLOAT';
+        return 'DOUBLE';
     }
 
     /**
@@ -437,9 +437,19 @@ class CratePlatform extends AbstractPlatform
      *
      * @return string
      */
-    public function getMapTypeDeclarationSQL(array $field)
+    public function getMapTypeDeclarationSQL(array $field, array $options)
     {
-        return 'OBJECT';
+        $type = array_key_exists('type', $options) ? $options['type'] : MapType::DYNAMIC;
+
+        $fields = array_key_exists('fields', $options) ? $options['fields'] : array();
+        $columns = array();
+        foreach ($fields as $field) {
+            $columns[$field->getQuotedName($this)] = $this->prepareColumnData($field);
+        }
+        $objectFields = $this->getColumnDeclarationListSQL($columns);
+
+        $declaration = count($columns) > 0 ? ' AS ( ' . $objectFields . ' )' : '';
+        return 'OBJECT ( ' . $type . ' )' . $declaration ;
     }
 
     /**
@@ -449,9 +459,9 @@ class CratePlatform extends AbstractPlatform
      *
      * @return string
      */
-    public function getArrayTypeDeclarationSQL(array $field)
+    public function getArrayTypeDeclarationSQL(array $field, array $options)
     {
-        return 'ARRAY';
+        return 'ARRAY ()';
     }
 
     /**
@@ -538,7 +548,8 @@ class CratePlatform extends AbstractPlatform
             'timestamp'     => 'timestamp',
             'object'        => 'map',
             'object_array'  => 'array',
-            'string_array'  => 'array'
+            'string_array'  => 'array',
+            'array'         => 'array',
         );
     }
 
@@ -611,8 +622,6 @@ class CratePlatform extends AbstractPlatform
         $columns = array();
 
         foreach ($table->getColumns() as $column) {
-            /* @var \Doctrine\DBAL\Schema\Column $column */
-
             if (null !== $this->_eventManager && $this->_eventManager->hasListeners(Events::onSchemaCreateTableColumn)) {
                 $eventArgs = new SchemaCreateTableColumnEventArgs($column, $table, $this);
                 $this->_eventManager->dispatchEvent(Events::onSchemaCreateTableColumn, $eventArgs);
@@ -623,33 +632,7 @@ class CratePlatform extends AbstractPlatform
                     continue;
                 }
             }
-
-            $columnData = array();
-            $columnData['name'] = $column->getQuotedName($this);
-            $columnData['type'] = $column->getType();
-            $columnData['length'] = $column->getLength();
-            $columnData['notnull'] = $column->getNotNull();
-            $columnData['fixed'] = $column->getFixed();
-            $columnData['unique'] = false; // TODO: what do we do about this?
-            $columnData['version'] = $column->hasPlatformOption("version") ? $column->getPlatformOption('version') : false;
-
-            if (strtolower($columnData['type']) == "string" && $columnData['length'] === null) {
-                $columnData['length'] = 255;
-            }
-
-            $columnData['unsigned'] = $column->getUnsigned();
-            $columnData['precision'] = $column->getPrecision();
-            $columnData['scale'] = $column->getScale();
-            $columnData['default'] = $column->getDefault();
-            $columnData['columnDefinition'] = $column->getColumnDefinition();
-            $columnData['autoincrement'] = $column->getAutoincrement();
-            $columnData['comment'] = $this->getColumnComment($column);
-
-            if (in_array($column->getName(), $options['primary'])) {
-                $columnData['primary'] = true;
-            }
-
-            $columns[$columnData['name']] = $columnData;
+            $columns[$column->getQuotedName($this)] = $this->prepareColumnData($column, $options['primary']);
         }
 
         if (null !== $this->_eventManager && $this->_eventManager->hasListeners(Events::onSchemaCreateTable)) {
@@ -671,6 +654,44 @@ class CratePlatform extends AbstractPlatform
         }
 
         return array_merge($sql, $columnSql);
+    }
+
+    /**
+     * @param \Doctrine\DBAL\Schema\Column $column The name of the table.
+     * @param array $primaries
+     *
+     * @return array The column data as associative array.
+     */
+    public function prepareColumnData($column, $primaries = array())
+    {
+
+        $columnData = array();
+        $columnData['name'] = $column->getQuotedName($this);
+        $columnData['type'] = $column->getType();
+        $columnData['length'] = $column->getLength();
+        $columnData['notnull'] = $column->getNotNull();
+        $columnData['fixed'] = $column->getFixed();
+        $columnData['unique'] = false; // TODO: what do we do about this?
+        $columnData['version'] = $column->hasPlatformOption("version") ? $column->getPlatformOption('version') : false;
+
+        if (strtolower($columnData['type']) == "string" && $columnData['length'] === null) {
+            $columnData['length'] = 255;
+        }
+
+        $columnData['unsigned'] = $column->getUnsigned();
+        $columnData['precision'] = $column->getPrecision();
+        $columnData['scale'] = $column->getScale();
+        $columnData['default'] = $column->getDefault();
+        $columnData['columnDefinition'] = $column->getColumnDefinition();
+        $columnData['autoincrement'] = $column->getAutoincrement();
+        $columnData['comment'] = $this->getColumnComment($column);
+
+        $columnData['platformOptions'] = $column->getPlatformOptions();
+
+        if (in_array($column->getName(), $primaries)) {
+            $columnData['primary'] = true;
+        }
+        return $columnData;
     }
 
     /**

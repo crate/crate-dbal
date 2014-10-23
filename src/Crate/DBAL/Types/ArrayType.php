@@ -67,8 +67,8 @@ class ArrayType extends Type
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        assert($platform instanceof CratePlatform, $this->__toString() . ' requires CratePlatform');
-        return $platform->getArrayTypeDeclarationSQL($fieldDeclaration);
+        $options = !array_key_exists('platformOptions', $fieldDeclaration) ? array() : $fieldDeclaration['platformOptions'];
+        return $platform->getArrayTypeDeclarationSQL($fieldDeclaration, $options);
     }
 
 }

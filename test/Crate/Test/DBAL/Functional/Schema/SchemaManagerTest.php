@@ -21,8 +21,12 @@
  */
 namespace Crate\Test\DBAL\Functional\Schema;
 
+use Crate\DBAL\Types\MapType;
+use Crate\DBAL\Types\TimestampType;
 use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Types\Type;
 
 class SchemaManagerTest extends DBALFunctionalTestCase
 {
@@ -70,13 +74,28 @@ class SchemaManagerTest extends DBALFunctionalTestCase
     public function createListTableColumns()
     {
         $table = new Table('list_table_columns');
-        $table->addColumn('id', 'integer');
-        $table->addColumn('text', 'string');
-        $table->addColumn('ts', 'timestamp');
-        $table->addColumn('num_float', 'float');
-        $table->setPrimaryKey(array('id'));
-        // todo: MapType
-        // todo: ArrayType
+        $table->addColumn('text', Type::STRING);
+        $table->addColumn('ts', TimestampType::NAME);
+        $table->addColumn('num_float_double', Type::FLOAT);
+        $table->addColumn('num_short', Type::SMALLINT);
+        $table->addColumn('num_int', Type::INTEGER);
+        $table->addColumn('num_long', Type::BIGINT);
+
+        // schema definition via platform options
+        $mapOpts = array(
+            'type' => MapType::STRICT,
+            'fields' => array(
+                new Column('id',  Type::getType('integer'), array()),
+                new Column('name',  Type::getType('string'), array()),
+            ),
+        );
+        $table->addColumn('obj', 'map',
+            array('platformOptions'=>$mapOpts));
+
+        // schema definition via columnDefinition
+        $table->addColumn('obj2', 'map',
+            array('columnDefinition'=>'OBJECT (STRICT) AS ( id INTEGER, name STRING )'));
+
         return $table;
     }
 
@@ -88,19 +107,45 @@ class SchemaManagerTest extends DBALFunctionalTestCase
 
         $columns = $this->_sm->listTableColumns('list_table_columns');
 
-        $this->assertArrayHasKey('id', $columns);
-        $this->assertEquals('id',   strtolower($columns['id']->getname()));
-        $this->assertInstanceOf('Doctrine\DBAL\Types\IntegerType', $columns['id']->gettype());
-
         $this->assertArrayHasKey('text', $columns);
         $this->assertEquals('text', strtolower($columns['text']->getname()));
         $this->assertInstanceOf('Doctrine\DBAL\Types\StringType', $columns['text']->gettype());
 
-        $this->assertEquals('ts',  strtolower($columns['ts']->getname()));
+        $this->assertEquals('ts', strtolower($columns['ts']->getname()));
         $this->assertInstanceOf('Crate\DBAL\Types\TimestampType', $columns['ts']->gettype());
 
-        $this->assertEquals('num_float', strtolower($columns['num_float']->getname()));
-        $this->assertInstanceOf('Doctrine\DBAL\Types\FloatType', $columns['num_float']->gettype());
+        $this->assertEquals('num_float_double', strtolower($columns['num_float_double']->getname()));
+        $this->assertInstanceOf('Doctrine\DBAL\Types\FloatType', $columns['num_float_double']->gettype());
+
+        $this->assertArrayHasKey('num_short', $columns);
+        $this->assertEquals('num_short', strtolower($columns['num_short']->getname()));
+        $this->assertInstanceOf('Doctrine\DBAL\Types\SmallIntType', $columns['num_short']->gettype());
+
+        $this->assertArrayHasKey('num_int', $columns);
+        $this->assertEquals('num_int', strtolower($columns['num_int']->getname()));
+        $this->assertInstanceOf('Doctrine\DBAL\Types\IntegerType', $columns['num_int']->gettype());
+
+        $this->assertArrayHasKey('num_long', $columns);
+        $this->assertEquals('num_long', strtolower($columns['num_long']->getname()));
+        $this->assertInstanceOf('Doctrine\DBAL\Types\BigIntType', $columns['num_long']->gettype());
+
+        $this->assertEquals('obj', strtolower($columns['obj']->getname()));
+        $this->assertInstanceOf('Crate\DBAL\Types\MapType', $columns['obj']->gettype());
+
+        $this->assertEquals("obj['id']", strtolower($columns["obj['id']"]->getname()));
+        $this->assertInstanceOf('Doctrine\DBAL\Types\IntegerType', $columns["obj['id']"]->gettype());
+
+        $this->assertEquals("obj['name']", strtolower($columns["obj['name']"]->getname()));
+        $this->assertInstanceOf('Doctrine\DBAL\Types\StringType', $columns["obj['name']"]->gettype());
+
+        $this->assertEquals('obj2', strtolower($columns['obj2']->getname()));
+        $this->assertInstanceOf('Crate\DBAL\Types\MapType', $columns['obj2']->gettype());
+
+        $this->assertEquals("obj2['id']", strtolower($columns["obj2['id']"]->getname()));
+        $this->assertInstanceOf('Doctrine\DBAL\Types\IntegerType', $columns["obj2['id']"]->gettype());
+
+        $this->assertEquals("obj2['name']", strtolower($columns["obj2['name']"]->getname()));
+        $this->assertInstanceOf('Doctrine\DBAL\Types\StringType', $columns["obj2['name']"]->gettype());
     }
 
 
