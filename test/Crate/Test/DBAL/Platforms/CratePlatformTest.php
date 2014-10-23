@@ -44,7 +44,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     {
         return array(
                 'CREATE TABLE test (foo STRING, bar STRING, ' .
-                'INDEX UNIQ_D87F7E0C8C73652176FF8CAA using fulltext (foo, bar))'
+                'INDEX UNIQ_D87F7E0C8C73652176FF8CAA USING FULLTEXT (foo, bar))'
         );
     }
 
@@ -81,7 +81,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     {
         return array(
             'CREATE TABLE "quoted" ("key" STRING,' .
-            'INDEX IDX_22660D028A90ABA9 using fulltext ("key")' .
+            'INDEX IDX_22660D028A90ABA9 USING FULLTEXT ("key")' .
             ')'
         );
     }

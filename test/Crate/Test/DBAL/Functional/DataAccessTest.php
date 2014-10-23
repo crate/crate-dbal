@@ -23,6 +23,7 @@
 namespace Crate\Test\DBAL\Functional;
 
 use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Connection;
 use PDO;
@@ -39,13 +40,13 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         if (self::$generated === false) {
             self::$generated = true;
             /* @var $sm \Doctrine\DBAL\Schema\AbstractSchemaManager */
+            $sm = $this->_conn->getSchemaManager();
             $table = new \Doctrine\DBAL\Schema\Table("fetch_table");
             $table->addColumn('test_int', 'integer');
             $table->addColumn('test_string', 'string');
             $table->addColumn('test_datetime', 'datetime', array('notnull' => false));
             $table->setPrimaryKey(array('test_int'));
 
-            $sm = $this->_conn->getSchemaManager();
             $sm->createTable($table);
 
             $this->_conn->insert('fetch_table', array('test_int' => 1, 'test_string' => 'foo', 'test_datetime' => '2010-01-01T10:10:10'));
@@ -56,7 +57,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
     public function tearDown()
     {
         if (self::$generated === true) {
-            $this->execute('drop table fetch_table');
+            $this->_conn->getSchemaManager()->dropTable('fetch_table');
             self::$generated = false;
         }
     }

@@ -83,8 +83,7 @@ class Driver implements \Doctrine\DBAL\Driver
      */
     public function getDatabase(\Doctrine\DBAL\Connection $conn)
     {
-        $params = $conn->getParams();
-        return $params['dbname'];
+        return null;
     }
 
 }

@@ -21,10 +21,49 @@
  */
 namespace Crate\DBAL\Schema;
 
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\Table;
 
 class CrateSchemaManager extends AbstractSchemaManager {
+
+    /**
+     * {@inheritDoc}
+     */
+    public function listTableDetails($tableName)
+    {
+        $columns = $this->listTableColumns($tableName);
+        $foreignKeys = array();
+        $indexes = array();
+
+        return new Table($tableName, $columns, $indexes, $foreignKeys, false, array());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function listTableIndexes($table)
+    {
+        throw DBALException::notSupported(__METHOD__);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function listTableColumns($table, $database = null)
+    {
+        $tableColumns = $this->_conn->fetchAll($this->_platform->getListTableColumnsSQL($table));
+        $tableConstraints = $this->_conn->fetchAll($this->_platform->getListTableConstraintsSQL($table));
+
+        $columns = array();
+        foreach ($tableColumns as $tableColumn) {
+            $tableColumn['primary'] = in_array($tableColumn['column_name'], $tableConstraints[0]['constraint_name']);
+            $columns[] = $tableColumn;
+        }
+
+        return $this->_getPortableTableColumnList($table, $database, $columns);
+    }
 
     /**
      * {@inheritDoc}
@@ -33,29 +72,27 @@ class CrateSchemaManager extends AbstractSchemaManager {
     {
         $tableColumn = array_change_key_case($tableColumn, CASE_LOWER);
 
-        if (!isset($tableColumn['name'])) {
-            $tableColumn['name'] = '';
+        if (!isset($tableColumn['column_name'])) {
+            $tableColumn['column_name'] = '';
         }
 
-        $dbType = strtolower($tableColumn['type']);
+        $dbType = strtolower($tableColumn['data_type']);
         $type = $this->_platform->getDoctrineTypeMapping($dbType);
-        $type = $this->extractDoctrineTypeFromComment($tableColumn['comment'], $type);
-        $tableColumn['comment'] = $this->removeDoctrineTypeFromComment($tableColumn['comment'], $type);
 
         $options = array(
             'length'        => null,
             'notnull'       => false,
             'default'       => null,
-            'primary'       => (bool) ($tableColumn['pri'] == 't'),
+            'primary'       => $tableColumn['primary'],
             'precision'     => null,
             'scale'         => null,
             'fixed'         => null,
             'unsigned'      => false,
             'autoincrement' => false,
-            'comment'       => $tableColumn['comment'],
+            'comment'       => '',
         );
 
-        return new Column($tableColumn['field'], \Doctrine\DBAL\Types\Type::getType($type), $options);
+        return new Column($tableColumn['column_name'], \Doctrine\DBAL\Types\Type::getType($type), $options);
     }
 
     protected function _getPortableTablesList($tables)
@@ -63,7 +100,7 @@ class CrateSchemaManager extends AbstractSchemaManager {
         $tableNames = array();
         foreach ($tables as $tableRow) {
             $tableRow = array_change_key_case($tableRow, \CASE_LOWER);
-            $tableNames[] = $tableRow['table_name'];
+            $tableNames[] = $tableRow['table_name']; // ignore schema for now
         }
         return $tableNames;
     }
