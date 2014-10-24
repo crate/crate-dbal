@@ -377,6 +377,14 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
+    public function getDecimalTypeDeclarationSQL(array $columnDef)
+    {
+        return 'DOUBLE';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getDateTimeTypeDeclarationSQL(array $fieldDeclaration)
     {
         return 'TIMESTAMP';
