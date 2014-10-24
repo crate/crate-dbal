@@ -50,6 +50,17 @@ class MapType extends Type
         return self::NAME;
     }
 
+    /**
+     * Gets the (preferred) binding type for values of this type that
+     * can be used when binding parameters to prepared statements.
+     *
+     * @return integer
+     */
+    public function getBindingType()
+    {
+        return \PDO::PARAM_INPUT_OUTPUT;
+    }
+
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
         if (!is_array($value) || (count($value) > 0 && !(array_keys($value) !== range(0, count($value) - 1)))) {
@@ -60,7 +71,7 @@ class MapType extends Type
 
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        return $value;
+        return $value == null ?: (array) $value;
     }
 
     /**
