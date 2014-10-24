@@ -72,7 +72,8 @@ class MapType extends Type
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        return $platform->getMapTypeDeclarationSQL($fieldDeclaration);
+        $options = !array_key_exists('platformOptions', $fieldDeclaration) ? array() : $fieldDeclaration['platformOptions'];
+        return $platform->getMapTypeDeclarationSQL($fieldDeclaration, $options);
     }
 
 }

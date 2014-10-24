@@ -38,7 +38,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function getGenerateTableSql()
     {
-        return 'CREATE TABLE test (id INT, test STRING, PRIMARY KEY(id))';
+        return 'CREATE TABLE test (id INTEGER, test STRING, PRIMARY KEY(id))';
     }
 
     public function getGenerateTableWithMultiColumnUniqueIndexSql()
@@ -67,7 +67,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     public function getGenerateAlterTableSql()
     {
         return array(
-            'ALTER TABLE mytable ADD quota INT',
+            'ALTER TABLE mytable ADD quota INTEGER',
         );
     }
 
