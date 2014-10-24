@@ -54,7 +54,7 @@ abstract class DBALFunctionalTestCase extends \PHPUnit_Framework_TestCase
             $params = array(
                 'driverClass' => 'Crate\DBAL\Driver\PDOCrate\Driver',
                 'host' => 'localhost',
-                'port' => '4200'
+                'port' => 4200
             );
             self::$_sharedConn = \Doctrine\DBAL\DriverManager::getConnection($params);
         }
