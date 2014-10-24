@@ -38,7 +38,7 @@ class MapType extends Type
     const NAME = 'map';
     const STRICT = 'strict';
     const DYNAMIC = 'dynamic';
-    const IGNORE = 'ignore';
+    const IGNORED = 'ignored';
 
     /**
      * Gets the name of this type.

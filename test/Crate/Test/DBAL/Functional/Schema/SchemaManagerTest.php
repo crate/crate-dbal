@@ -81,7 +81,7 @@ class SchemaManagerTest extends DBALFunctionalTestCase
         $table->addColumn('num_int', Type::INTEGER);
         $table->addColumn('num_long', Type::BIGINT);
 
-        // schema definition via platform options
+        // OBJECT schema definition via platform options
         $mapOpts = array(
             'type' => MapType::STRICT,
             'fields' => array(
@@ -92,9 +92,22 @@ class SchemaManagerTest extends DBALFunctionalTestCase
         $table->addColumn('obj', 'map',
             array('platformOptions'=>$mapOpts));
 
-        // schema definition via columnDefinition
+        // OBJECT schema definition via columnDefinition
         $table->addColumn('obj2', 'map',
             array('columnDefinition'=>'OBJECT (STRICT) AS ( id INTEGER, name STRING )'));
+
+        // ARRAY schema definition via platform options
+        $arrOpts = array(
+            'type' => Type::FLOAT,
+        );
+        $table->addColumn('arr_float', 'array',
+            array('platformOptions'=>$arrOpts));
+
+        // ARRAY schema definition via columnDefinition
+        $table->addColumn('arr_str', 'array',
+            array('columnDefinition'=>'ARRAY (STRING)'));
+        $table->addColumn('arr_obj', 'array',
+            array('columnDefinition'=>'ARRAY (OBJECT (IGNORED) AS ( id INTEGER, name STRING ))'));
 
         return $table;
     }
@@ -146,6 +159,15 @@ class SchemaManagerTest extends DBALFunctionalTestCase
 
         $this->assertEquals("obj2['name']", strtolower($columns["obj2['name']"]->getname()));
         $this->assertInstanceOf('Doctrine\DBAL\Types\StringType', $columns["obj2['name']"]->gettype());
+
+        $this->assertEquals('arr_float', strtolower($columns['arr_float']->getname()));
+        $this->assertInstanceOf('Crate\DBAL\Types\ArrayType', $columns['arr_float']->gettype());
+
+        $this->assertEquals('arr_str', strtolower($columns['arr_str']->getname()));
+        $this->assertInstanceOf('Crate\DBAL\Types\ArrayType', $columns['arr_str']->gettype());
+
+        $this->assertEquals('arr_obj', strtolower($columns['arr_obj']->getname()));
+        $this->assertInstanceOf('Crate\DBAL\Types\ArrayType', $columns['arr_obj']->gettype());
     }
 
 

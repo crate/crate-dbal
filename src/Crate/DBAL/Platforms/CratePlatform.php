@@ -461,7 +461,8 @@ class CratePlatform extends AbstractPlatform
      */
     public function getArrayTypeDeclarationSQL(array $field, array $options)
     {
-        return 'ARRAY ()';
+        $type = array_key_exists('type', $options) ? $options['type'] : Type::STRING;
+        return 'ARRAY ( ' . Type::getType($type)->getSQLDeclaration($field, $this) . ' )';
     }
 
     /**
