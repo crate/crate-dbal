@@ -23,10 +23,14 @@
 namespace Crate\Test\DBAL\Platforms;
 
 use Crate\DBAL\Platforms\CratePlatform;
+use Crate\DBAL\Types\ArrayType;
+use Crate\DBAL\Types\MapType;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Events;
+use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\Tests\DBAL\Platforms\AbstractPlatformTestCase;
 
 class CratePlatformTest extends AbstractPlatformTestCase {
@@ -135,6 +139,54 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
         $sql = $this->_platform->getCreateTableSQL($table);
         $this->assertEquals($this->getGenerateTableWithMultiColumnUniqueIndexSql(), $sql);
+    }
+
+    /**
+     * @param Column $column
+     */
+    private function getSQLDeclaration($column)
+    {
+        $p = $this->_platform;
+        return $p->getColumnDeclarationSQL($column->getName(), $p->prepareColumnData($column));
+    }
+
+    public function testGenerateObjectSQLDeclaration()
+    {
+
+        $column = new Column('obj', Type::getType(MapType::NAME));
+        $this->assertEquals($this->getSQLDeclaration($column), 'obj OBJECT ( dynamic )');
+
+        $column = new Column('obj', Type::getType(MapType::NAME),
+            array('platformOptions'=>array('type'=>MapType::STRICT)));
+        $this->assertEquals($this->getSQLDeclaration($column), 'obj OBJECT ( strict )');
+
+        $column = new Column('obj', Type::getType(MapType::NAME),
+            array('platformOptions'=>array('type'=>MapType::IGNORED, 'fields'=>array())));
+        $this->assertEquals($this->getSQLDeclaration($column), 'obj OBJECT ( ignored )');
+
+        $column = new Column('obj', Type::getType(MapType::NAME),
+            array('platformOptions'=>array(
+                'type'=>MapType::STRICT,
+                'fields'=>array(
+                    new Column('num', Type::getType(Type::INTEGER)),
+                    new Column('text', Type::getType(Type::STRING)),
+                    new Column('arr', Type::getType(ArrayType::NAME)),
+                    new Column('obj', Type::getType(MapType::NAME)),
+                ),
+            )));
+        $this->assertEquals($this->getSQLDeclaration($column), 'obj OBJECT ( strict ) AS ( num INTEGER, text STRING, arr ARRAY ( STRING ), obj OBJECT ( dynamic ) )');
+
+    }
+
+    public function testGenerateArraySQLDeclaration()
+    {
+        $column = new Column('arr', Type::getType(ArrayType::NAME));
+        $this->assertEquals($this->getSQLDeclaration($column), 'arr ARRAY ( STRING )');
+
+        $column = new Column('arr', Type::getType(ArrayType::NAME),
+            array('platformOptions'=> array('type'=>Type::INTEGER)));
+        $this->assertEquals($this->getSQLDeclaration($column), 'arr ARRAY ( INTEGER )');
+
     }
 
 }
