@@ -556,8 +556,11 @@ class CratePlatform extends AbstractPlatform
             'double'        => 'float',
             'timestamp'     => 'timestamp',
             'object'        => 'map',
-            'object_array'  => 'array',
             'string_array'  => 'array',
+            'float_array'   => 'array',
+            'double_array'  => 'array',
+            'integer_array' => 'array',
+            'object_array'  => 'array',
             'array'         => 'array',
         );
     }
