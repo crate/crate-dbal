@@ -22,8 +22,10 @@
 
 namespace Crate\Test\DBAL\Functional;
 
+use Crate\DBAL\Types\MapType;
 use Crate\Test\DBAL\DBALFunctionalTestCase;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Connection;
 use PDO;
@@ -44,12 +46,28 @@ class DataAccessTestCase extends DBALFunctionalTestCase
             $table = new \Doctrine\DBAL\Schema\Table("fetch_table");
             $table->addColumn('test_int', 'integer');
             $table->addColumn('test_string', 'string');
-            $table->addColumn('test_datetime', 'datetime', array('notnull' => false));
+            $table->addColumn('test_datetime', 'timestamp', array('notnull' => false));
+            $table->addColumn('test_array', 'array', array('columnDefinition'=>'ARRAY(STRING)'));
+            $platformOptions = array(
+                'type'   => MapType::STRICT,
+                'fields' => array(
+                    new Column('id',    Type::getType('integer'), array()),
+                    new Column('name',  Type::getType('string'), array()),
+                    new Column('value', Type::getType('float'), array()),
+                ),
+            );
+            $table->addColumn('test_object', MapType::NAME, array('platformOptions'=>$platformOptions));
             $table->setPrimaryKey(array('test_int'));
 
             $sm->createTable($table);
 
-            $this->_conn->insert('fetch_table', array('test_int' => 1, 'test_string' => 'foo', 'test_datetime' => '2010-01-01T10:10:10'));
+            $this->_conn->insert('fetch_table', array(
+                'test_int' => 1,
+                'test_string' => 'foo',
+                'test_datetime' => new \DateTime('2010-01-01 10:10:10'),
+                'test_array' => array('foo','bar'),
+                'test_object' => array('id'=>1, 'name'=>'foo', 'value'=>1.234),
+            ), array('integer','string','timestamp','array','map'));
             $this->refresh('fetch_table');
         }
     }
@@ -100,7 +118,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $paramInt = 1;
         $paramStr = 'foo';
 
-        $sql = "SELECT test_int, test_string FROM fetch_table WHERE test_int = ? AND test_string = ?";
+        $sql = "SELECT test_int, test_string, test_datetime, test_array, test_object FROM fetch_table WHERE test_int = ? AND test_string = ?";
         $stmt = $this->_conn->prepare($sql);
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
 
@@ -110,7 +128,18 @@ class DataAccessTestCase extends DBALFunctionalTestCase
 
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $rows[0] = array_change_key_case($rows[0], \CASE_LOWER);
-        $this->assertEquals(array('test_int' => 1, 'test_string' => 'foo'), $rows[0]);
+        $this->assertEquals(array(
+            'test_int' => 1,
+            'test_string' => 'foo',
+            'test_datetime' => 1262340610000,
+            'test_array' => array('foo', 'bar'),
+            'test_object' => ((object) array('id'=>1, 'name'=>'foo', 'value'=>1.234))
+        ), $rows[0]);
+
+        $this->assertEquals($this->_conn->convertToPHPValue($rows[0]['test_datetime'], 'timestamp'),
+            new \DateTime('2010-01-01 10:10:10'));
+        $this->assertEquals($this->_conn->convertToPHPValue($rows[0]['test_object'], 'map'),
+            array('id'=>1, 'name'=>'foo', 'value'=>1.234));
     }
 
     /**

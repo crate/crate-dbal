@@ -22,7 +22,9 @@
 
 namespace Crate\Test\DBAL\Functional;
 
+use Crate\DBAL\Types\MapType;
 use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Types\Type;
 use PDO;
 
@@ -40,6 +42,18 @@ class WriteTest extends DBALFunctionalTestCase
             $table = new \Doctrine\DBAL\Schema\Table("write_table");
             $table->addColumn('test_int', 'integer');
             $table->addColumn('test_string', 'string');
+            $table->addColumn('test_float', 'float');
+            $table->addColumn('test_array', 'array', array('columnDefinition'=>'ARRAY(STRING)'));
+
+            $platformOptions = array(
+                'type'   => MapType::STRICT,
+                'fields' => array(
+                    new Column('id',    Type::getType('integer'), array()),
+                    new Column('name',  Type::getType('string'), array()),
+                    new Column('value', Type::getType('float'), array()),
+                ),
+            );
+            $table->addColumn('test_obj', MapType::NAME, array('platformOptions'=>$platformOptions));
 
             $sm = $this->_conn->getSchemaManager();
             $sm->createTable($table);
@@ -64,8 +78,10 @@ class WriteTest extends DBALFunctionalTestCase
         $this->_conn->executeUpdate($sql, array("text", 1111), array(null, PDO::PARAM_INT));
         $this->refresh('write_table');
 
-        $sql = "SELECT * FROM write_table WHERE test_string = ? AND test_int = ?";
-        $this->assertTrue((bool)$this->_conn->fetchColumn($sql, array("text", 1111)));
+        $sql = "SELECT test_obj, test_string, test_int FROM write_table WHERE test_string = ? AND test_int = ?";
+        $this->assertEquals($this->_conn->fetchColumn($sql, array("text", 1111)), null);
+        $this->assertEquals($this->_conn->fetchColumn($sql, array("text", 1111), 1), "text");
+        $this->assertEquals($this->_conn->fetchColumn($sql, array("text", 1111), 2), 1111);
     }
 
     public function testExecuteUpdate()
@@ -110,11 +126,13 @@ class WriteTest extends DBALFunctionalTestCase
 
     public function testPrepareWithDbalTypes()
     {
-        $sql = "INSERT INTO write_table (test_int, test_string) VALUES (?, ?)";
+        $sql = "INSERT INTO write_table (test_int, test_string, test_float, test_obj) VALUES (?, ?, ?, ?)";
         $stmt = $this->_conn->prepare($sql);
 
         $stmt->bindValue(1, 1, Type::getType('integer'));
         $stmt->bindValue(2, "foo", Type::getType('string'));
+        $stmt->bindValue(3, 3.141592, Type::getType('float'));
+        $stmt->bindValue(4, array('id'=>1, 'name'=>'christian', 'value'=>1.234), Type::getType('map'));
         $stmt->execute();
 
         $this->assertEquals(1, $stmt->rowCount());
@@ -127,6 +145,8 @@ class WriteTest extends DBALFunctionalTestCase
 
         $stmt->bindValue(1, 1, 'integer');
         $stmt->bindValue(2, "foo", 'string');
+        $stmt->bindValue(3, 3.141592, 'float');
+        $stmt->bindValue(4, array('id'=>1, 'name'=>'christian', 'value'=>1.234), 'map');
         $stmt->execute();
 
         $this->assertEquals(1, $stmt->rowCount());
@@ -134,8 +154,21 @@ class WriteTest extends DBALFunctionalTestCase
 
     public function insertRows()
     {
-        $this->assertEquals(1, $this->_conn->insert('write_table', array('test_int' => 1, 'test_string' => 'foo')));
-        $this->assertEquals(1, $this->_conn->insert('write_table', array('test_int' => 2, 'test_string' => 'bar')));
+        $this->assertEquals(1, $this->_conn->insert('write_table', array(
+            'test_int' => 1,
+            'test_string' => 'foo',
+            'test_float' => 1.234,
+            'test_arr' => array('foo','bar'),
+            'test_obj' => array('id'=>1, 'name'=>'foo', 'value'=>1.234),
+        ), array('integer','string','float','array','map')));
+        $this->assertEquals(1, $this->_conn->insert('write_table', array(
+            'test_int' => 2,
+            'test_string' => 'bar',
+            'test_float' => 2.345,
+            'test_arr' => array('bar','foo'),
+            'test_obj' => array('id'=>2, 'name'=>'bar', 'value'=>2.345),
+        ), array('integer','string','float','array','map')));
+
         $this->refresh('write_table');
     }
 
