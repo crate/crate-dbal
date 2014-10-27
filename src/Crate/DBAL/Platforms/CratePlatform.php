@@ -45,7 +45,6 @@ class CratePlatform extends AbstractPlatform
     public function __construct()
     {
         parent::__construct();
-        // todo: register and override new types
         $this->initializeDoctrineTypeMappings();
         if (!Type::hasType(MapType::NAME)) {
             Type::addType(MapType::NAME, 'Crate\DBAL\Types\MapType');
@@ -59,7 +58,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getSubstringExpression($value, $from, $length = null)
+    public function getSubstringExpression($value, $from = 0, $length = null)
     {
         if ($length === null) {
             return 'SUBSTR(' . $value . ', ' . $from . ')';
@@ -89,7 +88,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getDateDiffExpression($date1, $date2)
     {
-        return $date1 . ' - ' . $date2;
+        throw DBALException::notSupported(__METHOD__);
     }
 
     /**
@@ -169,7 +168,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getListDatabasesSQL()
     {
-        return 'SELECT table_name FROM information_schema.tables';
+        throw DBALException::notSupported(__METHOD__);
     }
 
     /**
@@ -299,6 +298,7 @@ class CratePlatform extends AbstractPlatform
 
     /**
      * Generate table index column declaration
+     * @codeCoverageIgnore
      */
     public function getIndexColumnDeclarationSQL(Index $index)
     {
@@ -321,13 +321,17 @@ class CratePlatform extends AbstractPlatform
     {
         if (is_array($item)) {
             foreach ($item as $key => $value) {
-                if (is_bool($value) || is_numeric($item)) {
+                if (is_bool($value)) {
                     $item[$key] = ($value) ? 'true' : 'false';
+                } else if (is_numeric($value)) {
+                    $item[$key] = ($value > 0) ? 'true' : 'false';
                 }
             }
         } else {
-           if (is_bool($item) || is_numeric($item)) {
+           if (is_bool($item)) {
                $item = ($item) ? 'true' : 'false';
+           } else if (is_numeric($item)) {
+               $item = ($item > 0) ? 'true' : 'false';
            }
         }
 

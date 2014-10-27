@@ -91,6 +91,133 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         );
     }
 
+    public function testGenerateSubstrExpression()
+    {
+        $this->assertEquals($this->_platform->getSubstringExpression('col'), "SUBSTR(col, 0)");
+        $this->assertEquals($this->_platform->getSubstringExpression('col', 0), "SUBSTR(col, 0)");
+        $this->assertEquals($this->_platform->getSubstringExpression('col', 1, 2), "SUBSTR(col, 1, 2)");
+    }
+
+    /**
+     * @expectedException \Doctrine\DBAL\DBALException
+     * @expectedExceptionMessage Operation 'Crate\DBAL\Platforms\CratePlatform::getNowExpression' is not supported by platform.
+     */
+    public function testGenerateNowExpression()
+    {
+        $this->_platform->getNowExpression();
+    }
+
+    public function testGenerateRegexExpression()
+    {
+        $this->assertEquals($this->_platform->getRegexpExpression(), "LIKE");
+    }
+
+    /**
+     * @expectedException \Doctrine\DBAL\DBALException
+     * @expectedExceptionMessage Operation 'Crate\DBAL\Platforms\CratePlatform::getDateDiffExpression' is not supported by platform.
+     */
+    public function testGenerateDateDiffExpression()
+    {
+        $this->_platform->getDateDiffExpression('2014-10-10 10:10:10', '2014-10-20 20:20:20');
+    }
+
+    /**
+     * @expectedException \Doctrine\DBAL\DBALException
+     * @expectedExceptionMessage Operation 'Crate\DBAL\Platforms\CratePlatform::getCreateDatabaseSQL' is not supported by platform.
+     */
+    public function testCreateDatabases()
+    {
+        $this->_platform->getCreateDatabaseSQL('foo');
+    }
+
+    /**
+     * @expectedException \Doctrine\DBAL\DBALException
+     * @expectedExceptionMessage Operation 'Crate\DBAL\Platforms\CratePlatform::getListDatabasesSQL' is not supported by platform.
+     */
+    public function testListDatabases()
+    {
+        $this->_platform->getListDatabasesSQL();
+    }
+
+    /**
+     * @expectedException \Doctrine\DBAL\DBALException
+     * @expectedExceptionMessage Operation 'Crate\DBAL\Platforms\CratePlatform::getDropDatabaseSQL' is not supported by platform.
+     */
+    public function testDropDatabases()
+    {
+        $this->_platform->getDropDatabaseSQL('foo');
+    }
+
+    /**
+     * @expectedException \Doctrine\DBAL\DBALException
+     * @expectedExceptionMessage Operation 'Crate\DBAL\Platforms\CratePlatform::getBlobTypeDeclarationSQL' is not supported by platform.
+     */
+    public function testGenerateBlobTypeGeneration()
+    {
+        $this->_platform->getBlobTypeDeclarationSQL(array());
+    }
+
+    /**
+     * @expectedException \Doctrine\DBAL\DBALException
+     */
+    public function testTruncateTableSQL()
+    {
+        $this->_platform->getTruncateTableSQL('foo');
+    }
+
+    /**
+     * @expectedException \Doctrine\DBAL\DBALException
+     */
+    public function testReadLockSQL()
+    {
+        $this->_platform->getReadLockSQL();
+    }
+
+    public function testConvertBooleans()
+    {
+        $this->assertEquals($this->_platform->convertBooleans(false), 'false');
+        $this->assertEquals($this->_platform->convertBooleans(true), 'true');
+
+        $this->assertEquals($this->_platform->convertBooleans(0), 'false');
+        $this->assertEquals($this->_platform->convertBooleans(1), 'true');
+
+        $this->assertEquals($this->_platform->convertBooleans(array(true, 1, false, 0)),
+            array('true', 'true', 'false', 'false'));
+    }
+
+    public function testSQLResultCasting()
+    {
+        $this->assertEquals($this->_platform->getSQLResultCasing("LoWeRcAsE"), 'lowercase');
+    }
+
+    /**
+     * @expectedException \Doctrine\DBAL\DBALException
+     * @expectedExceptionMessage No columns specified for table foo
+     */
+    public function testGenerateTableSqlWithoutColumns()
+    {
+        $table = new Table("foo");
+        $this->assertEquals($this->_platform->getCreateTableSQL($table)[0],
+            'CREATE TABLE foo');
+    }
+
+    public function testGenerateTableSql()
+    {
+        $table = new Table("foo");
+        $table->addColumn('col_bool', 'boolean');
+        $table->addColumn('col_int', 'integer');
+        $table->addColumn('col_float', 'float');
+        $table->addColumn('col_timestamp', 'timestamp');
+        $table->addColumn('col_datetimetz', 'datetimetz');
+        $table->addColumn('col_datetime', 'datetime');
+        $table->addColumn('col_date', 'date');
+        $table->addColumn('col_time', 'time');
+        $table->addColumn('col_array', 'array');
+        $table->addColumn('col_object', 'map');
+        $this->assertEquals($this->_platform->getCreateTableSQL($table)[0],
+            'CREATE TABLE foo (col_bool BOOLEAN, col_int INTEGER, col_float DOUBLE, col_timestamp TIMESTAMP, col_datetimetz TIMESTAMP, col_datetime TIMESTAMP, col_date TIMESTAMP, col_time TIMESTAMP, col_array ARRAY ( STRING ), col_object OBJECT ( dynamic ))');
+    }
+
     public function testGeneratesTableAlterationSql()
     {
         $expectedSql = $this->getGenerateAlterTableSql();
@@ -187,6 +314,18 @@ class CratePlatformTest extends AbstractPlatformTestCase {
             array('platformOptions'=> array('type'=>Type::INTEGER)));
         $this->assertEquals($this->getSQLDeclaration($column), 'arr ARRAY ( INTEGER )');
 
+    }
+
+    public function testPlatformSupport() {
+        $this->assertFalse($this->_platform->supportsSequences());
+        $this->assertTrue($this->_platform->supportsSchemas());
+        $this->assertTrue($this->_platform->supportsIdentityColumns());
+        $this->assertFalse($this->_platform->supportsIndexes());
+        $this->assertFalse($this->_platform->supportsCommentOnStatement());
+        $this->assertFalse($this->_platform->supportsForeignKeyConstraints());
+        $this->assertFalse($this->_platform->supportsForeignKeyOnUpdate());
+        $this->assertFalse($this->_platform->supportsViews());
+        $this->assertFalse($this->_platform->prefersSequences());
     }
 
 }
