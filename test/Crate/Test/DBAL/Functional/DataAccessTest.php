@@ -23,8 +23,8 @@
 namespace Crate\Test\DBAL\Functional;
 
 use Crate\DBAL\Types\MapType;
+use Crate\DBAL\Types\ArrayType;
 use Crate\Test\DBAL\DBALFunctionalTestCase;
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Connection;
@@ -56,7 +56,8 @@ class DataAccessTestCase extends DBALFunctionalTestCase
                     new Column('value', Type::getType('float'), array()),
                 ),
             );
-            $table->addColumn('test_object', MapType::NAME, array('platformOptions'=>$platformOptions));
+            $table->addColumn('test_object', MapType::NAME,
+                array('platformOptions'=>$platformOptions));
             $table->setPrimaryKey(array('test_int'));
 
             $sm->createTable($table);
@@ -140,6 +141,8 @@ class DataAccessTestCase extends DBALFunctionalTestCase
             new \DateTime('2010-01-01 10:10:10'));
         $this->assertEquals($this->_conn->convertToPHPValue($rows[0]['test_object'], 'map'),
             array('id'=>1, 'name'=>'foo', 'value'=>1.234));
+        $this->assertEquals($this->_conn->convertToPHPValue($rows[0]['test_array'], 'array'),
+            array('foo','bar'));
     }
 
     /**

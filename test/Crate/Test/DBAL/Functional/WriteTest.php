@@ -140,13 +140,14 @@ class WriteTest extends DBALFunctionalTestCase
 
     public function testPrepareWithDbalTypeNames()
     {
-        $sql = "INSERT INTO write_table (test_int, test_string) VALUES (?, ?)";
+        $sql = "INSERT INTO write_table (test_int, test_string, test_float, test_map, test_bool) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->_conn->prepare($sql);
 
         $stmt->bindValue(1, 1, 'integer');
         $stmt->bindValue(2, "foo", 'string');
         $stmt->bindValue(3, 3.141592, 'float');
         $stmt->bindValue(4, array('id'=>1, 'name'=>'christian', 'value'=>1.234), 'map');
+        $stmt->bindValue(5, true, 'boolean');
         $stmt->execute();
 
         $this->assertEquals(1, $stmt->rowCount());
