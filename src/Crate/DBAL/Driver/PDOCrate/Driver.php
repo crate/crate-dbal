@@ -25,6 +25,9 @@ use Crate\PDO\PDO;
 
 class Driver implements \Doctrine\DBAL\Driver
 {
+    const VERSION = '0.0.1';
+    const NAME = 'crate';
+
     /**
      * {@inheritDoc}
      */
@@ -75,7 +78,7 @@ class Driver implements \Doctrine\DBAL\Driver
      */
     public function getName()
     {
-        return 'crate';
+        return self::NAME;
     }
 
     /**

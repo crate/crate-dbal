@@ -1,0 +1,10 @@
+======================
+CHANGES for crate-dbal
+======================
+
+
+2014/10/27 0.0.1
+================
+
+- initial release
+  see ``README.rst`` for supported types, limitations and not supported DBAL features
