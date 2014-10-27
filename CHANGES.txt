@@ -2,6 +2,12 @@
 CHANGES for crate-dbal
 ======================
 
+Unreleased
+==========
+
+- updated dependencies:
+    - php 5.5
+    - crate-pdo 0.0.3
 
 2014/10/27 0.0.1
 ================
