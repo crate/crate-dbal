@@ -18,7 +18,7 @@ Installation
 
 Install the library by adding it to your ``composer.json`` or running::
 
-  php composer.phar require crate/crate-dbal:~0.0.1
+  php composer.phar require crate/crate-dbal:~0.0.2
 
 Configuration
 -------------

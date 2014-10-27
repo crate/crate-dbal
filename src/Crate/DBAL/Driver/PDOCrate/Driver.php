@@ -25,7 +25,7 @@ use Crate\PDO\PDO;
 
 class Driver implements \Doctrine\DBAL\Driver
 {
-    const VERSION = '0.0.1';
+    const VERSION = '0.0.2';
     const NAME = 'crate';
 
     /**
