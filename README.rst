@@ -4,6 +4,19 @@
     :alt: Crate
     :target: https://crate.io
 
+.. image:: https://travis-ci.org/crate/crate-dbal.svg?branch=master
+    :target: https://travis-ci.org/crate/crate-dbal
+    :alt: Build status
+
+.. image:: https://scrutinizer-ci.com/g/crate/crate-dbal/badges/coverage.png?b=master
+    :target: https://scrutinizer-ci.com/g/crate/crate-dbal
+    :alt: Coverage
+
+.. image:: https://scrutinizer-ci.com/g/crate/crate-dbal/badges/quality-score.png?b=master
+    :target: https://scrutinizer-ci.com/g/crate/crate-dbal
+    :alt: Quality
+
+
 DBAL Driver for Crate
 =====================
 
