@@ -176,7 +176,8 @@ class CratePlatform extends AbstractPlatform
      */
     public function getListTablesSQL()
     {
-        return "SELECT table_name, schema_name FROM information_schema.tables WHERE schema_name = 'doc' OR schema_name = 'blob'";
+        return "SELECT table_name, schema_name FROM information_schema.tables " .
+            "WHERE schema_name = 'doc' OR schema_name = 'blob'";
     }
 
     /**
@@ -189,7 +190,8 @@ class CratePlatform extends AbstractPlatform
             array_unshift($t, 'doc');
         }
         // todo: make safe
-        return "SELECT * from information_schema.columns WHERE table_name = '$t[1]' AND schema_name = '$t[0]'";
+        return "SELECT * from information_schema.columns " .
+            "WHERE table_name = '$t[1]' AND schema_name = '$t[0]'";
     }
 
     /**
@@ -202,7 +204,8 @@ class CratePlatform extends AbstractPlatform
             array_unshift($t, 'doc');
         }
         // todo: make safe
-        return "SELECT constraint_name, constraint_type from information_schema.table_constraints WHERE table_name = '$t[1]' AND schema_name = '$t[0]' AND constraint_type = 'PRIMARY_KEY'";
+        return "SELECT constraint_name, constraint_type from information_schema.table_constraints " .
+            "WHERE table_name = '$t[1]' AND schema_name = '$t[0]' AND constraint_type = 'PRIMARY_KEY'";
     }
 
     /**
@@ -252,38 +255,6 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    protected function _getCreateTableSQL($tableName, array $columns, array $options = array())
-    {
-        $queryFields = $this->getColumnDeclarationListSQL($columns);
-
-        if (isset($options['primary']) && ! empty($options['primary'])) {
-            $keyColumns = array_unique(array_values($options['primary']));
-            $queryFields .= ', PRIMARY KEY(' . implode(', ', $keyColumns) . ')';
-        }
-
-
-        if (isset($options['indexes']) && ! empty($options['indexes'])) {
-            // TODO: support custom index creation (only string columns are valid)
-            /*
-            foreach ($options['indexes'] as $index) {
-                $queryFields .= ', ' . $this->getIndexColumnDeclarationSQL($index);
-            }
-            */
-        }
-
-        if (isset($options['foreignKeys'])) {
-            throw DBALException::notSupported("Create Table: foreign keys");
-        }
-
-        $query = 'CREATE TABLE ' . $tableName . ' (' . $queryFields . ')';
-
-        $sql[] = $query;
-        return $sql;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getColumnDeclarationSQL($name, array $field)
     {
         if (isset($field['columnDefinition'])) {
@@ -323,14 +294,14 @@ class CratePlatform extends AbstractPlatform
             foreach ($item as $key => $value) {
                 if (is_bool($value)) {
                     $item[$key] = ($value) ? 'true' : 'false';
-                } else if (is_numeric($value)) {
+                } elseif (is_numeric($value)) {
                     $item[$key] = ($value > 0) ? 'true' : 'false';
                 }
             }
         } else {
             if (is_bool($item)) {
                 $item = ($item) ? 'true' : 'false';
-            } else if (is_numeric($item)) {
+            } elseif (is_numeric($item)) {
                 $item = ($item > 0) ? 'true' : 'false';
             }
         }
@@ -606,7 +577,8 @@ class CratePlatform extends AbstractPlatform
     public function getCreateTableSQL(Table $table, $createFlags = self::CREATE_INDEXES)
     {
         if (!is_int($createFlags)) {
-            throw new \InvalidArgumentException("Second argument of CratePlatform::getCreateTableSQL() has to be integer.");
+            $msg = "Second argument of CratePlatform::getCreateTableSQL() has to be integer.";
+            throw new \InvalidArgumentException($msg);
         }
 
         if (count($table->getColumns()) === 0) {
@@ -638,7 +610,9 @@ class CratePlatform extends AbstractPlatform
         $columns = array();
 
         foreach ($table->getColumns() as $column) {
-            if (null !== $this->_eventManager && $this->_eventManager->hasListeners(Events::onSchemaCreateTableColumn)) {
+            if (null !== $this->_eventManager &&
+                $this->_eventManager->hasListeners(Events::onSchemaCreateTableColumn)) {
+
                 $eventArgs = new SchemaCreateTableColumnEventArgs($column, $table, $this);
                 $this->_eventManager->dispatchEvent(Events::onSchemaCreateTableColumn, $eventArgs);
 
@@ -664,12 +638,40 @@ class CratePlatform extends AbstractPlatform
         if ($this->supportsCommentOnStatement()) {
             foreach ($table->getColumns() as $column) {
                 if ($this->getColumnComment($column)) {
-                    $sql[] = $this->getCommentOnColumnSQL($tableName, $column->getName(), $this->getColumnComment($column));
+                    $sql[] = $this->getCommentOnColumnSQL(
+                        $tableName,
+                        $column->getName(),
+                        $this->getColumnComment($column)
+                    );
                 }
             }
         }
 
         return array_merge($sql, $columnSql);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function _getCreateTableSQL($tableName, array $columns, array $options = array())
+    {
+        $queryFields = $this->getColumnDeclarationListSQL($columns);
+
+        if (isset($options['primary']) && ! empty($options['primary'])) {
+            $keyColumns = array_unique(array_values($options['primary']));
+            $queryFields .= ', PRIMARY KEY(' . implode(', ', $keyColumns) . ')';
+        }
+
+        // TODO: support custom index creation (only string columns are valid)
+
+        if (isset($options['foreignKeys'])) {
+            throw DBALException::notSupported("Create Table: foreign keys");
+        }
+
+        $query = 'CREATE TABLE ' . $tableName . ' (' . $queryFields . ')';
+
+        $sql[] = $query;
+        return $sql;
     }
 
     /**
