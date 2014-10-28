@@ -22,9 +22,8 @@
 
 namespace Crate\DBAL\Types;
 
-use Doctrine\DBAL\Types\Type,
-    Doctrine\DBAL\Platforms\AbstractPlatform;
-
+use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 /**
  * Type that maps a PHP associative array (map) to an object SQL type.
@@ -83,8 +82,8 @@ class MapType extends Type
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        $options = !array_key_exists('platformOptions', $fieldDeclaration) ? array() : $fieldDeclaration['platformOptions'];
+        $options = !array_key_exists('platformOptions', $fieldDeclaration) ?
+            array() : $fieldDeclaration['platformOptions'];
         return $platform->getMapTypeDeclarationSQL($fieldDeclaration, $options);
     }
-
 }

@@ -23,8 +23,8 @@
 namespace Crate\DBAL\Types;
 
 use Crate\DBAL\Platforms\CratePlatform;
-use Doctrine\DBAL\Types\Type,
-    Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 /**
  * Type that maps a PHP sequential array to an array SQL type.
@@ -81,5 +81,4 @@ class ArrayType extends Type
         $options = !array_key_exists('platformOptions', $fieldDeclaration) ? array() : $fieldDeclaration['platformOptions'];
         return $platform->getArrayTypeDeclarationSQL($fieldDeclaration, $options);
     }
-
 }

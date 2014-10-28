@@ -88,5 +88,4 @@ class Driver implements \Doctrine\DBAL\Driver
     {
         return null;
     }
-
 }

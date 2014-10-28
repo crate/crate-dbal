@@ -238,7 +238,7 @@ class CratePlatform extends AbstractPlatform
 
         $tableSql = array();
 
-        if ( ! $this->onSchemaAlterTable($diff, $tableSql)) {
+        if (!$this->onSchemaAlterTable($diff, $tableSql)) {
             if ($diff->newName !== false) {
                 throw DBALException::notSupported("Alter Table: rename table");
             }
@@ -328,11 +328,11 @@ class CratePlatform extends AbstractPlatform
                 }
             }
         } else {
-           if (is_bool($item)) {
-               $item = ($item) ? 'true' : 'false';
-           } else if (is_numeric($item)) {
-               $item = ($item > 0) ? 'true' : 'false';
-           }
+            if (is_bool($item)) {
+                $item = ($item) ? 'true' : 'false';
+            } else if (is_numeric($item)) {
+                $item = ($item > 0) ? 'true' : 'false';
+            }
         }
 
         return $item;
@@ -605,7 +605,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getCreateTableSQL(Table $table, $createFlags = self::CREATE_INDEXES)
     {
-        if ( ! is_int($createFlags)) {
+        if (!is_int($createFlags)) {
             throw new \InvalidArgumentException("Second argument of CratePlatform::getCreateTableSQL() has to be integer.");
         }
 
@@ -725,5 +725,4 @@ class CratePlatform extends AbstractPlatform
     {
         throw DBALException::notSupported(__METHOD__);
     }
-
 }

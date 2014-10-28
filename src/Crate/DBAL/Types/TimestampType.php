@@ -22,8 +22,8 @@
 namespace Crate\DBAL\Types;
 
 use DateTime;
-use Doctrine\DBAL\Types\Type,
-    Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 /**
  * Type that maps a Crate SQL TIMESTAMP (aka Long) to a PHP DateTime object.

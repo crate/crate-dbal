@@ -26,7 +26,8 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
 
-class CrateSchemaManager extends AbstractSchemaManager {
+class CrateSchemaManager extends AbstractSchemaManager
+{
 
     /**
      * {@inheritDoc}
@@ -107,5 +108,4 @@ class CrateSchemaManager extends AbstractSchemaManager {
         }
         return $tableNames;
     }
-
 }
