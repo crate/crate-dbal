@@ -33,7 +33,7 @@ class Driver implements \Doctrine\DBAL\Driver
      */
     public function connect(array $params, $username = null, $password = null, array $driverOptions = array())
     {
-        $pdo = new PDO($this->_constructPdoDsn($params), $username, $password, $driverOptions);
+        $pdo = new PDO($this->constructPdoDsn($params), $username, $password, $driverOptions);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $pdo;
     }
@@ -43,7 +43,7 @@ class Driver implements \Doctrine\DBAL\Driver
      *
      * @return string  The DSN.
      */
-    private function _constructPdoDsn(array $params)
+    private function constructPdoDsn(array $params)
     {
         $dsn = '';
         if (isset($params['host']) && $params['host'] != '') {

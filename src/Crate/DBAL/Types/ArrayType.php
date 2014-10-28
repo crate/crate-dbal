@@ -78,7 +78,8 @@ class ArrayType extends Type
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        $options = !array_key_exists('platformOptions', $fieldDeclaration) ? array() : $fieldDeclaration['platformOptions'];
+        $options = !array_key_exists('platformOptions', $fieldDeclaration) ?
+            array() : $fieldDeclaration['platformOptions'];
         return $platform->getArrayTypeDeclarationSQL($fieldDeclaration, $options);
     }
 }
