@@ -38,7 +38,7 @@ class CrateSchemaManager extends AbstractSchemaManager
         $foreignKeys = array();
         $indexes = array();
 
-        return new Table($tableName, $columns, $indexes, $foreignKeys, false, array());
+        return new Table($tableName, $columns, $indexes, $foreignKeys);
     }
 
     /**
@@ -106,6 +106,7 @@ class CrateSchemaManager extends AbstractSchemaManager
             $tableRow = array_change_key_case($tableRow, \CASE_LOWER);
             $tableNames[] = $tableRow['table_name']; // ignore schema for now
         }
+
         return $tableNames;
     }
 }

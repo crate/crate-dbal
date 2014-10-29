@@ -62,6 +62,7 @@ class TimestampType extends Type
 
         $val = new DateTime();
         $val->setTimestamp($value/self::S_TO_MS);
+
         return $val;
     }
 
@@ -69,8 +70,8 @@ class TimestampType extends Type
      * Gets the SQL declaration snippet for a field of this type.
      *
      * @return string
-     * @param array $fieldDeclaration The field declaration.
-     * @param AbstractPlatform $platform The currently used database platform.
+     * @param  array            $fieldDeclaration The field declaration.
+     * @param  AbstractPlatform $platform         The currently used database platform.
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {

@@ -65,6 +65,7 @@ class MapType extends Type
         if (!is_array($value) || (count($value) > 0 && !(array_keys($value) !== range(0, count($value) - 1)))) {
             return null;
         }
+
         return $value;
     }
 
@@ -77,13 +78,14 @@ class MapType extends Type
      * Gets the SQL declaration snippet for a field of this type.
      *
      * @return string
-     * @param array $fieldDeclaration The field declaration.
-     * @param AbstractPlatform $platform The currently used database platform.
+     * @param  array            $fieldDeclaration The field declaration.
+     * @param  AbstractPlatform $platform         The currently used database platform.
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
         $options = !array_key_exists('platformOptions', $fieldDeclaration) ?
             array() : $fieldDeclaration['platformOptions'];
+
         return $platform->getMapTypeDeclarationSQL($fieldDeclaration, $options);
     }
 }

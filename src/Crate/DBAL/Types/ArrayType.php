@@ -22,7 +22,6 @@
 
 namespace Crate\DBAL\Types;
 
-use Crate\DBAL\Platforms\CratePlatform;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 

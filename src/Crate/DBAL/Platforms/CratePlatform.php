@@ -569,7 +569,7 @@ class CratePlatform extends AbstractPlatform
      * Gets the SQL statement(s) to create a table with the specified name, columns and constraints
      * on this platform.
      *
-     * @param string $table The name of the table.
+     * @param Table $table The name of the table.
      * @param integer $createFlags
      *
      * @return array The sequence of SQL statements.
@@ -669,9 +669,7 @@ class CratePlatform extends AbstractPlatform
         }
 
         $query = 'CREATE TABLE ' . $tableName . ' (' . $queryFields . ')';
-
-        $sql[] = $query;
-        return $sql;
+        return array($query);
     }
 
     /**

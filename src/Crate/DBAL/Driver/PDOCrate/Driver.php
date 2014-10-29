@@ -21,8 +21,6 @@
  */
 namespace Crate\DBAL\Driver\PDOCrate;
 
-use Crate\PDO\PDO;
-
 class Driver implements \Doctrine\DBAL\Driver
 {
     const VERSION = '0.0.2';
@@ -30,18 +28,17 @@ class Driver implements \Doctrine\DBAL\Driver
 
     /**
      * {@inheritDoc}
+     * @return PDOConnection The database connection.
      */
     public function connect(array $params, $username = null, $password = null, array $driverOptions = array())
     {
-        $pdo = new PDO($this->constructPdoDsn($params), $username, $password, $driverOptions);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        return $pdo;
+        return new PDOConnection($this->constructPdoDsn($params), $username, $password, $driverOptions);
     }
 
     /**
      * Constructs the Crate PDO DSN.
      *
-     * @return string  The DSN.
+     * @return string The DSN.
      */
     private function constructPdoDsn(array $params)
     {
