@@ -5,6 +5,9 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+2014/10/30 0.0.3
+================
+
  - updated dependency ``crate-pdo 0.0.4``
 
 2014/10/27 0.0.2

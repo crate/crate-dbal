@@ -23,7 +23,7 @@ namespace Crate\DBAL\Driver\PDOCrate;
 
 class Driver implements \Doctrine\DBAL\Driver
 {
-    const VERSION = '0.0.2';
+    const VERSION = '0.0.3';
     const NAME = 'crate';
 
     /**
