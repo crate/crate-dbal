@@ -5,15 +5,17 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+ - updated dependency ``crate-pdo 0.0.4``
+
 2014/10/27 0.0.2
 ================
 
-- updated dependencies:
-    - php 5.5
-    - crate-pdo 0.0.3
+ - updated dependencies:
+   - php 5.5
+   - crate-pdo 0.0.3
 
 2014/10/27 0.0.1
 ================
 
-- initial release
-  see ``README.rst`` for supported types, limitations and not supported DBAL features
+ - initial release
+   see ``README.rst`` for supported types, limitations and not supported DBAL features

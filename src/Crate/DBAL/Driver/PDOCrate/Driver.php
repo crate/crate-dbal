@@ -42,14 +42,13 @@ class Driver implements \Doctrine\DBAL\Driver
      */
     private function constructPdoDsn(array $params)
     {
-        $dsn = '';
+        $dsn = self::NAME . ':';
         if (isset($params['host']) && $params['host'] != '') {
-            $dsn .= 'http://' . $params['host'];
+            $dsn .= $params['host'];
         } else {
-            $dsn .= "http://localhost";
+            $dsn .= 'localhost';
         }
         $dsn .= ':' . (isset($params['port']) ? $params['port'] : '4200');
-        $dsn .= '/_sql';
 
         return $dsn;
     }
