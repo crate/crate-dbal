@@ -23,7 +23,6 @@
 namespace Crate\Test\DBAL\Functional;
 
 use Crate\DBAL\Types\MapType;
-use Crate\DBAL\Types\ArrayType;
 use Crate\Test\DBAL\DBALFunctionalTestCase;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Types\Type;
@@ -67,7 +66,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
                 'test_string' => 'foo',
                 'test_datetime' => new \DateTime('2010-01-01 10:10:10'),
                 'test_array' => array('foo','bar'),
-                'test_object' => array('id'=>1, 'name'=>'foo', 'value'=>1.234),
+                'test_object' => array('id'=>1, 'name'=>'foo', 'value'=>1.234,),
             ), array('integer','string','timestamp','array','map'));
             $this->refresh('fetch_table');
         }
@@ -87,8 +86,8 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $stmt = $this->_conn->prepare($sql);
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
 
-        $stmt->bindValue(1, 1);
-        $stmt->bindValue(2, 'foo');
+        $stmt->bindValue(1, 1, PDO::PARAM_INT);
+        $stmt->bindValue(2, 'foo', PDO::PARAM_STR);
         $stmt->execute();
 
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -105,8 +104,8 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $stmt = $this->_conn->prepare($sql);
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
 
-        $stmt->bindParam(1, $paramInt);
-        $stmt->bindParam(2, $paramStr);
+        $stmt->bindParam(1, $paramInt, PDO::PARAM_INT);
+        $stmt->bindParam(2, $paramStr, PDO::PARAM_STR);
         $stmt->execute();
 
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -123,8 +122,8 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $stmt = $this->_conn->prepare($sql);
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
 
-        $stmt->bindParam(1, $paramInt);
-        $stmt->bindParam(2, $paramStr);
+        $stmt->bindParam(1, $paramInt, PDO::PARAM_INT);
+        $stmt->bindParam(2, $paramStr, PDO::PARAM_STR);
         $stmt->execute();
 
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -134,7 +133,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
             'test_string' => 'foo',
             'test_datetime' => 1262340610000,
             'test_array' => array('foo', 'bar'),
-            'test_object' => ((object) array('id'=>1, 'name'=>'foo', 'value'=>1.234))
+            'test_object' => array('id'=>1, 'name'=>'foo', 'value'=>1.234)
         ), $rows[0]);
 
         $this->assertEquals($this->_conn->convertToPHPValue($rows[0]['test_datetime'], 'timestamp'),
@@ -157,8 +156,8 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $stmt = $this->_conn->prepare($sql);
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
 
-        $stmt->bindParam(1, $paramInt);
-        $stmt->bindParam(2, $paramStr);
+        $stmt->bindParam(1, $paramInt, PDO::PARAM_INT);
+        $stmt->bindParam(2, $paramStr, PDO::PARAM_STR);
         $stmt->execute();
 
         $rows = $stmt->fetchAll(\PDO::FETCH_BOTH);
@@ -175,8 +174,8 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $stmt = $this->_conn->prepare($sql);
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
 
-        $stmt->bindParam(1, $paramInt);
-        $stmt->bindParam(2, $paramStr);
+        $stmt->bindParam(1, $paramInt, PDO::PARAM_INT);
+        $stmt->bindParam(2, $paramStr, PDO::PARAM_STR);
         $stmt->execute();
 
         $column = $stmt->fetchColumn();
@@ -192,8 +191,8 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $stmt = $this->_conn->prepare($sql);
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
 
-        $stmt->bindParam(1, $paramInt);
-        $stmt->bindParam(2, $paramStr);
+        $stmt->bindParam(1, $paramInt, PDO::PARAM_INT);
+        $stmt->bindParam(2, $paramStr, PDO::PARAM_STR);
         $stmt->execute();
 
         $rows = array();

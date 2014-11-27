@@ -159,14 +159,14 @@ class WriteTest extends DBALFunctionalTestCase
             'test_int' => 1,
             'test_string' => 'foo',
             'test_float' => 1.234,
-            'test_arr' => array('foo','bar'),
+            'test_array' => array('foo','bar'),
             'test_obj' => array('id'=>1, 'name'=>'foo', 'value'=>1.234),
         ), array('integer','string','float','array','map')));
         $this->assertEquals(1, $this->_conn->insert('write_table', array(
             'test_int' => 2,
             'test_string' => 'bar',
             'test_float' => 2.345,
-            'test_arr' => array('bar','foo'),
+            'test_array' => array('bar','foo'),
             'test_obj' => array('id'=>2, 'name'=>'bar', 'value'=>2.345),
         ), array('integer','string','float','array','map')));
 

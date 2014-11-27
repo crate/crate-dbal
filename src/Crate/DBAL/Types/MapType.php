@@ -22,6 +22,7 @@
 
 namespace Crate\DBAL\Types;
 
+use Crate\PDO\PDO;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 
@@ -57,7 +58,7 @@ class MapType extends Type
      */
     public function getBindingType()
     {
-        return \PDO::PARAM_INPUT_OUTPUT;
+        return PDO::PARAM_OBJECT;
     }
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
