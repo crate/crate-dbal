@@ -5,6 +5,14 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+ - updated depencency ``crate-pdo 0.0.7`` which includes following changes:
+
+   - Fix: Literals containing a `:` character were misinterpreted as
+     named parameters.
+
+   - Nailed dependency versions of amphp/artax and amphp/amp
+     to prevent composer from fetching newer, incompatible releases
+
 2014/11/27 0.0.4
 ================
 
