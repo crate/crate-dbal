@@ -5,6 +5,9 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+2014/12/19 0.0.5
+================
+
  - updated depencency ``crate-pdo 0.0.7`` which includes following changes:
 
    - Fix: Literals containing a `:` character were misinterpreted as
