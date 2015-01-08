@@ -5,6 +5,9 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+2015/01/08 0.1.0
+================
+
  - updated dependency ``crate-pdo 0.1.0`` which includes following
    changes:
 
