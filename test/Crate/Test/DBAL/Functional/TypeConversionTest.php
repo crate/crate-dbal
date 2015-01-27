@@ -44,7 +44,7 @@ class TypeConversionTestCase extends \PHPUnit_Framework_TestCase {
 
         // datetimetz
         $type = Type::getType(Type::DATETIMETZ);
-        $expected = "2014-10-21T15:23:38+0000";
+        $expected = $input->format('Y-m-d\TH:i:sO');
         $output = $type->convertToDatabaseValue($input, $this->platform);
         $this->assertEquals($output, $expected);
         $inputRestored = $type->convertToPHPValue($output, $this->platform);
@@ -54,7 +54,7 @@ class TypeConversionTestCase extends \PHPUnit_Framework_TestCase {
 
         // datetime
         $type = Type::getType(Type::DATETIME);
-        $expected = "2014-10-21T15:23:38";
+        $expected = $input->format('Y-m-d\TH:i:s');
         $output = $type->convertToDatabaseValue($input, $this->platform);
         $this->assertEquals($output, $expected);
         $inputRestored = $type->convertToPHPValue($output, $this->platform);
@@ -64,7 +64,7 @@ class TypeConversionTestCase extends \PHPUnit_Framework_TestCase {
 
         // date
         $type = Type::getType(Type::DATE);
-        $expected = "2014-10-21T15:23:38";
+        $expected = $input->format('Y-m-d\TH:i:s');
         $output = $type->convertToDatabaseValue($input, $this->platform);
         $this->assertEquals($output, $expected);
         $inputRestored = $type->convertToPHPValue($output, $this->platform);
@@ -74,7 +74,7 @@ class TypeConversionTestCase extends \PHPUnit_Framework_TestCase {
 
         // time
         $type = Type::getType(Type::TIME);
-        $expected = "2014-10-21T15:23:38";
+        $expected = $input->format('Y-m-d\TH:i:s');
         $output = $type->convertToDatabaseValue($input, $this->platform);
         $this->assertEquals($output, $expected);
         $inputRestored = $type->convertToPHPValue($output, $this->platform);
@@ -84,7 +84,7 @@ class TypeConversionTestCase extends \PHPUnit_Framework_TestCase {
 
         // timestamp
         $type = Type::getType(TimestampType::NAME);
-        $expected = 1413905018000;
+        $expected = $input->format('U')*TimestampType::S_TO_MS;
         $output = $type->convertToDatabaseValue($input, $this->platform);
         $this->assertEquals($output, $expected);
         $inputRestored = $type->convertToPHPValue($output, $this->platform);
