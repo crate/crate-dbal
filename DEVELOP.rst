@@ -26,7 +26,7 @@ Get composer & install dependencies::
     vagrant ssh
     cd /vagrant
     curl -sS https://getcomposer.org/installer | php
-    ./composer.phar install
+    ./composer.phar install --prefer-source
 
 
 Running the tests
