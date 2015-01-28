@@ -63,6 +63,16 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->markTestSkipped('Platform does not support CREATE UNIQUE INDEX.');
     }
 
+    public function testGeneratesForeignKeyCreationSql()
+    {
+        $fk = new \Doctrine\DBAL\Schema\ForeignKeyConstraint(array('fk_name_id'), 'other_table', array('id'), '');
+    
+        $this->assertEquals(
+            $this->getGenerateForeignKeySql(),
+            $this->_platform->getCreateForeignKeySQL($fk, 'test')
+        );
+    }
+    
     public function getGenerateForeignKeySql()
     {
         $this->markTestSkipped('Platform does not support ADD FOREIGN KEY.');
@@ -74,19 +84,24 @@ class CratePlatformTest extends AbstractPlatformTestCase {
             'ALTER TABLE mytable ADD quota INTEGER',
         );
     }
+    
+    public function testAlterTableChangeQuotedColumn()
+    {
+        $this->markTestSkipped('Platform does not support ALTER TABLE.');
+    }
 
     protected function getQuotedColumnInPrimaryKeySQL()
     {
         return array(
-            'CREATE TABLE "quoted" ("key" STRING, PRIMARY KEY("key"))',
+            'CREATE TABLE "quoted" ("create" STRING, PRIMARY KEY("create"))',
         );
     }
 
     protected function getQuotedColumnInIndexSQL()
     {
         return array(
-            'CREATE TABLE "quoted" ("key" STRING,' .
-            'INDEX IDX_22660D028A90ABA9 USING FULLTEXT ("key")' .
+            'CREATE TABLE "quoted" ("create" STRING, ' .
+            'INDEX IDX_22660D028FD6E0FB USING FULLTEXT ("create")' .
             ')'
         );
     }
@@ -97,7 +112,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     protected function getQuotedNameInIndexSQL()
     {
         return array(
-            'CREATE TABLE test (column1 VARCHAR(255) NOT NULL, INDEX `create` (column1))'
+            'CREATE TABLE test (column1 STRING, INDEX "create" USING FULLTEXT (column1))'
         );
     }
     
@@ -114,7 +129,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
      */
     protected function getQuotesReservedKeywordInUniqueConstraintDeclarationSQL()
     {
-        return 'CONSTRAINT `select` UNIQUE (foo)';
+        return 'CONSTRAINT "select" UNIQUE (foo)';
     }
     
     /**
@@ -122,7 +137,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
      */
     protected function getQuotesReservedKeywordInIndexDeclarationSQL()
     {
-        return 'INDEX `select` (foo)';
+        return 'INDEX "select" USING FULLTEXT (foo)';
     }
     
     /**
