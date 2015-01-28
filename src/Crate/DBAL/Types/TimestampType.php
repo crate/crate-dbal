@@ -35,6 +35,14 @@ class TimestampType extends Type
     const S_TO_MS = 1000;
 
     /**
+     * Set a fixed timezone.
+     * USED ONLY FOR TESTING!
+     *
+     * @var DateTimeZone|null
+     */
+    public static $CONCRETE_TIME_ZONE= null;
+
+    /**
      * Gets the name of this type.
      *
      * @return string
@@ -62,6 +70,10 @@ class TimestampType extends Type
 
         $val = new DateTime();
         $val->setTimestamp($value/self::S_TO_MS);
+        if (self::$CONCRETE_TIME_ZONE != null) {
+            $val->setTimezone(self::$CONCRETE_TIME_ZONE);
+        }
+
 
         return $val;
     }
