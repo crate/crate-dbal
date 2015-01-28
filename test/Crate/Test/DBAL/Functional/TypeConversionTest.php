@@ -40,6 +40,7 @@ class TypeConversionTestCase extends \PHPUnit_Framework_TestCase {
 
     public function testTimestampType()
     {
+        TimestampType::$CONCRETE_TIME_ZONE = new \DateTimeZone('Europe/London');
         $input = new \DateTime("2014-10-21 15:23:38");
 
         // datetimetz
