@@ -748,7 +748,6 @@ class CratePlatform extends AbstractPlatform
      */
     public function getGuidTypeDeclarationSQL(array $field) 
     {
-        // TODO: to be confirmed
         throw DBALException::notSupported(__METHOD__);
     }
 }
