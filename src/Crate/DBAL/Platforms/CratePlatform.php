@@ -271,7 +271,7 @@ class CratePlatform extends AbstractPlatform
      * Generate table index column declaration
      * @codeCoverageIgnore
      */
-    public function getIndexColumnDeclarationSQL(Index $index)
+    public function getIndexDeclarationSQL(Index $index)
     {
         $name = $index->getQuotedName($this);
         $columns = $index->getColumns();
