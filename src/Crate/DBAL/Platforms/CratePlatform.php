@@ -102,11 +102,14 @@ class CratePlatform extends AbstractPlatform
     }
 
     /**
+     * If we want to support Schemas, we need to implement 
+     * getListNamespacesSQL and getCreateSchemaSQL methods
+     * 
      * {@inheritDoc}
      */
     public function supportsSchemas()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -737,6 +740,15 @@ class CratePlatform extends AbstractPlatform
      */
     public function getCreateForeignKeySQL(ForeignKeyConstraint $foreignKey, $table)
     {
+        throw DBALException::notSupported(__METHOD__);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function getGuidTypeDeclarationSQL(array $field) 
+    {
+        // TODO: to be confirmed
         throw DBALException::notSupported(__METHOD__);
     }
 }

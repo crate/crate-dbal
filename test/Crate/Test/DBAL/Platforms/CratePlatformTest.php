@@ -112,7 +112,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     protected function getQuotedNameInIndexSQL()
     {
         return array(
-            'CREATE TABLE test (column1 STRING, INDEX "create" USING FULLTEXT (column1))'
+            'CREATE TABLE test (column1 STRING, INDEX key USING FULLTEXT (column1))'
         );
     }
     
@@ -145,18 +145,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
      */
     protected function getQuotedAlterTableRenameColumnSQL()
     {
-        return array(
-            "ALTER TABLE mytable " .
-            "CHANGE unquoted1 unquoted INT NOT NULL COMMENT 'Unquoted 1', " .
-            "CHANGE unquoted2 `where` INT NOT NULL COMMENT 'Unquoted 2', " .
-            "CHANGE unquoted3 `foo` INT NOT NULL COMMENT 'Unquoted 3', " .
-            "CHANGE `create` reserved_keyword INT NOT NULL COMMENT 'Reserved keyword 1', " .
-            "CHANGE `table` `from` INT NOT NULL COMMENT 'Reserved keyword 2', " .
-            "CHANGE `select` `bar` INT NOT NULL COMMENT 'Reserved keyword 3', " .
-            "CHANGE quoted1 quoted INT NOT NULL COMMENT 'Quoted 1', " .
-            "CHANGE quoted2 `and` INT NOT NULL COMMENT 'Quoted 2', " .
-            "CHANGE quoted3 `baz` INT NOT NULL COMMENT 'Quoted 3'"
-        );
+        $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
     
     /**
@@ -164,15 +153,12 @@ class CratePlatformTest extends AbstractPlatformTestCase {
      */
     protected function getQuotedAlterTableChangeColumnLengthSQL()
     {
-        return array(
-            "ALTER TABLE mytable " .
-            "CHANGE unquoted1 unquoted1 VARCHAR(255) NOT NULL COMMENT 'Unquoted 1', " .
-            "CHANGE unquoted2 unquoted2 VARCHAR(255) NOT NULL COMMENT 'Unquoted 2', " .
-            "CHANGE unquoted3 unquoted3 VARCHAR(255) NOT NULL COMMENT 'Unquoted 3', " .
-            "CHANGE `create` `create` VARCHAR(255) NOT NULL COMMENT 'Reserved keyword 1', " .
-            "CHANGE `table` `table` VARCHAR(255) NOT NULL COMMENT 'Reserved keyword 2', " .
-            "CHANGE `select` `select` VARCHAR(255) NOT NULL COMMENT 'Reserved keyword 3'"
-        );
+        $this->markTestSkipped('Platform does not support ALTER TABLE.');
+    }
+    
+    protected function getQuotedAlterTableRenameIndexInSchemaSQL()
+    {
+        $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
     
     /**
@@ -182,8 +168,8 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     {
         return array(
             "COMMENT ON COLUMN foo.bar IS 'comment'",
-            "COMMENT ON COLUMN `Foo`.`BAR` IS 'comment'",
-            "COMMENT ON COLUMN `select`.`from` IS 'comment'",
+            "COMMENT ON COLUMN \"Foo\".\"BAR\" IS 'comment'",
+            "COMMENT ON COLUMN \"select\".\"from\" IS 'comment'",
         );
     }
 
@@ -192,9 +178,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
      */
     public function getAlterTableRenameColumnSQL()
     {
-        return array(
-            "ALTER TABLE foo CHANGE bar baz INT DEFAULT 666 NOT NULL COMMENT 'rename test'",
-        );
+        $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
     
     /**
@@ -202,14 +186,12 @@ class CratePlatformTest extends AbstractPlatformTestCase {
      */
     protected function getQuotesTableIdentifiersInAlterTableSQL()
     {
-        return array(
-            'ALTER TABLE `foo` DROP FOREIGN KEY fk1',
-            'ALTER TABLE `foo` DROP FOREIGN KEY fk2',
-            'ALTER TABLE `foo` RENAME TO `table`, ADD bloo INT NOT NULL, DROP baz, CHANGE bar bar INT DEFAULT NULL, ' .
-            'CHANGE id war INT NOT NULL',
-            'ALTER TABLE `table` ADD CONSTRAINT fk_add FOREIGN KEY (fk3) REFERENCES fk_table (id)',
-            'ALTER TABLE `table` ADD CONSTRAINT fk2 FOREIGN KEY (fk2) REFERENCES fk_table2 (id)',
-        );
+        $this->markTestSkipped('Platform does not support ALTER TABLE.');
+    }
+    
+    public function testAlterStringToFixedString()
+    {
+        $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
     
     /**
@@ -217,9 +199,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
      */
     protected function getAlterStringToFixedStringSQL()
     {
-        return array(
-            'ALTER TABLE mytable CHANGE name name CHAR(2) NOT NULL',
-        );
+        $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
     
     /**
@@ -227,12 +207,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
      */
     protected function getGeneratesAlterTableRenameIndexUsedByForeignKeySQL()
     {
-        return array(
-            'ALTER TABLE mytable DROP FOREIGN KEY fk_foo',
-            'DROP INDEX idx_foo ON mytable',
-            'CREATE INDEX idx_foo_renamed ON mytable (foo)',
-            'ALTER TABLE mytable ADD CONSTRAINT fk_foo FOREIGN KEY (foo) REFERENCES foreign_table (id)',
-        );
+        $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
     
 
@@ -463,7 +438,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function testPlatformSupport() {
         $this->assertFalse($this->_platform->supportsSequences());
-        $this->assertTrue($this->_platform->supportsSchemas());
+        $this->assertFalse($this->_platform->supportsSchemas());
         $this->assertTrue($this->_platform->supportsIdentityColumns());
         $this->assertFalse($this->_platform->supportsIndexes());
         $this->assertFalse($this->_platform->supportsCommentOnStatement());
