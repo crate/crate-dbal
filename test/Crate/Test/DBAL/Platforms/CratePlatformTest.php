@@ -212,7 +212,6 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     
     public function testGenerateSubstrExpression()
     {
-        $this->assertEquals($this->_platform->getSubstringExpression('col'), "SUBSTR(col, 0)");
         $this->assertEquals($this->_platform->getSubstringExpression('col', 0), "SUBSTR(col, 0)");
         $this->assertEquals($this->_platform->getSubstringExpression('col', 1, 2), "SUBSTR(col, 1, 2)");
     }
