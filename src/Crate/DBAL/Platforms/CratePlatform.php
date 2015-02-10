@@ -28,10 +28,12 @@ use Doctrine\DBAL\Event\SchemaCreateTableColumnEventArgs;
 use Doctrine\DBAL\Event\SchemaCreateTableEventArgs;
 use Doctrine\DBAL\Events;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Schema\Identifier;
 use Doctrine\DBAL\Schema\Index;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 
 class CratePlatform extends AbstractPlatform
 {
@@ -100,11 +102,14 @@ class CratePlatform extends AbstractPlatform
     }
 
     /**
+     * If we want to support Schemas, we need to implement 
+     * getListNamespacesSQL and getCreateSchemaSQL methods
+     * 
      * {@inheritDoc}
      */
     public function supportsSchemas()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -271,16 +276,16 @@ class CratePlatform extends AbstractPlatform
      * Generate table index column declaration
      * @codeCoverageIgnore
      */
-    public function getIndexColumnDeclarationSQL(Index $index)
+    public function getIndexDeclarationSQL($name, Index $index)
     {
-        $name = $index->getQuotedName($this);
-        $columns = $index->getColumns();
+        $columns = $index->getQuotedColumns($this);
+        $name = new Identifier($name);
 
         if (count($columns) == 0) {
             throw new \InvalidArgumentException("Incomplete definition. 'columns' required.");
         }
 
-        return 'INDEX ' . $name . ' USING FULLTEXT ('. $this->getIndexFieldDeclarationListSQL($columns) . ')';
+        return 'INDEX ' . $name->getQuotedName($this) . ' USING FULLTEXT ('. $this->getIndexFieldDeclarationListSQL($columns) . ')';
     }
 
     /**
@@ -655,20 +660,24 @@ class CratePlatform extends AbstractPlatform
      */
     protected function _getCreateTableSQL($tableName, array $columns, array $options = array())
     {
-        $queryFields = $this->getColumnDeclarationListSQL($columns);
+        $columnListSql = $this->getColumnDeclarationListSQL($columns);
 
         if (isset($options['primary']) && ! empty($options['primary'])) {
             $keyColumns = array_unique(array_values($options['primary']));
-            $queryFields .= ', PRIMARY KEY(' . implode(', ', $keyColumns) . ')';
+            $columnListSql .= ', PRIMARY KEY(' . implode(', ', $keyColumns) . ')';
         }
 
-        // TODO: support custom index creation (only string columns are valid)
-
+        if (isset($options['indexes']) && ! empty($options['indexes'])) {
+            foreach ($options['indexes'] as $index => $definition) {
+                $columnListSql .= ', ' . $this->getIndexDeclarationSQL($index, $definition);
+            }
+        }
+ 
         if (isset($options['foreignKeys'])) {
             throw DBALException::notSupported("Create Table: foreign keys");
         }
 
-        $query = 'CREATE TABLE ' . $tableName . ' (' . $queryFields . ')';
+        $query = 'CREATE TABLE ' . $tableName . ' (' . $columnListSql . ')';
         return array($query);
     }
 
@@ -722,6 +731,22 @@ class CratePlatform extends AbstractPlatform
      * {@inheritDoc}
      */
     public function getDropDatabaseSQL($database)
+    {
+        throw DBALException::notSupported(__METHOD__);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function getCreateForeignKeySQL(ForeignKeyConstraint $foreignKey, $table)
+    {
+        throw DBALException::notSupported(__METHOD__);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function getGuidTypeDeclarationSQL(array $field) 
     {
         throw DBALException::notSupported(__METHOD__);
     }
