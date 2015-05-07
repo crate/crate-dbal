@@ -9,7 +9,7 @@
     "require": {
         "php": "~5.5",
         "doctrine/dbal": ">=2.3.5",
-        "crate/crate-pdo": "~0.1.0"
+        "crate/crate-pdo": "~0.2.1"
     },
     "autoload": {
         "psr-0": {

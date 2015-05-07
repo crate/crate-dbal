@@ -22,6 +22,7 @@
 namespace Crate\Test\DBAL\Functional;
 
 use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Crate\PDO\PDO;
 
 class ConnectionTestCase extends DBALFunctionalTestCase
 {
@@ -35,6 +36,29 @@ class ConnectionTestCase extends DBALFunctionalTestCase
     {
         parent::tearDown();
         $this->resetSharedConn();
+    }
+
+    public function testBasicAuthConnection()
+    {
+        $auth = ['crate', 'secret'];
+        $params = array(
+            'driverClass' => 'Crate\DBAL\Driver\PDOCrate\Driver',
+            'host' => 'localhost',
+            'port' => 4200,
+            'user' => $auth[0],
+            'password' => $auth[1],
+        );
+        $conn = \Doctrine\DBAL\DriverManager::getConnection($params);
+        $this->assertEquals($auth[0], $conn->getUsername());
+        $this->assertEquals($auth[1], $conn->getPassword());
+        $auth_attr = $conn->getWrappedConnection()->getAttribute(PDO::ATTR_HTTP_BASIC_AUTH);
+        $this->assertEquals($auth_attr, $auth);
+    }
+
+    public function testGetConnection()
+    {
+      $this->assertInstanceOf('Doctrine\DBAL\Connection', $this->_conn);
+      $this->assertInstanceOf('Crate\DBAL\Driver\PDOCrate\PDOConnection', $this->_conn->getWrappedConnection());
     }
 
     public function testGetDriver()
