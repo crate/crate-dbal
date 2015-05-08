@@ -80,7 +80,7 @@ fi
 
 # create and push tag
 print_green "Creating tag $VERSION ..."
-git tag -a "$VERSION" -m "Crate PDO $VERSION"
+git tag -a "$VERSION" -m "Crate DBAL $VERSION"
 git push --tags
 print_green "Done"
 
