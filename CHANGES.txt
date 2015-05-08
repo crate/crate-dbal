@@ -5,6 +5,11 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+ - updated crate-pdo to ``0.2.1`` which includes following changes:
+
+    - Support guzzle http basic auth
+      through doctrine dbal connection user credentials
+
 2015/02/11 0.1.1
 ================
 
