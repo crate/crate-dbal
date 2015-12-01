@@ -31,7 +31,7 @@ Installation
 
 Install the library by adding it to your ``composer.json`` or running::
 
-  php composer.phar require crate/crate-dbal:~0.0.5
+  php composer.phar require crate/crate-dbal:~0.2.0
 
 Configuration
 -------------
@@ -133,4 +133,3 @@ For a more detailed configuration please refer to the `Doctrine ORM`_ documentat
 .. _`Crate`: https://crate.io
 .. _`Doctrine ORM`: http://doctrine-orm.readthedocs.org/en/latest/reference/configuration.html
 .. _`DQL`: http://doctrine-orm.readthedocs.org/en/latest/reference/dql-doctrine-query-language.html
-
