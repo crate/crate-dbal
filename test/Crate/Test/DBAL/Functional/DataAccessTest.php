@@ -507,7 +507,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $this->_conn->insert('fetch_table', array('test_int' => 10, 'test_string' => 'foo'));
         $this->_conn->query('REFRESH TABLE fetch_table');
 
-        $sql = "SELECT test_int FROM fetch_table";
+        $sql = "SELECT test_int FROM fetch_table ORDER BY test_int ASC";
         $rows = $this->_conn->query($sql)->fetchAll(\PDO::FETCH_COLUMN);
 
         $this->assertEquals(array(1, 10), $rows);
