@@ -6,3 +6,6 @@ composer.phar
 .idea
 .project
 .vagrant
+docs/out
+docs/bin
+docs/.installed.cfg

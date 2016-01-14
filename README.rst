@@ -25,111 +25,48 @@ schema management and `PDO`_ abstraction written in `PHP`_.
 
 **crate-dbal** is an implementation of this abstraction layer for `Crate`_.
 
+Are you a Developer?
+====================
 
-Installation
-------------
+You can help develop the crate-pdo adapter on your own with the latest
+version hosted on GitHub. To do so, please refer to ``DEVELOP.rst``
+for further information.
 
-Install the library by adding it to your ``composer.json`` or running::
+Help & Contact
+==============
 
-  php composer.phar require crate/crate-dbal:~0.2.1
+Do you have any questions? Or suggestions? We would be very happy to
+help you. So, feel free to swing by our public room on HipChat_.
+Or for further information and official contact please
+visit `https://crate.io/ <https://crate.io/>`_.
 
-Configuration
--------------
+License
+=======
 
-The Crate driver class is ``Crate\DBAL\Driver\PDOCrate\Driver``.
+Copyright 2014-2016 CRATE Technology GmbH ("Crate")
 
-You can obtain a connection from the ``DriverManager`` using the following parameters::
+Licensed to CRATE Technology GmbH ("Crate") under one or more contributor
+license agreements.  See the NOTICE file distributed with this work for
+additional information regarding copyright ownership.  Crate licenses
+this file to you under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.  You may
+obtain a copy of the License at
 
-  $params = array(
-      'driverClass' => 'Crate\DBAL\Driver\PDOCrate\Driver',
-      'host' => 'localhost',
-      'port' => 4200
-  );
-  $connection = \Doctrine\DBAL\DriverManager::getConnection($params);
-  $schemaManager = $connection->getSchemaManager();
+  http://www.apache.org/licenses/LICENSE-2.0
 
-Supported Types
----------------
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations
+under the License.
 
-The following Crate data types are currently supported:
-
-- ``BOOLEAN``
-- ``STRING``
-- ``SHORT``
-- ``INTEGER``
-- ``LONG``
-- ``FLOAT``
-- ``DOUBLE``
-- ``TIMESTAMP``
-- ``OBJECT``
-- ``ARRAY``
-
-Limitations
------------
-
-The schema for the ``OBJECT`` and ``ARRAY`` data types can be defined only programmatically.
-
-Example::
-
-  <?php
-  use Doctrine\DBAL\Schema\Column;
-  use Doctrine\DBAL\Schema\Table;
-  use Doctrine\DBAL\Types\Type;
-  use Crate\DBAL\Types\MapType;
-
-  $table = new Table('test_table');
-  $objDefinition = array(
-    'type' => MapType::STRICT,
-     'fields' => array(
-       new Column('id',  Type::getType('integer'), array()),
-       new Column('name',  Type::getType('string'), array()),
-       ),
-     );
-  $table->addColumn('object_column', MapType::NAME,
-                    array('platformOptions'=>$objDefinition));
-  $schemaManager->createTable($table);
-
-
-Not Supported
-.............
-
-- fulltext indexes
-- JOINs in general are not supported,
-  however referencing relations can be done without joins
-  using Doctrine's lazy loading mechanism with subsequent SELECTs
-  (except many-to-many releations)
-- `DQL`_ statements with JOINs are not supported
-
-Usage with Doctrine ORM
------------------------
-
-::
-
-  <?php
-  require_once "vendor/autoload.php";
-
-  use Doctrine\ORM\Tools\Setup;
-  use Doctrine\ORM\EntityManager;
-
-  $paths = array("/path/to/entity-files");
-  $isDevMode = false;
-
-  // the connection configuration
-  $params = array(
-      'driverClass' => 'Crate\DBAL\Driver\PDOCrate\Driver',
-      'host' => 'localhost',
-      'port' => 4200
-  );
-
-  $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
-  $entityManager = EntityManager::create($params, $config);
-
-For a more detailed configuration please refer to the `Doctrine ORM`_ documentation.
+However, if you have executed another commercial license agreement
+with Crate these terms will supersede the license and you may use the
+software solely pursuant to the terms of the relevant commercial agreement.
 
 
 .. _`DBAL`: http://www.doctrine-project.org/projects/dbal.html
 .. _`PDO`: http://php.net/manual/en/book.pdo.php
 .. _`PHP`: http://php.net
 .. _`Crate`: https://crate.io
-.. _`Doctrine ORM`: http://doctrine-orm.readthedocs.org/en/latest/reference/configuration.html
-.. _`DQL`: http://doctrine-orm.readthedocs.org/en/latest/reference/dql-doctrine-query-language.html
+.. _HipChat: https://www.hipchat.com/g7Pc2CYwi
