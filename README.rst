@@ -25,6 +25,11 @@ schema management and `PDO`_ abstraction written in `PHP`_.
 
 **crate-dbal** is an implementation of this abstraction layer for `Crate`_.
 
+Documentation
+=============
+
+Detailed documentation is available here (see http://crate-dbal.readthedocs.org/en/latest/).
+
 Are you a Developer?
 ====================
 
