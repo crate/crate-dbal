@@ -2,7 +2,7 @@
 Usage with Doctrine ORM
 =======================
 
-::
+.. code-block:: php
 
   <?php
   require_once "vendor/autoload.php";
@@ -49,7 +49,9 @@ Limitations
 The schema for the ``OBJECT`` and ``ARRAY`` data types can be defined only
 programmatically.
 
-Example::
+Example:
+
+.. code-block:: php
 
   <?php
   use Doctrine\DBAL\Schema\Column;
