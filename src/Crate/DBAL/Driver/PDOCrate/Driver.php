@@ -21,10 +21,15 @@
  */
 namespace Crate\DBAL\Driver\PDOCrate;
 
-class Driver implements \Doctrine\DBAL\Driver
+use Crate\DBAL\Platforms\Crate057Platform;
+use Crate\DBAL\Platforms\CratePlatform;
+use Doctrine\DBAL\VersionAwarePlatformDriver;
+
+class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
 {
     const VERSION = '0.2.1';
     const NAME = 'crate';
+    const SCHEMA_MIN_VERSION = '0.57.0';
 
     /**
      * {@inheritDoc}
@@ -83,5 +88,17 @@ class Driver implements \Doctrine\DBAL\Driver
     public function getDatabase(\Doctrine\DBAL\Connection $conn)
     {
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function createDatabasePlatformForVersion($version)
+    {
+        if (version_compare($version, self::SCHEMA_MIN_VERSION, ">=")) {
+            return new Crate057Platform();
+        } else {
+            return new CratePlatform();
+        }
     }
 }

@@ -182,11 +182,11 @@ class WriteTest extends DBALFunctionalTestCase
     {
         $this->insertRows();
 
-        $this->assertEquals(-1, $this->_conn->delete('write_table', array('test_int' => 2)));
+        $this->assertEquals(1, $this->_conn->delete('write_table', array('test_int' => 2)));
         $this->refresh('write_table');
         $this->assertEquals(1, count($this->_conn->fetchAll('SELECT * FROM write_table')));
 
-        $this->assertEquals(-1, $this->_conn->delete('write_table', array('test_int' => 1)));
+        $this->assertEquals(1, $this->_conn->delete('write_table', array('test_int' => 1)));
         $this->refresh('write_table');
         $this->assertEquals(0, count($this->_conn->fetchAll('SELECT * FROM write_table')));
     }

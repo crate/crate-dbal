@@ -446,4 +446,11 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->assertFalse($this->_platform->prefersSequences());
     }
 
+    /**
+     * @return string
+     */
+    protected function getQuotesReservedKeywordInTruncateTableSQL()
+    {
+        $this->markTestSkipped('Platform does not support TRUNCATE TABLE.');
+    }
 }

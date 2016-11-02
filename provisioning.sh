@@ -1,7 +1,9 @@
 #!/bin/sh
+export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get install -y python-software-properties
 add-apt-repository -y ppa:crate/stable
+add-apt-repository -y ppa:openjdk-r/ppa
 apt-get update
 apt-get install -y crate git libmcrypt-dev libreadline-dev
 apt-get build-dep -y php5-cli
@@ -18,4 +20,3 @@ ln -s /usr/bin/php7.0 /usr/bin/php7
 
 # default to php7
 ln -s /usr/bin/php7.0 /usr/bin/php
-

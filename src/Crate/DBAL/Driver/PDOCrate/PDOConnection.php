@@ -23,8 +23,9 @@
 namespace Crate\DBAL\Driver\PDOCrate;
 
 use Crate\PDO\PDO;
+use Doctrine\DBAL\Driver\ServerInfoAwareConnection;
 
-class PDOConnection extends PDO
+class PDOConnection extends PDO implements ServerInfoAwareConnection
 {
     /**
      * @param string $dsn
@@ -36,5 +37,15 @@ class PDOConnection extends PDO
     {
         parent::__construct($dsn, $user, $password, $options);
         $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    }
+
+    /**
+     * Checks whether a query is required to retrieve the database server version.
+     *
+     * @return boolean True if a query is required to retrieve the database server version, false otherwise.
+     */
+    public function requiresQueryForServerVersion()
+    {
+        return false;
     }
 }

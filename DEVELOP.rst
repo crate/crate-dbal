@@ -34,7 +34,7 @@ in ``/usr/bin/``::
 Installing dependencies
 -----------------------
 
-Get composer & install dependencies::
+Get composer & install dependencies from source (this includes also ``/test`` and ``/docs`` from doctrine)::
 
     vagrant ssh
     cd /vagrant
