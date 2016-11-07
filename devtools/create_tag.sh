@@ -56,7 +56,7 @@ then
 fi
 
 # get version from Driver class
-VERSION=$(grep "VERSION =" src/Crate/DBAL/Driver/PDOCrate/Driver.php | tr -d ';' | cut -d' ' -f8 | tr -d "'")
+VERSION=$(grep "\<VERSION =" src/Crate/DBAL/Driver/PDOCrate/Driver.php | tr -d ';' | cut -d' ' -f8 | tr -d "'")
 print_green "Version: $VERSION"
 
 # check if tag to create has already been created
