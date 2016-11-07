@@ -5,6 +5,9 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+2016/11/07 0.3.0
+================
+
  - Updated crate-pdo to ``0.6.0`` which includes following changes:
 
    - Expose ``getServerVersion()`` and ``getServerInfo()`` on the PDO implementation
@@ -29,15 +32,15 @@ Unreleased
 
  - updated crate-pdo to ``0.3.1`` which includes following changes:
 
-    - Added support for PHP 7
+   - Added support for PHP 7
 
 2015/05/08 0.2.0
 ================
 
  - updated crate-pdo to ``0.2.1`` which includes following changes:
 
-    - Support guzzle http basic auth
-      through doctrine dbal connection user credentials
+   - Support guzzle http basic auth
+     through doctrine dbal connection user credentials
 
 2015/02/11 0.1.1
 ================

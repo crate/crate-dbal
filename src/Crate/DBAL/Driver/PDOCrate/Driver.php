@@ -27,7 +27,7 @@ use Doctrine\DBAL\VersionAwarePlatformDriver;
 
 class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
 {
-    const VERSION = '0.2.1';
+    const VERSION = '0.3.0';
     const NAME = 'crate';
     const SCHEMA_MIN_VERSION = '0.57.0';
 
