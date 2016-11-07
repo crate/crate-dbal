@@ -5,6 +5,25 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+ - Updated crate-pdo to ``0.6.0`` which includes following changes:
+
+   - Expose ``getServerVersion()`` and ``getServerInfo()`` on the PDO implementation
+     which return the version number of the Crate server connected to.
+
+   - Fix: having the same named parameter multiple times in a prepared SQL
+     statement caused incorrect parameter substitution with bound values.
+
+   - Fixed an issue that occur if parameters are passed in a different order
+     than specified in the sql statement.
+
+   - Updated dependency: guzzlehttp/guzzle to ~6.0
+     WARNING: This is a backward incompatible change!
+
+   - Support for multiple hosts in DSN connection string
+
+   - Added support for using a default schema in PDO connection
+     via ``/schema`` suffix in connection string.
+
 2016/01/12 0.2.1
 ================
 
