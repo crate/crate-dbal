@@ -5,6 +5,10 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+ - Fixed an issue that ignored provided ``UNIQUE`` constraints. The client now
+   throws an exception and informs the user to use the ``PRIMARY KEY``
+   constraint instead.
+
 2016/11/07 0.3.0
 ================
 

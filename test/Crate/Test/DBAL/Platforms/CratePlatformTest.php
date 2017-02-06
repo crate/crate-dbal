@@ -26,6 +26,7 @@ use Crate\DBAL\Platforms\CratePlatform;
 use Crate\DBAL\Types\ArrayType;
 use Crate\DBAL\Types\MapType;
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Events;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
@@ -112,7 +113,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
             'CREATE TABLE test (column1 STRING, INDEX key USING FULLTEXT (column1))'
         );
     }
-    
+
     /**
      * @group DBAL-374
      */
@@ -334,6 +335,25 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $table->addColumn('col_object', 'map');
         $this->assertEquals($this->_platform->getCreateTableSQL($table)[0],
             'CREATE TABLE foo (col_bool BOOLEAN, col_int INTEGER, col_float DOUBLE, col_timestamp TIMESTAMP, col_datetimetz TIMESTAMP, col_datetime TIMESTAMP, col_date TIMESTAMP, col_time TIMESTAMP, col_array ARRAY ( STRING ), col_object OBJECT ( dynamic ))');
+    }
+
+    public function testUnsupportedUniqueIndexConstraint()
+    {
+        $this->setExpectedException(DBALException::class, "Unique constraints are not supported. Use `primary key` instead");
+
+        $table = new Table("foo");
+        $table->addColumn("unique_string", "string");
+        $table->addUniqueIndex(array("unique_string"));
+        $this->_platform->getCreateTableSQL($table);
+    }
+
+    public function testUniqueConstraintInCustomSchemaOptions()
+    {
+        $this->setExpectedException(DBALException::class, "Unique constraints are not supported. Use `primary key` instead");
+
+        $table = new Table("foo");
+        $table->addColumn("unique_string", "string")->setCustomSchemaOption("unique", true);
+        $this->_platform->getCreateTableSQL($table);
     }
 
     public function testGeneratesTableAlterationSql()

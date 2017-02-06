@@ -605,6 +605,8 @@ class CratePlatform extends AbstractPlatform
                         return $table->getColumn($columnName)->getQuotedName($platform);
                     }, $index->getColumns());
                     $options['primary_index'] = $index;
+                } else if ($index->isUnique()) {
+                    throw DBALException::notSupported("Unique constraints are not supported. Use `primary key` instead");
                 } else {
                     $options['indexes'][$index->getName()] = $index;
                 }
@@ -683,12 +685,15 @@ class CratePlatform extends AbstractPlatform
 
     /**
      * @param \Doctrine\DBAL\Schema\Column $column The name of the table.
-     * @param array $primaries
+     * @param array List of primary key column names
      *
      * @return array The column data as associative array.
      */
     public function prepareColumnData($column, $primaries = array())
     {
+        if ($column->hasCustomSchemaOption("unique") ? $column->getCustomSchemaOption("unique") : false) {
+            throw DBALException::notSupported("Unique constraints are not supported. Use `primary key` instead");
+        }
 
         $columnData = array();
         $columnData['name'] = $column->getQuotedName($this);
@@ -696,8 +701,8 @@ class CratePlatform extends AbstractPlatform
         $columnData['length'] = $column->getLength();
         $columnData['notnull'] = $column->getNotNull();
         $columnData['fixed'] = $column->getFixed();
-        $columnData['unique'] = false; // TODO: what do we do about this?
-        $columnData['version'] = $column->hasPlatformOption("version") ? $column->getPlatformOption('version') : false;
+        $columnData['unique'] = false;
+        $columnData['version'] = $column->hasPlatformOption("version") ? $column->getPlatformOption("version") : false;
 
         if (strtolower($columnData['type']) == "string" && $columnData['length'] === null) {
             $columnData['length'] = 255;
@@ -710,7 +715,6 @@ class CratePlatform extends AbstractPlatform
         $columnData['columnDefinition'] = $column->getColumnDefinition();
         $columnData['autoincrement'] = $column->getAutoincrement();
         $columnData['comment'] = $this->getColumnComment($column);
-
         $columnData['platformOptions'] = $column->getPlatformOptions();
 
         if (in_array($column->getName(), $primaries)) {
