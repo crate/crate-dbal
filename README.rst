@@ -1,8 +1,6 @@
-.. image:: https://cdn.crate.io/web/2.0/img/crate-avatar_100x100.png
-    :width: 100px
-    :height: 100px
-    :alt: Crate.IO
-    :target: https://crate.io
+===================
+CrateDB DBAL Driver
+===================
 
 .. image:: https://travis-ci.org/crate/crate-dbal.svg?branch=master
     :target: https://travis-ci.org/crate/crate-dbal
@@ -16,62 +14,53 @@
     :target: https://scrutinizer-ci.com/g/crate/crate-dbal
     :alt: Quality
 
+|
 
-DBAL Driver for Crate
-=====================
+The CrateDB DBAL driver is a CrateDB specific implementation of the `DBAL`_
+database abstraction layer.
 
-`DBAL`_ is a database abstraction layer with features for database schema introspection,
-schema management and `PDO`_ abstraction written in `PHP`_.
+`DBAL`_ comes with database schema introspection, schema management, and
+`PDO`_ integration.
 
-**crate-dbal** is an implementation of this abstraction layer for `Crate`_.
-
-Documentation
+Prerequisites
 =============
 
-Detailed documentation is available here (see http://crate-dbal.readthedocs.org/en/latest/).
+You need to be using PHP and Composer_.
 
-Are you a Developer?
-====================
+Installation
+============
 
-You can help develop the crate-pdo adapter on your own with the latest
-version hosted on GitHub. To do so, please refer to ``DEVELOP.rst``
-for further information.
+The CrateDB PDO adapter is available as a Composer package.
 
-Help & Contact
-==============
+See the `installation documentation`_ for more info.
 
-Do you have any questions? Or suggestions? We would be very happy to
-help you. So, feel free to swing by our public room on Slack_.
-Or for further information and official contact please
-visit `https://crate.io/ <https://crate.io/>`_.
+Contributing
+============
 
-License
-=======
+This project is primarily maintained by `Crate.io`_, but we welcome community
+contributions!
 
-Copyright 2014-2016 CRATE Technology GmbH ("Crate")
+See the `developer docs`_ and the `contribution docs`_ for more information.
 
-Licensed to CRATE Technology GmbH ("Crate") under one or more contributor
-license agreements.  See the NOTICE file distributed with this work for
-additional information regarding copyright ownership.  Crate licenses
-this file to you under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.  You may
-obtain a copy of the License at
+Help
+====
 
-  http://www.apache.org/licenses/LICENSE-2.0
+Looking for more help?
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
-License for the specific language governing permissions and limitations
-under the License.
+- Read `the project documentation`_
+- Check `StackOverflow`_ for common problems
+- Chat with us on `Slack`_
+- Get `paid support`_
 
-However, if you have executed another commercial license agreement
-with Crate these terms will supersede the license and you may use the
-software solely pursuant to the terms of the relevant commercial agreement.
-
-
+.. _Composer: https://getcomposer.org/
 .. _`DBAL`: http://www.doctrine-project.org/projects/dbal.html
 .. _`PDO`: http://php.net/manual/en/book.pdo.php
-.. _`PHP`: http://php.net
-.. _`Crate`: https://crate.io
+.. _contribution docs: CONTRIBUTING.rst
+.. _Crate.io: http://crate.io/
+.. _CrateDB: https://github.com/crate/crate
+.. _developer docs: DEVELOP.rst
+.. _installation documentation: https://crate.io/docs/reference/dbal/installation.html
+.. _paid support: https://crate.io/pricing/
 .. _Slack: https://crate.io/docs/support/slackin/
+.. _StackOverflow: https://stackoverflow.com/tags/crate
+.. _the project documentation: https://crate.io/docs/reference/dbal/
