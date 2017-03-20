@@ -16,11 +16,11 @@ CrateDB DBAL Driver
 
 |
 
-The CrateDB DBAL driver is a CrateDB specific implementation of the `DBAL`_
-database abstraction layer.
+The CrateDB DBAL driver is an implementation of the `DBAL`_  abstraction layer
+for CrateDB_.
 
-`DBAL`_ comes with database schema introspection, schema management, and
-`PDO`_ integration.
+`DBAL`_ is a PHP database abstraction layer that comes with database schema
+introspection, schema management, and `PDO`_ abstraction.
 
 Prerequisites
 =============
