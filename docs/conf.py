@@ -9,6 +9,6 @@ lexers["php-annotations"] = PhpLexer(startinline=True, linenos=1)
 project = u'Crate DBAL'
 source_suffix = '.rst'
 html_theme_options.update({
-    'canonical_url_path': 'docs/projects/crate-dbal/',
+    'canonical_url_path': 'docs/reference/dbal/',
     'tracking_project': 'crate-dbal',
 })
