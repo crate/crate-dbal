@@ -30,7 +30,7 @@ documentation.
 Supported Types
 ===============
 
-The following Crate data types are currently supported:
+The following CrateDB data types are currently supported:
 
 - ``BOOLEAN``
 - ``STRING``
