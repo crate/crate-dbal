@@ -23,7 +23,7 @@ For more information how to use Composer, please refer to the
 Configuration
 =============
 
-The Crate driver class is ``Crate\DBAL\Driver\PDOCrate\Driver``.
+The CrateDB driver class is ``Crate\DBAL\Driver\PDOCrate\Driver``.
 
 You can obtain a connection from the ``DriverManager`` using the following parameters:
 
