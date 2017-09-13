@@ -2,22 +2,12 @@
 CrateDB DBAL Documentation
 ==========================
 
-Introduction
-============
-
 `DBAL`_ is a database abstraction layer with features for database schema
 introspection, schema management and `PDO`_ abstraction written in `PHP`_.
 
 `crate-dbal`_ is an implementation of this abstraction layer for `CrateDB`_.
 
-Installation
-============
-
-If you are new to CrateDB PDO you might want to start with the
-:doc:`installation` section of the documentation.
-
-Table of Contents
-=================
+.. rubric:: Table of Contents
 
 .. toctree::
    :maxdepth: 2
