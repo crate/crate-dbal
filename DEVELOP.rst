@@ -79,7 +79,7 @@ corresponding to the last two major releases.
 For example:
 
 - ``latest``
-- ``0.3`
+- ``0.3``
 - ``0.2``
 - ``0.1``
 
