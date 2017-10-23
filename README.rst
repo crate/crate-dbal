@@ -52,9 +52,9 @@ Looking for more help?
 - Chat with us on `Slack`_
 - Get `paid support`_
 
-.. _Composer: https://getcomposer.org/
 .. _`DBAL`: http://www.doctrine-project.org/projects/dbal.html
 .. _`PDO`: http://php.net/manual/en/book.pdo.php
+.. _Composer: https://getcomposer.org/
 .. _contribution docs: CONTRIBUTING.rst
 .. _Crate.io: http://crate.io/
 .. _CrateDB: https://github.com/crate/crate
