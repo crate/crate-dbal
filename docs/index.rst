@@ -1,6 +1,6 @@
-==========================
-CrateDB DBAL Documentation
-==========================
+=======================
+CrateDB PHP DBAL Client
+=======================
 
 `DBAL`_ is a database abstraction layer with features for database schema
 introspection, schema management and `PDO`_ abstraction written in `PHP`_.
