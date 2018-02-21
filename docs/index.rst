@@ -1,23 +1,23 @@
+.. _index:
+
 =======================
-CrateDB PHP DBAL Client
+CrateDB PHP DBAL Driver
 =======================
 
-`DBAL`_ is a database abstraction layer with features for database schema
-introspection, schema management and `PDO`_ abstraction written in `PHP`_.
+The CrateDB DBAL driver is an implementation of the `DBAL`_ abstraction layer
+for CrateDB.
 
-`crate-dbal`_ is an implementation of this abstraction layer for `CrateDB`_.
+DBAL is a PHP database abstraction layer that comes with database schema
+introspection, schema management, and `PDO`_ abstraction.
 
 .. rubric:: Table of Contents
 
 .. toctree::
    :maxdepth: 2
 
-   installation
+   getting-started
    usage
 
-
-.. _`DBAL`: http://www.doctrine-project.org/projects/dbal.html
+.. _DBAL: http://www.doctrine-project.org/projects/dbal.html
 .. _PDO: http://www.php.net/manual/en/intro.pdo.php
-.. _CrateDB: https://crate.io
-.. _`PHP`: http://php.net
-.. _`crate-dbal`: https://github.com/crate/crate-dbal
+.. _CrateDB: https://crate.io/products/cratedb/
