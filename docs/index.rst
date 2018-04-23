@@ -1,14 +1,27 @@
 .. _index:
 
-=======================
-CrateDB PHP DBAL Driver
-=======================
+===================
+CrateDB DBAL Driver
+===================
 
-The CrateDB DBAL driver is an implementation of the `DBAL`_ abstraction layer
-for CrateDB.
+A `DBAL`_ driver for `CrateDB`_.
 
 DBAL is a PHP database abstraction layer that comes with database schema
-introspection, schema management, and `PDO`_ abstraction.
+introspection, schema management, and `PDO`_ support.
+
+This driver also works with `Doctrine ORM`_, an `Object-Relational Mapper`_.
+
+.. NOTE::
+
+    This is a basic CrateDB driver reference.
+
+    For general help setting up and using Doctrine software, please consult the
+    `DBAL documentation`_ or the `Doctrine ORM documentation`_.
+
+.. SEEALSO::
+
+    The CrateDB PHP DBAL driver is an open source project and is `hosted on
+    GitHub`_.
 
 .. rubric:: Table of Contents
 
@@ -16,8 +29,15 @@ introspection, schema management, and `PDO`_ abstraction.
    :maxdepth: 2
 
    getting-started
-   usage
+   connect
+   appendices/index
 
-.. _DBAL: http://www.doctrine-project.org/projects/dbal.html
-.. _PDO: http://www.php.net/manual/en/intro.pdo.php
 .. _CrateDB: https://crate.io/products/cratedb/
+.. _DBAL documentation: https://www.doctrine-project.org/projects/doctrine-dbal/en/2.7/index.html
+.. _DBAL: https://www.doctrine-project.org/projects/dbal.html
+.. _Doctrine ORM: https://www.doctrine-project.org/projects/orm.html
+.. _Doctrine ORM documentation: https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/index.html
+.. _hosted on GitHub: https://github.com/crate/crate-dbal
+.. _Object-Relational Mapper: https://www.doctrine-project.org/projects/orm.html
+.. _open source: https://en.wikipedia.org/wiki/Open-source_software
+.. _PDO: http://www.php.net/manual/en/intro.pdo.php

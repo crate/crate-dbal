@@ -2,68 +2,36 @@
 Getting Started
 ===============
 
-This page shows you how to get started with the :ref:`the CrateDB DBAL driver
-library <index>`.
+Learn how to install and get started with the :ref:`CrateDB DBAL driver
+<index>`.
+
+.. rubric:: Table of Contents
+
+.. contents::
+   :local:
 
 Prerequisites
 =============
 
-You need to be using PHP and `Composer`_.
+Your project must be using `Composer`_.
 
-Installation
-============
+Set Up as a Dependency
+======================
 
-Install the library by adding it to your ``composer.json``:
+The driver is available as `a package`_.
+
+Add the driver package to you project `composer.json`_ file, like this:
 
 .. code-block:: json
 
-   {
-     "require": {
-       "crate/crate-dbal":"~0.3.0"
-     }
-   }
+    {
+      "require": {
+        "crate/crate-dbal":"~0.3.0"
+      }
+    }
 
-
-Or you can run::
-
-   sh$ php composer.phar require crate/crate-dbal:~0.3.1
-
-Then run ``composer install`` or ``composer update``.
-
-Inside your PHP script you will need to require the autoload file:
-
-.. code-block:: php
-
-    <?php
-    require 'vendor/autoload.php';
-    ...
-
-For more information how to use Composer, please refer to the
-`Composer documentation`_.
-
-Connect to CrateDB
-==================
-
-The CrateDB driver class is ``Crate\DBAL\Driver\PDOCrate\Driver``.
-
-You can obtain a connection from the ``DriverManager`` using `standard DBAL
-parameters`_:
-
-.. code-block:: php
-
-    $params = array(
-        'driverClass' => 'Crate\DBAL\Driver\PDOCrate\Driver',
-        'host' => 'localhost',
-        'port' => 4200
-    );
-    $connection = \Doctrine\DBAL\DriverManager::getConnection($params);
-    $schemaManager = $connection->getSchemaManager();
-
-ORM
-===
-
-If you are using Doctrine's ORM features, an extra dependency is needed in your
-*composer.json* file.
+If you're using `Doctrine ORM`_, you must add the ``doctrine/orm`` dependency
+too. So the both additions together will look like this:
 
 .. code-block:: json
 
@@ -74,34 +42,35 @@ If you are using Doctrine's ORM features, an extra dependency is needed in your
      }
    }
 
-Then you can install with ``composer intall``.
 
-To create a connection, do:
+Install
+=======
+
+Once the package has been configured as a dependency, you can install it, like
+so::
+
+    sh$ composer install
+
+Afterwards, if you are not already doing so, you must require the Composer
+`autoload.php`_ file. You can do this by adding a line like this to your PHP
+application:
 
 .. code-block:: php
 
-   require_once "vendor/autoload.php";
+    require __DIR__ . '/vendor/autoload.php';
 
-   use Doctrine\ORM\Tools\Setup;
-   use Doctrine\ORM\EntityManager;
+.. SEEALSO::
 
-   $paths = array("/path/to/entity-files");
-   $isDevMode = false;
+    For more help with Composer, consult the `Composer documentation`_.
 
-   // the connection configuration
-   $params = array(
-       'driverClass' => 'Crate\DBAL\Driver\PDOCrate\Driver',
-       'host' => 'SERVER_IP',
-       'port' => 4200
-   );
+Next Steps
+==========
 
-   $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
-   $entityManager = EntityManager::create($params, $config);
-
-Setting up the Doctrine ORM requires some extra steps. We suggest reading
-`the official Doctrine documentation
-<http://doctrine-orm.readthedocs.org/en/latest/index.html>`_ to get started.
+Learn how to :ref:`connect to CrateDB <connect>`.
 
 .. _Composer documentation: https://getcomposer.org
 .. _Composer: https://getcomposer.org/
-.. _standard DBAL parameters: http://doctrine-orm.readthedocs.org/projects/doctrine-dbal/en/latest/reference/configuration.html
+.. _autoload.php: https://getcomposer.org/doc/01-basic-usage.md#autoloading
+.. _composer.json: https://getcomposer.org/doc/01-basic-usage.md#composer-json-project-setup
+.. _a package: https://packagist.org/packages/crate/crate-dbal
+.. _Doctrine ORM: https://www.doctrine-project.org/projects/orm.html
