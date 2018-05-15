@@ -80,6 +80,8 @@ class SchemaManagerTest extends DBALFunctionalTestCase
         $table->addColumn('num_short', Type::SMALLINT);
         $table->addColumn('num_int', Type::INTEGER);
         $table->addColumn('num_long', Type::BIGINT);
+        $table->addColumn('id', 'integer', array('notnull' => true));
+        $table->setPrimaryKey(array('id'));
 
         // OBJECT schema definition via platform options
         $mapOpts = array(

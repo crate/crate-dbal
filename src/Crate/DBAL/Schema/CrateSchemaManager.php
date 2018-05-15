@@ -59,7 +59,7 @@ class CrateSchemaManager extends AbstractSchemaManager
 
         $columns = array();
         foreach ($tableColumns as $tableColumn) {
-            $tableColumn['primary'] = in_array($tableColumn['column_name'], $tableConstraints[0]['constraint_name']);
+            $tableColumn['primary'] = in_array($tableColumn['column_name'], [$tableConstraints[0]['constraint_name']]);
             $columns[] = $tableColumn;
         }
 

@@ -51,7 +51,7 @@ class ConnectionTestCase extends DBALFunctionalTestCase
         $conn = \Doctrine\DBAL\DriverManager::getConnection($params);
         $this->assertEquals($auth[0], $conn->getUsername());
         $this->assertEquals($auth[1], $conn->getPassword());
-        $auth_attr = $conn->getWrappedConnection()->getAttribute(PDO::ATTR_HTTP_BASIC_AUTH);
+        $auth_attr = $conn->getWrappedConnection()->getAttribute(PDO::CRATE_ATTR_HTTP_BASIC_AUTH);
         $this->assertEquals($auth_attr, $auth);
     }
 

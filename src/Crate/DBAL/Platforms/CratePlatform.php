@@ -210,7 +210,7 @@ class CratePlatform extends AbstractPlatform
         }
         // todo: make safe
         return "SELECT constraint_name, constraint_type from information_schema.table_constraints " .
-            "WHERE table_name = '$t[1]' AND schema_name = '$t[0]' AND constraint_type = 'PRIMARY_KEY'";
+            "WHERE table_name = '$t[1]' AND schema_name = '$t[0]' AND constraint_type = 'PRIMARY KEY'";
     }
 
     /**

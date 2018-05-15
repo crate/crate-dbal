@@ -29,34 +29,7 @@ set up your remote interpreter and test environment.
 PHP Version
 -----------
 
-There are two PHP versions installed in the Vagrant box:
-
-- 5.6.3
-- 7.0.2
-
-To activate PHP 5, run::
-
-    $ sudo rm /usr/bin/php
-    $ sudo ln -s /usr/bin/php5 /usr/bin/php
-
-To activate PHP 7, run::
-
-    $ sudo rm /usr/bin/php
-    $ sudo ln -s /usr/bin/php7 /usr/bin/php
-
-Installing Dependencies
------------------------
-
-Get Composer_ and install the dependencies::
-
-    $ vagrant ssh
-    $ cd /vagrant
-    $ curl -sS https://getcomposer.org/installer | php
-    $ ./composer.phar install
-
-If the environment is outdated, you upgrade like so::
-
-    $ ./composer.phar update
+PHP version 7.2 is installed in the Vagrant box.
 
 Running the Tests
 =================

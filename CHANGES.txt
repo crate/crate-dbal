@@ -5,6 +5,12 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+ - Updated crate-pdo to ``1.0.0`` which includes following changes:
+
+   - Added support for SSL via ``PDO::CRATE_ATTR_SSL_MODE``
+
+   - BREAKING: Upgraded the library to use PHP 7.2 features
+
 2017/02/06 0.3.1
 ================
 

@@ -118,6 +118,8 @@ class BindingTestCase extends DBALFunctionalTestCase
         $row = $stmt->fetchAll();
         $this->assertEquals($row[0]['id'], 1);
         $this->assertEquals($row[0]['ts'], 1413901591000);
+
+        $this->execute("DROP TABLE foo");
     }
 
     public function testBindObject()
