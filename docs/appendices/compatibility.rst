@@ -11,8 +11,8 @@ Compatibility
 
 .. _versions:
 
-Supported Versions
-==================
+Version Notes
+=============
 
 .. _cratedb-versions:
 
@@ -39,18 +39,13 @@ Consult the following table for CrateDB version compatibility notes:
 
 .. _implementations:
 
-Implementations
-===============
+Implementation Notes
+====================
 
 .. _dbal-implementation:
 
 DBAL
 ----
-
-.. _dbal-version-notes:
-
-Version Notes
-.............
 
 +----------------+----------------------------------------------+------------+
 | Driver Version | Feature                                      | Notes      |
