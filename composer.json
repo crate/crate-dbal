@@ -1,7 +1,7 @@
 {
     "name": "crate/crate-dbal",
     "description": "A Doctrine Database Abstraction Layer for the Crate.io DBMS",
-    "license": "Apache2",
+    "license": "Apache-2.0",
     "homepage": "https://github.com/crate/crate-dbal",
     "keywords": ["database", "dbal", "doctrine", "crate"],
     "minimum-stability": "dev",
