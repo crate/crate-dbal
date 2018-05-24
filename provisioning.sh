@@ -15,3 +15,5 @@ apt-get update
 apt-get install -y crate php7.2-cli php7.2-xml php7.2-curl php7.2-mbstring git zip unzip
 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 cd /vagrant && su vagrant -c 'composer install'
+// test classes of DBAL which we depend on are only available inside the source
+cd /vagrant && su vagrant -c 'rm -rf vendor/doctrine/dbal && composer update doctrine/dbal --prefer-source'
