@@ -12,4 +12,6 @@ deb https://cdn.crate.io/downloads/deb/stable/ trusty main
 deb-src https://cdn.crate.io/downloads/deb/stable/ trusty main
 EOT
 apt-get update
-apt-get install -y crate php7.2-cli php7.2-xml php7.2-curl php7.2-mbstring
+apt-get install -y crate php7.2-cli php7.2-xml php7.2-curl php7.2-mbstring git zip unzip
+curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+cd /vagrant && su vagrant -c 'composer install'
