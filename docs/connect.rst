@@ -11,6 +11,7 @@ Connect to CrateDB
 
 Authentication
 ==============
+
 .. NOTE::
 
    These examples authenticate as ``crate``, the default database user in
@@ -20,8 +21,6 @@ Authentication
    are using earlier versions of CrateDB, this parameter is not supported.
 
    See the :ref:`compatibility notes <cratedb-versions>` for more information.
-
-.. TIP::
 
    If you have not configured a custom `database user`_, you probably want to
    authenticate as the CrateDB superuser, which is ``crate``. The superuser
