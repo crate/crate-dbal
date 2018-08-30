@@ -67,16 +67,27 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     public function testGeneratesForeignKeyCreationSql()
     {
         $fk = new \Doctrine\DBAL\Schema\ForeignKeyConstraint(array('fk_name_id'), 'other_table', array('id'), '');
-    
+
         $this->assertEquals(
             $this->getGenerateForeignKeySql(),
             $this->_platform->getCreateForeignKeySQL($fk, 'test')
         );
     }
-    
+
     public function getGenerateForeignKeySql()
     {
         $this->markTestSkipped('Platform does not support ADD FOREIGN KEY.');
+    }
+
+    public function testGeneratesDecimalTypeDeclarationSQL()
+    {
+        $this->markTestSkipped('Platform does not support any decleration of datatype DECIMAL.');
+    }
+
+    // Tests precision, scale, signed and unsigned on DOUBLE PRECISION
+    public function testGeneratesFloatDeclarationSQL()
+    {
+        $this->markTestSkipped('Platform does not support any decleration of datatype DOUBLE PRECISION.');
     }
 
     public function getGenerateAlterTableSql()
@@ -85,7 +96,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
             'ALTER TABLE mytable ADD quota INTEGER',
         );
     }
-    
+
     public function testAlterTableChangeQuotedColumn()
     {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
@@ -121,19 +132,19 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     {
         $this->markTestSkipped('Platform does not support ADD FOREIGN KEY.');
     }
-    
+
     protected function getQuotedColumnInForeignKeySQL() {}
-    
+
     protected function getQuotesReservedKeywordInUniqueConstraintDeclarationSQL()
     {
         return 'CONSTRAINT "select" UNIQUE (foo)';
     }
-    
+
     protected function getQuotesReservedKeywordInIndexDeclarationSQL()
     {
         return 'INDEX "select" USING FULLTEXT (foo)';
     }
-    
+
     /**
      * @group DBAL-835
      */
@@ -141,9 +152,9 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
-    
+
     protected function getQuotedAlterTableRenameColumnSQL() {}
-    
+
     /**
      * @group DBAL-835
      */
@@ -151,9 +162,9 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
-    
+
     protected function getQuotedAlterTableChangeColumnLengthSQL() {}
-    
+
     /**
      * @group DBAL-807
      */
@@ -161,7 +172,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
-    
+
     protected function getCommentOnColumnSQL()
     {
         return array(
@@ -178,9 +189,9 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
-    
+
     public function getAlterTableRenameColumnSQL() {}
-    
+
     /**
      * @group DBAL-1016
      */
@@ -188,9 +199,9 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
-    
+
     protected function getQuotesTableIdentifiersInAlterTableSQL() {}
-    
+
     /**
      * @group DBAL-1062
      */
@@ -198,9 +209,9 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
-    
+
     protected function getGeneratesAlterTableRenameIndexUsedByForeignKeySQL() {}
-    
+
     /**
      * @group DBAL-1090
      */
@@ -208,9 +219,9 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
-    
+
     protected function getAlterStringToFixedStringSQL() {}
-    
+
     public function testGenerateSubstrExpression()
     {
         $this->assertEquals($this->_platform->getSubstringExpression('col', 0), "SUBSTR(col, 0)");
