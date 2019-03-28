@@ -36,6 +36,8 @@ Consult the following table for CrateDB version compatibility notes:
 |                |                 | Prior versions of CrateDB do not support  |
 |                |                 | this feature.                             |
 +----------------+-----------------+-------------------------------------------+
+| >= 1.0         | >= 2.3.x        |                                           |
++----------------+-----------------+-------------------------------------------+
 
 .. _implementations:
 
@@ -67,6 +69,12 @@ DBAL
 |                |                                              |            |
 |                | - Joins (with or without a `query builder`_) |            |
 |                | - Fulltext indexes (without a query builder) |            |
++----------------+----------------------------------------------+------------+
+| >= 1.1         | [BREAKING]: POD library requires PHP 7.2     | Supported. |
++                +----------------------------------------------+------------+
+|                | Added SSL support                            | Supported. |
++                +----------------------------------------------+------------+
+|                | Based on Doctrine 2.6.3                      | Supported. |
 +----------------+----------------------------------------------+------------+
 
 .. _create your own users: https://crate.io/docs/crate/reference/en/latest/admin/user-management.html
