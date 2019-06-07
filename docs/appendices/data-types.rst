@@ -6,7 +6,7 @@ Data Types
 
 .. _type-map:
 
-Type Map
+Type map
 ========
 
 This driver maps CrateDB types to the following PHP types:
@@ -60,7 +60,7 @@ __ https://secure.php.net/manual/en/language.types.array.php
 
 .. _column-type-definitions:
 
-Column Type Definitions
+Column type definitions
 =======================
 
 When defining CrateDB `timestamp`_, `object`_ or `array`_ type columns, you

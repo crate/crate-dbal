@@ -89,7 +89,7 @@ Here's what we changed in the above example:
     :ref:`data types <data-types>` appendix for more information about type
     maps and column type definitions.
 
-Next Steps
+Next steps
 ==========
 
 Use the standard the `DBAL`_ or `Doctrine ORM`_ documentation for the rest of
