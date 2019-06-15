@@ -1,7 +1,7 @@
 .. _data-types:
 
 ==========
-Data Types
+Data types
 ==========
 
 .. _type-map:

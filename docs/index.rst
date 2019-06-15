@@ -1,7 +1,7 @@
 .. _index:
 
 ===================
-CrateDB DBAL Driver
+CrateDB DBAL driver
 ===================
 
 A `DBAL`_ driver for `CrateDB`_.
@@ -23,7 +23,7 @@ This driver also works with `Doctrine ORM`_, an `Object-Relational Mapper`_.
     The CrateDB PHP DBAL driver is an open source project and is `hosted on
     GitHub`_.
 
-.. rubric:: Table of Contents
+.. rubric:: Table of contents
 
 .. toctree::
    :maxdepth: 2
