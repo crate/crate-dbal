@@ -1,7 +1,7 @@
 .. _index:
 
 ===================
-CrateDB DBAL driver
+CrateDB DBAL Driver
 ===================
 
 A `DBAL`_ driver for `CrateDB`_.
