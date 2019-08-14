@@ -26,11 +26,6 @@ When run for the first time, it will also run the needed provisioning.
 If you are using IntelliJ or PhpStorm IDE you can follow the `IDE guide`_ to
 set up your remote interpreter and test environment.
 
-PHP Version
------------
-
-PHP version 7.2 is installed in the Vagrant box.
-
 Running the Tests
 =================
 

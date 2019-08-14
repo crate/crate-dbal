@@ -4,10 +4,7 @@ sudo: required
 
 php:
   - 7.2
-
-matrix:
-  allow_failures:
-    - nightly
+  - 7.3
 
 services:
   - docker
