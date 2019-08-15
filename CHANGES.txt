@@ -5,6 +5,9 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+ - Added ARRAY type mapping for all typed arrays supported by CrateDB. Before
+   only a subset was supported.
+
  - BREAKING: Drop support for PHP < 7.2
 
 2018/09/05 1.1.0

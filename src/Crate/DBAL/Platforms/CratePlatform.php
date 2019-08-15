@@ -536,14 +536,22 @@ class CratePlatform extends AbstractPlatform
             'double'        => 'float',
             'timestamp'     => 'timestamp',
             'object'        => 'map',
-            'string_array'  => 'array',
-            'float_array'   => 'array',
-            'double_array'  => 'array',
-            'integer_array' => 'array',
-            'object_array'  => 'array',
             'array'         => 'array',
         );
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDoctrineTypeMapping($dbType)
+    {
+        // typed arrays will always end up in the same generic php array type
+        if (substr_compare($dbType, 'array', -5) === 0) {
+            $dbType = 'array';
+        }
+        return parent::getDoctrineTypeMapping($dbType);
+    }
+
 
     /**
      * {@inheritDoc}
