@@ -40,17 +40,19 @@ class WriteTest extends DBALFunctionalTestCase
             self::$generated = true;
             /* @var $sm \Doctrine\DBAL\Schema\AbstractSchemaManager */
             $table = new \Doctrine\DBAL\Schema\Table("write_table");
-            $table->addColumn('test_int', 'integer');
-            $table->addColumn('test_string', 'string');
-            $table->addColumn('test_float', 'float');
-            $table->addColumn('test_array', 'array', array('columnDefinition'=>'ARRAY(STRING)'));
+            $table->addColumn('test_int', Type::INTEGER);
+            $table->addColumn('test_string', Type::STRING);
+            $table->addColumn('test_float', Type::FLOAT);
+            $table->addColumn('test_array', Type::TARRAY, array('columnDefinition'=>'ARRAY(STRING)'));
+            $table->addColumn("test_map", MapType::NAME);
+            $table->addColumn("test_bool", Type::BOOLEAN);
 
             $platformOptions = array(
                 'type'   => MapType::STRICT,
                 'fields' => array(
-                    new Column('id',    Type::getType('integer'), array()),
-                    new Column('name',  Type::getType('string'), array()),
-                    new Column('value', Type::getType('float'), array()),
+                    new Column('id',    Type::getType(Type::INTEGER), array()),
+                    new Column('name',  Type::getType(Type::STRING), array()),
+                    new Column('value', Type::getType(Type::FLOAT), array()),
                 ),
             );
             $table->addColumn('test_obj', MapType::NAME, array('platformOptions'=>$platformOptions));

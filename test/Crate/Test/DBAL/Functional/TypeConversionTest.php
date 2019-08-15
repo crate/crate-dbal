@@ -28,8 +28,9 @@ use Crate\Test\DBAL\DBALFunctionalTestCase;
 use Crate\DBAL\Types\ArrayType;
 use Crate\DBAL\Types\MapType;
 use Doctrine\DBAL\Types\Type;
+use PHPUnit\Framework\TestCase;
 
-class TypeConversionTestCase extends \PHPUnit_Framework_TestCase {
+class TypeConversionTestCase extends TestCase {
 
     private $platform;
 

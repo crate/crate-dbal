@@ -29,7 +29,6 @@ class BindingTestCase extends DBALFunctionalTestCase
 
     public function testBindPositionalParam()
     {
-
         $name = 'crate';
 
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = ?');
@@ -41,13 +40,11 @@ class BindingTestCase extends DBALFunctionalTestCase
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = ? OR master_node = ?');
         $stmt->bindParam(1, $name);
         $stmt->bindParam(2, $noName);
-        $stmt->execute();
-
+        $this->assertTrue($stmt->execute());
     }
 
     public function testBindPositionalValue()
     {
-
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = ?');
         $stmt->bindValue(1, 'crate');
         $stmt->execute();
@@ -55,13 +52,11 @@ class BindingTestCase extends DBALFunctionalTestCase
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = ? OR master_node = ?');
         $stmt->bindValue(1, 'crate');
         $stmt->bindValue(2, 'i0ejfNlzSFCloGYtSzddTw');
-        $stmt->execute();
-
+        $this->assertTrue($stmt->execute());
     }
 
     public function testBindNamedParam()
     {
-
         $name = 'crate';
 
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = :name');
@@ -73,13 +68,11 @@ class BindingTestCase extends DBALFunctionalTestCase
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = :name OR master_node = :master_node');
         $stmt->bindParam('name', $name);
         $stmt->bindParam('master_node', $noName);
-        $stmt->execute();
-
+        $this->assertTrue($stmt->execute());
     }
 
     public function testBindNamedValue()
     {
-
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = :name');
         $stmt->bindValue('name', 'crate');
         $stmt->execute();
@@ -87,8 +80,7 @@ class BindingTestCase extends DBALFunctionalTestCase
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = :name OR master_node = :master_node');
         $stmt->bindValue('name', 'crate');
         $stmt->bindValue('master_node', 'i0ejfNlzSFCloGYtSzddTw');
-        $stmt->execute();
-
+        $this->assertTrue($stmt->execute());
     }
 
     public function testBindTimestamp()
@@ -121,10 +113,4 @@ class BindingTestCase extends DBALFunctionalTestCase
 
         $this->execute("DROP TABLE foo");
     }
-
-    public function testBindObject()
-    {
-
-    }
-
 }

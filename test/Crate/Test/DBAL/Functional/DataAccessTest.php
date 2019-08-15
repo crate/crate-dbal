@@ -24,6 +24,7 @@ namespace Crate\Test\DBAL\Functional;
 
 use Crate\DBAL\Types\MapType;
 use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Connection;
@@ -400,7 +401,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
 
     public function testQuoteSQLInjection()
     {
-        $this->setExpectedException('Doctrine\DBAL\DBALException');
+        $this->expectException(DBALException::class);
 
         $sql = "SELECT * FROM fetch_table WHERE test_string = " . $this->_conn->quote("bar' OR '1'='1");
         $this->_conn->fetchAll($sql);

@@ -21,7 +21,13 @@
  */
 namespace Crate\Test\DBAL;
 
-abstract class DBALFunctionalTestCase extends \PHPUnit_Framework_TestCase
+use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Logging\DebugStack;
+use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\TestCase;
+use Throwable;
+
+abstract class DBALFunctionalTestCase extends TestCase
 {
     /**
      * Shared connection when a TestCase is run alone (outside of it's functional suite)
@@ -56,17 +62,17 @@ abstract class DBALFunctionalTestCase extends \PHPUnit_Framework_TestCase
                 'host' => 'localhost',
                 'port' => 4200
             );
-            self::$_sharedConn = \Doctrine\DBAL\DriverManager::getConnection($params);
+            self::$_sharedConn = DriverManager::getConnection($params);
         }
         $this->_conn = self::$_sharedConn;
 
-        $this->_sqlLoggerStack = new \Doctrine\DBAL\Logging\DebugStack();
+        $this->_sqlLoggerStack = new DebugStack();
         $this->_conn->getConfiguration()->setSQLLogger($this->_sqlLoggerStack);
     }
 
-    protected function onNotSuccessfulTest(\Exception $e)
+    protected function onNotSuccessfulTest(Throwable $e)
     {
-        if ($e instanceof \PHPUnit_Framework_AssertionFailedError) {
+        if ($e instanceof AssertionFailedError) {
             throw $e;
         }
 
