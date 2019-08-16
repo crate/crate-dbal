@@ -24,29 +24,33 @@ namespace Crate\Test\DBAL\Functional\Types;
 
 
 use Crate\DBAL\Platforms\CratePlatform;
+use Crate\DBAL\Types\MapType;
 use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Types\Type;
 
 class MapTypeTest extends DBALFunctionalTestCase {
 
     public function testStrictMapTableCreationWithSchemaManager() {
         $platform = $this->_conn->getDatabasePlatform();
 
-        $table = new \Doctrine\DBAL\Schema\Table('items');
+        $table = new Table('items');
         $objDefinition = array(
-            'type' => \Crate\DBAL\Types\MapType::STRICT,
+            'type' => MapType::STRICT,
             'fields' => array(
-                new \Doctrine\DBAL\Schema\Column('id',  \Doctrine\DBAL\Types\Type::getType('integer'), array()),
-                new \Doctrine\DBAL\Schema\Column('name',  \Doctrine\DBAL\Types\Type::getType('string'), array()),
+                new Column('id',  Type::getType(Type::INTEGER), array()),
+                new Column('name',  Type::getType(Type::STRING), array()),
             ),
         );
         $table->addColumn(
-            'object_column', \Crate\DBAL\Types\MapType::NAME,
+            'object_column', MapType::NAME,
             array('platformOptions' => $objDefinition)
         );
 
         $createFlags = CratePlatform::CREATE_INDEXES|CratePlatform::CREATE_FOREIGNKEYS;
         $sql = $platform->getCreateTableSQL($table, $createFlags);
-        $this->assertEquals(array('CREATE TABLE items (object_column OBJECT ( strict ) AS ( id INTEGER, name STRING ))'), $sql);
+        $this->assertEquals(array('CREATE TABLE items (object_column OBJECT ( strict ) AS ( id INTEGER, name TEXT ))'), $sql);
     }
 
 } 

@@ -34,6 +34,7 @@ use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
+use InvalidArgumentException;
 
 class CratePlatform extends AbstractPlatform
 {
@@ -185,15 +186,20 @@ class CratePlatform extends AbstractPlatform
             "WHERE schema_name = 'doc' OR schema_name = 'blob'";
     }
 
+    protected function tableAndSchema($fqnRelationName) {
+        $t = explode('.', $fqnRelationName);
+        if (count($t) == 1) {
+            array_unshift($t, 'doc');
+        }
+        return $t;
+    }
+
     /**
      * {@inheritDoc}
      */
     public function getListTableColumnsSQL($table, $database = null)
     {
-        $t = explode('.', $table);
-        if (count($t) == 1) {
-            array_unshift($t, 'doc');
-        }
+        $t = $this->tableAndSchema($table);
         // todo: make safe
         return "SELECT * from information_schema.columns " .
             "WHERE table_name = '$t[1]' AND schema_name = '$t[0]'";
@@ -204,10 +210,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getListTableConstraintsSQL($table, $database = null)
     {
-        $t = explode('.', $table);
-        if (count($t) == 1) {
-            array_unshift($t, 'doc');
-        }
+        $t = $this->tableAndSchema($table);
         // todo: make safe
         return "SELECT constraint_name, constraint_type from information_schema.table_constraints " .
             "WHERE table_name = '$t[1]' AND schema_name = '$t[0]' AND constraint_type = 'PRIMARY KEY'";
@@ -419,41 +422,6 @@ class CratePlatform extends AbstractPlatform
     }
 
     /**
-     * Gets the SQL snippet used to declare an OBJECT column type.
-     *
-     * @param array $field
-     *
-     * @return string
-     */
-    public function getMapTypeDeclarationSQL(array $field, array $options)
-    {
-        $type = array_key_exists('type', $options) ? $options['type'] : MapType::DYNAMIC;
-
-        $fields = array_key_exists('fields', $options) ? $options['fields'] : array();
-        $columns = array();
-        foreach ($fields as $field) {
-            $columns[$field->getQuotedName($this)] = $this->prepareColumnData($field);
-        }
-        $objectFields = $this->getColumnDeclarationListSQL($columns);
-
-        $declaration = count($columns) > 0 ? ' AS ( ' . $objectFields . ' )' : '';
-        return 'OBJECT ( ' . $type . ' )' . $declaration ;
-    }
-
-    /**
-     * Gets the SQL snippet used to declare an ARRAY column type.
-     *
-     * @param array $field
-     *
-     * @return string
-     */
-    public function getArrayTypeDeclarationSQL(array $field, array $options)
-    {
-        $type = array_key_exists('type', $options) ? $options['type'] : Type::STRING;
-        return 'ARRAY ( ' . Type::getType($type)->getSQLDeclaration($field, $this) . ' )';
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function getName()
@@ -591,7 +559,7 @@ class CratePlatform extends AbstractPlatform
     {
         if (!is_int($createFlags)) {
             $msg = "Second argument of CratePlatform::getCreateTableSQL() has to be integer.";
-            throw new \InvalidArgumentException($msg);
+            throw new InvalidArgumentException($msg);
         }
 
         if (count($table->getColumns()) === 0) {
@@ -637,7 +605,7 @@ class CratePlatform extends AbstractPlatform
                     continue;
                 }
             }
-            $columns[$column->getQuotedName($this)] = $this->prepareColumnData($column, $options['primary']);
+            $columns[$column->getQuotedName($this)] = self::prepareColumnData($this, $column, $options['primary']);
         }
 
         if (null !== $this->_eventManager && $this->_eventManager->hasListeners(Events::onSchemaCreateTable)) {
@@ -696,15 +664,16 @@ class CratePlatform extends AbstractPlatform
      * @param array List of primary key column names
      *
      * @return array The column data as associative array.
+     * @throws DBALException
      */
-    public function prepareColumnData($column, $primaries = array())
+    public static function prepareColumnData(AbstractPlatform $platform, $column, $primaries = array())
     {
         if ($column->hasCustomSchemaOption("unique") ? $column->getCustomSchemaOption("unique") : false) {
             throw DBALException::notSupported("Unique constraints are not supported. Use `primary key` instead");
         }
 
         $columnData = array();
-        $columnData['name'] = $column->getQuotedName($this);
+        $columnData['name'] = $column->getQuotedName($platform);
         $columnData['type'] = $column->getType();
         $columnData['length'] = $column->getLength();
         $columnData['notnull'] = $column->getNotNull();
@@ -712,7 +681,8 @@ class CratePlatform extends AbstractPlatform
         $columnData['unique'] = false;
         $columnData['version'] = $column->hasPlatformOption("version") ? $column->getPlatformOption("version") : false;
 
-        if (strtolower($columnData['type']) == "string" && $columnData['length'] === null) {
+        if (strtolower($columnData['type']) == $platform->getVarcharTypeDeclarationSQLSnippet(0, false)
+                && $columnData['length'] === null) {
             $columnData['length'] = 255;
         }
 
@@ -722,7 +692,7 @@ class CratePlatform extends AbstractPlatform
         $columnData['default'] = $column->getDefault();
         $columnData['columnDefinition'] = $column->getColumnDefinition();
         $columnData['autoincrement'] = $column->getAutoincrement();
-        $columnData['comment'] = $this->getColumnComment($column);
+        $columnData['comment'] = $platform->getColumnComment($column);
         $columnData['platformOptions'] = $column->getPlatformOptions();
 
         if (in_array($column->getName(), $primaries)) {

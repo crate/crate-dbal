@@ -21,15 +21,20 @@
  */
 namespace Crate\DBAL\Driver\PDOCrate;
 
-use Crate\DBAL\Platforms\Crate057Platform;
+use Crate\DBAL\Platforms\CratePlatform1;
 use Crate\DBAL\Platforms\CratePlatform;
+use Crate\DBAL\Platforms\CratePlatform4;
+use Crate\DBAL\Schema\CrateSchemaManager;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\VersionAwarePlatformDriver;
 
 class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
 {
     const VERSION = '1.1.0';
     const NAME = 'crate';
-    const SCHEMA_MIN_VERSION = '0.57.0';
+
+    private const VERSION_057 = '0.57.0';
+    private const VERSION_4 = '4.0.0';
 
     /**
      * {@inheritDoc}
@@ -63,15 +68,15 @@ class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
      */
     public function getDatabasePlatform()
     {
-        return new \Crate\DBAL\Platforms\CratePlatform();
+        return new CratePlatform();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getSchemaManager(\Doctrine\DBAL\Connection $conn)
+    public function getSchemaManager(Connection $conn)
     {
-        return new \Crate\DBAL\Schema\CrateSchemaManager($conn);
+        return new CrateSchemaManager($conn);
     }
 
     /**
@@ -85,7 +90,7 @@ class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
     /**
      * {@inheritDoc}
      */
-    public function getDatabase(\Doctrine\DBAL\Connection $conn)
+    public function getDatabase(Connection $conn)
     {
         return null;
     }
@@ -95,10 +100,12 @@ class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
      */
     public function createDatabasePlatformForVersion($version)
     {
-        if (version_compare($version, self::SCHEMA_MIN_VERSION, ">=")) {
-            return new Crate057Platform();
-        } else {
+        if (version_compare($version, self::VERSION_057, "<")) {
             return new CratePlatform();
+        } else if (version_compare($version, self::VERSION_4, "<")) {
+            return new CratePlatform1();
+        } else {
+            return new CratePlatform4();
         }
     }
 }

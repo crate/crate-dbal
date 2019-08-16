@@ -5,6 +5,8 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+ - Added support for CrateDB >= 4.0
+
  - Added ARRAY type mapping for all typed arrays supported by CrateDB. Before
    only a subset was supported.
 

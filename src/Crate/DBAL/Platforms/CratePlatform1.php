@@ -23,23 +23,15 @@
 namespace Crate\DBAL\Platforms;
 
 
-class Crate057Platform extends CratePlatform
+class CratePlatform1 extends CratePlatform
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
      * {@inheritDoc}
      */
     public function getListTablesSQL()
     {
         return "SELECT table_name, table_schema FROM information_schema.tables " .
-        "WHERE table_schema = 'doc' OR table_schema = 'blob'";
+            "WHERE table_schema = 'doc' OR table_schema = 'blob'";
     }
 
     /**
@@ -47,10 +39,7 @@ class Crate057Platform extends CratePlatform
      */
     public function getListTableColumnsSQL($table, $database = null)
     {
-        $t = explode('.', $table);
-        if (count($t) == 1) {
-            array_unshift($t, 'doc');
-        }
+        $t = $this->tableAndSchema($table);
         // todo: make safe
         return "SELECT * from information_schema.columns " .
             "WHERE table_name = '$t[1]' AND table_schema = '$t[0]'";
@@ -61,12 +50,9 @@ class Crate057Platform extends CratePlatform
      */
     public function getListTableConstraintsSQL($table, $database = null)
     {
-        $t = explode('.', $table);
-        if (count($t) == 1) {
-            array_unshift($t, 'doc');
-        }
+        $t = $this->tableAndSchema($table);
         // todo: make safe
         return "SELECT constraint_name, constraint_type from information_schema.table_constraints " .
-        "WHERE table_name = '$t[1]' AND table_schema = '$t[0]' AND constraint_type = 'PRIMARY KEY'";
+            "WHERE table_name = '$t[1]' AND table_schema = '$t[0]' AND constraint_type = 'PRIMARY KEY'";
     }
 }

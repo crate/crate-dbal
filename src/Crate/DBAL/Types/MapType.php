@@ -22,6 +22,7 @@
 
 namespace Crate\DBAL\Types;
 
+use Crate\DBAL\Platforms\CratePlatform;
 use Crate\PDO\PDO;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
@@ -78,15 +79,40 @@ class MapType extends Type
     /**
      * Gets the SQL declaration snippet for a field of this type.
      *
+     * @param array $fieldDeclaration The field declaration.
+     * @param AbstractPlatform $platform The currently used database platform.
      * @return string
-     * @param  array            $fieldDeclaration The field declaration.
-     * @param  AbstractPlatform $platform         The currently used database platform.
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
         $options = !array_key_exists('platformOptions', $fieldDeclaration) ?
             array() : $fieldDeclaration['platformOptions'];
 
-        return $platform->getMapTypeDeclarationSQL($fieldDeclaration, $options);
+        return $this->getMapTypeDeclarationSQL($platform, $fieldDeclaration, $options);
     }
+
+    /**
+     * Gets the SQL snippet used to declare an OBJECT column type.
+     *
+     * @param array $field
+     *
+     * @return string
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function getMapTypeDeclarationSQL(AbstractPlatform $platform, array $field, array $options)
+    {
+        $type = array_key_exists('type', $options) ? $options['type'] : MapType::DYNAMIC;
+
+        $fields = array_key_exists('fields', $options) ? $options['fields'] : array();
+        $columns = array();
+        foreach ($fields as $field) {
+            $columns[$field->getQuotedName($platform)] = CratePlatform::prepareColumnData($platform, $field);
+        }
+        $objectFields = $platform->getColumnDeclarationListSQL($columns);
+
+        $declaration = count($columns) > 0 ? ' AS ( ' . $objectFields . ' )' : '';
+        return 'OBJECT ( ' . $type . ' )' . $declaration ;
+    }
+
 }

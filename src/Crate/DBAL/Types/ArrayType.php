@@ -72,14 +72,32 @@ class ArrayType extends Type
     /**
      * Gets the SQL declaration snippet for a field of this type.
      *
-     * @return string
      * @param array $fieldDeclaration The field declaration.
      * @param AbstractPlatform $platform The currently used database platform.
+     * @return string
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
         $options = !array_key_exists('platformOptions', $fieldDeclaration) ?
             array() : $fieldDeclaration['platformOptions'];
-        return $platform->getArrayTypeDeclarationSQL($fieldDeclaration, $options);
+        return $this->getArrayTypeDeclarationSQL($platform, $fieldDeclaration, $options);
     }
+
+    /**
+     * Gets the SQL snippet used to declare an ARRAY column type.
+     *
+     * @param AbstractPlatform $platform
+     * @param array $field
+     *
+     * @param array $options
+     * @return string
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function getArrayTypeDeclarationSQL(AbstractPlatform $platform, array $field, array $options)
+    {
+        $type = array_key_exists('type', $options) ? $options['type'] : Type::STRING;
+        return 'ARRAY ( ' . Type::getType($type)->getSQLDeclaration($field, $platform) . ' )';
+    }
+
 }

@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpUnhandledExceptionInspection */
+
 /**
  * Licensed to CRATE Technology GmbH("Crate") under one or more contributor
  * license agreements.  See the NOTICE file distributed with this work for
@@ -22,6 +23,7 @@
 
 namespace Crate\Test\DBAL\Platforms;
 
+use Crate\DBAL\Driver\PDOCrate\Driver;
 use Crate\DBAL\Platforms\CratePlatform;
 use Crate\DBAL\Types\ArrayType;
 use Crate\DBAL\Types\MapType;
@@ -36,21 +38,28 @@ use Doctrine\Tests\DBAL\Platforms\AbstractPlatformTestCase;
 
 class CratePlatformTest extends AbstractPlatformTestCase {
 
+    private const CRATE_TEST_VERSION = "4.0.0";
+
     public function createPlatform()
     {
-        return new CratePlatform();
+        $driver = new Driver();
+        return $driver->createDatabasePlatformForVersion(self::CRATE_TEST_VERSION);
     }
 
     public function getGenerateTableSql()
     {
-        return 'CREATE TABLE test (id INTEGER, test STRING, PRIMARY KEY(id))';
+        return 'CREATE TABLE test (id INTEGER, test TEXT, PRIMARY KEY(id))';
     }
 
     public function getGenerateTableWithMultiColumnUniqueIndexSql()
     {
+    }
+
+    public function getGenerateTableWithMultiColumnIndexSql()
+    {
         return array(
-                'CREATE TABLE test (foo STRING, bar STRING, ' .
-                'INDEX UNIQ_D87F7E0C8C73652176FF8CAA USING FULLTEXT (foo, bar))'
+                'CREATE TABLE test (foo TEXT, bar TEXT, ' .
+                'INDEX IDX_D87F7E0C8C73652176FF8CAA USING FULLTEXT (foo, bar))'
         );
     }
 
@@ -66,12 +75,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function testGeneratesForeignKeyCreationSql()
     {
-        $fk = new \Doctrine\DBAL\Schema\ForeignKeyConstraint(array('fk_name_id'), 'other_table', array('id'), '');
-
-        $this->assertEquals(
-            $this->getGenerateForeignKeySql(),
-            $this->platform->getCreateForeignKeySQL($fk, 'test')
-        );
+        $this->markTestSkipped('Platform does not support FOREIGN KEY constraints.');
     }
 
     public function getGenerateForeignKeySql()
@@ -90,19 +94,6 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->markTestSkipped('Platform does not support any decleration of datatype DECIMAL.');
     }
 
-    /**
-     * Tests precision, scale, signed and unsigned on DOUBLE PRECISION
-     *
-     * @param mixed[] $column
-     *
-     * @group DBAL-1082
-     * @dataProvider getGeneratesFloatDeclarationSQL
-     */
-    public function testGeneratesFloatDeclarationSQL(array $column, $expectedSql)
-    {
-        $this->markTestSkipped('Platform does not support any decleration of datatype DOUBLE PRECISION.');
-    }
-
     public function getGenerateAlterTableSql()
     {
         return array(
@@ -118,14 +109,14 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     protected function getQuotedColumnInPrimaryKeySQL()
     {
         return array(
-            'CREATE TABLE "quoted" ("create" STRING, PRIMARY KEY("create"))',
+            'CREATE TABLE "quoted" ("create" TEXT, PRIMARY KEY("create"))',
         );
     }
 
     protected function getQuotedColumnInIndexSQL()
     {
         return array(
-            'CREATE TABLE "quoted" ("create" STRING, ' .
+            'CREATE TABLE "quoted" ("create" TEXT, ' .
             'INDEX IDX_22660D028FD6E0FB USING FULLTEXT ("create")' .
             ')'
         );
@@ -134,7 +125,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     protected function getQuotedNameInIndexSQL()
     {
         return array(
-            'CREATE TABLE test (column1 STRING, INDEX key USING FULLTEXT (column1))'
+            'CREATE TABLE test (column1 TEXT, INDEX key USING FULLTEXT (column1))'
         );
     }
 
@@ -358,7 +349,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $table->addColumn('col_array', 'array');
         $table->addColumn('col_object', 'map');
         $this->assertEquals($this->platform->getCreateTableSQL($table)[0],
-            'CREATE TABLE foo (col_bool BOOLEAN, col_int INTEGER, col_float DOUBLE, col_timestamp TIMESTAMP, col_datetimetz TIMESTAMP, col_datetime TIMESTAMP, col_date TIMESTAMP, col_time TIMESTAMP, col_array ARRAY ( STRING ), col_object OBJECT ( dynamic ))');
+            'CREATE TABLE foo (col_bool BOOLEAN, col_int INTEGER, col_float DOUBLE PRECISION, col_timestamp TIMESTAMP, col_datetimetz TIMESTAMP, col_datetime TIMESTAMP, col_date TIMESTAMP, col_time TIMESTAMP, col_array ARRAY ( TEXT ), col_object OBJECT ( dynamic ))');
     }
 
     public function testUnsupportedUniqueIndexConstraint()
@@ -423,15 +414,26 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function testGenerateTableWithMultiColumnUniqueIndex()
     {
-        $this->markTestSkipped("Custom index creation currently not supported");
-
         $table = new Table('test');
         $table->addColumn('foo', 'string', array('notnull' => false, 'length' => 255));
         $table->addColumn('bar', 'string', array('notnull' => false, 'length' => 255));
         $table->addUniqueIndex(array("foo", "bar"));
 
+        $this->expectException(DBALException::class);
+        $this->expectExceptionMessage('Operation \'Unique constraints are not supported. Use `primary key` instead\' is not supported by platform.');
+
+        $this->platform->getCreateTableSQL($table);
+    }
+
+    public function testGenerateTableWithMultiColumnIndex()
+    {
+        $table = new Table('test');
+        $table->addColumn('foo', 'string', array('notnull' => false, 'length' => 255));
+        $table->addColumn('bar', 'string', array('notnull' => false, 'length' => 255));
+        $table->addIndex(array("foo", "bar"));
+
         $sql = $this->platform->getCreateTableSQL($table);
-        $this->assertEquals($this->getGenerateTableWithMultiColumnUniqueIndexSql(), $sql);
+        $this->assertEquals($this->getGenerateTableWithMultiColumnIndexSql(), $sql);
     }
 
     /**
@@ -440,7 +442,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     private function getSQLDeclaration($column)
     {
         $p = $this->platform;
-        return $p->getColumnDeclarationSQL($column->getName(), $p->prepareColumnData($column));
+        return $p->getColumnDeclarationSQL($column->getName(), CratePlatform::prepareColumnData($p, $column));
     }
 
     public function testGenerateObjectSQLDeclaration()
@@ -467,14 +469,14 @@ class CratePlatformTest extends AbstractPlatformTestCase {
                     new Column('obj', Type::getType(MapType::NAME)),
                 ),
             )));
-        $this->assertEquals($this->getSQLDeclaration($column), 'obj OBJECT ( strict ) AS ( num INTEGER, text STRING, arr ARRAY ( STRING ), obj OBJECT ( dynamic ) )');
+        $this->assertEquals($this->getSQLDeclaration($column), 'obj OBJECT ( strict ) AS ( num INTEGER, text TEXT, arr ARRAY ( TEXT ), obj OBJECT ( dynamic ) )');
 
     }
 
     public function testGenerateArraySQLDeclaration()
     {
         $column = new Column('arr', Type::getType(ArrayType::NAME));
-        $this->assertEquals($this->getSQLDeclaration($column), 'arr ARRAY ( STRING )');
+        $this->assertEquals($this->getSQLDeclaration($column), 'arr ARRAY ( TEXT )');
 
         $column = new Column('arr', Type::getType(ArrayType::NAME),
             array('platformOptions'=> array('type'=>Type::INTEGER)));
