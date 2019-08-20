@@ -5,17 +5,22 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+2019/08/20 2.0.0
+s================
+
  - Added support for CrateDB >= 4.0
 
  - Added ARRAY type mapping for all typed arrays supported by CrateDB. Before
    only a subset was supported.
+
+ - Updated Doctrine DBAL version to 2.9
 
  - BREAKING: Drop support for PHP < 7.2
 
 2018/09/05 1.1.0
 ================
 
- - Add support for latest (< 2.7.0) Doctrine version
+ - Added support for latest (< 2.7.0) Doctrine version
 
 2018/06/15 1.0.0
 ================
