@@ -5,6 +5,8 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+- Added support for CrateDB specific table options incl. usage documentation.
+
 2019/08/20 2.0.0
 ================
 

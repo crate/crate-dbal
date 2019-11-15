@@ -656,7 +656,85 @@ class CratePlatform extends AbstractPlatform
         }
 
         $query = 'CREATE TABLE ' . $tableName . ' (' . $columnListSql . ')';
+        $query .= $this->buildShardingOptions($options);
+        $query .= $this->buildPartitionOptions($options);
+        $query .= $this->buildTableOptions($options);
         return array($query);
+    }
+
+    /**
+     * Build SQL for table options
+     *
+     * @param mixed[] $options
+     *
+     * @return string
+     */
+    private function buildTableOptions(array $options)
+    {
+        if (! isset($options['table_options'])) {
+            return '';
+        }
+
+        $tableOptions = [];
+        foreach($options['table_options'] as $key => $val) {
+            $tableOptions[] = sprintf('"%s" = %s', $key, $this->quoteStringLiteral($val));
+        }
+        if (count($tableOptions) == 0) {
+            return '';
+        }
+
+        return sprintf(' WITH (%s)', implode(', ', $tableOptions));
+    }
+
+    /**
+     * Build SQL for sharding options.
+     *
+     * @param mixed[] $options
+     *
+     * @return string
+     */
+    private function buildShardingOptions(array $options)
+    {
+        $shardingOptions = [];
+
+        if (isset($options['sharding_routing_column'])) {
+            $columnName = new Identifier($options['sharding_routing_column']);
+            $shardingOptions[] = sprintf('BY (%s)', $columnName->getQuotedName($this));
+        }
+        if (isset($options['sharding_num_shards'])) {
+            $shardingOptions[] = sprintf("INTO %d SHARDS", $options['sharding_num_shards']);
+        }
+
+        if (count($shardingOptions) == 0) {
+            return '';
+        }
+
+        return sprintf(" CLUSTERED %s", implode(' ', $shardingOptions));
+    }
+
+    /**
+     * Build SQL for partition options.
+     *
+     * @param mixed[] $options
+     *
+     * @return string
+     */
+    private function buildPartitionOptions(array $options)
+    {
+        if (! isset($options['partition_columns'])) {
+            return '';
+        }
+        $columns = $options['partition_columns'];
+        if (! is_array($columns)) {
+            throw new InvalidArgumentException(sprintf("Expecting array type at 'partition_columns'"));
+        }
+        $quotedNames = [];
+        foreach ($columns as $name) {
+            $name = new Identifier($name);
+            $quotedNames[] = $name->getQuotedName($this);
+        }
+
+        return sprintf(" PARTITIONED BY (%s)", implode(', ', $quotedNames));
     }
 
     /**

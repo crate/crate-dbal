@@ -11,5 +11,6 @@ Supplementary information for the CrateDB DBAL driver.
 .. toctree::
    :maxdepth: 2
 
+   table-options
    data-types
    compatibility
