@@ -41,6 +41,7 @@ class CratePlatform extends AbstractPlatform
 
     const TIMESTAMP_FORMAT =  'Y-m-d\TH:i:s';
     const TIMESTAMP_FORMAT_TZ =  'Y-m-d\TH:i:sO';
+    const TABLE_WHERE_CLAUSE_FORMAT = '%s.table_name = %s AND %s.schema_name = %s';
 
     /**
      * {@inheritDoc}
@@ -183,15 +184,7 @@ class CratePlatform extends AbstractPlatform
     public function getListTablesSQL()
     {
         return "SELECT table_name, schema_name FROM information_schema.tables " .
-            "WHERE schema_name = 'doc' OR schema_name = 'blob'";
-    }
-
-    protected function tableAndSchema($fqnRelationName) {
-        $t = explode('.', $fqnRelationName);
-        if (count($t) == 1) {
-            array_unshift($t, 'doc');
-        }
-        return $t;
+               "WHERE schema_name = 'doc' OR schema_name = 'blob'";
     }
 
     /**
@@ -199,10 +192,8 @@ class CratePlatform extends AbstractPlatform
      */
     public function getListTableColumnsSQL($table, $database = null)
     {
-        $t = $this->tableAndSchema($table);
-        // todo: make safe
-        return "SELECT * from information_schema.columns " .
-            "WHERE table_name = '$t[1]' AND schema_name = '$t[0]'";
+        return "SELECT * from information_schema.columns c " .
+               "WHERE " . $this->getTableWhereClause($table);
     }
 
     /**
@@ -210,10 +201,8 @@ class CratePlatform extends AbstractPlatform
      */
     public function getListTableConstraintsSQL($table, $database = null)
     {
-        $t = $this->tableAndSchema($table);
-        // todo: make safe
-        return "SELECT constraint_name, constraint_type from information_schema.table_constraints " .
-            "WHERE table_name = '$t[1]' AND schema_name = '$t[0]' AND constraint_type = 'PRIMARY KEY'";
+        return "SELECT c.constraint_name, c.constraint_type from information_schema.table_constraints c " .
+               "WHERE " . $this->getTableWhereClause($table) . " AND constraint_type = 'PRIMARY KEY'";
     }
 
     /**
@@ -221,40 +210,42 @@ class CratePlatform extends AbstractPlatform
      */
     public function getListTableIndexesSQL($table, $currentDatabase = null)
     {
-        $t = $this->tableAndSchema($table);
-        return "SELECT c.constraint_name, c.constraint_type, k. column_name from information_schema.table_constraints c " .
-                "JOIN information_schema.key_column_usage k on c.constraint_name = k.constraint_name " .
-                "WHERE c.table_name = '$t[1]' AND c.schema_name = '$t[0]'";
+        return "SELECT c.constraint_name, c.constraint_type, k.column_name from information_schema.table_constraints c " .
+               "JOIN information_schema.key_column_usage k on c.constraint_name = k.constraint_name " .
+               "WHERE " . $this->getTableWhereClause($table);
     }
 
-    /**
-     * @param string $table
-     * @param string $classAlias
-     * @param string $namespaceAlias
-     *
-     * @return string
-     */
-    private function getTableWhereClause($table, $classAlias = 'c', $namespaceAlias = 'n')
+    private function getTableWhereClause($table, $tableAlias = 'c')
     {
-        $whereClause = $namespaceAlias . ".nspname NOT IN ('pg_catalog', 'information_schema', 'pg_toast') AND ";
         if (strpos($table, '.') !== false) {
             [$schema, $table] = explode('.', $table);
-            $schema           = $this->quoteStringLiteral($schema);
+            $schema = $this->quoteStringLiteral($schema);
         } else {
-            $schema = "ANY(string_to_array((select replace(replace(setting,'\"\$user\"',user),' ','') from pg_catalog.pg_settings where name = 'search_path'),','))";
+            $schema = $this->quoteStringLiteral('doc');
         }
 
         $table = new Identifier($table);
         $table = $this->quoteStringLiteral($table->getName());
 
-        return $whereClause . sprintf(
-            '%s.relname = %s AND %s.nspname = %s',
-            $classAlias,
+        return sprintf(
+            $this->getTableWhereClauseFormat(),
+            $tableAlias,
             $table,
-            $namespaceAlias,
+            $tableAlias,
             $schema
         );
     }
+
+    /**
+     * Return sprintf format string for usage at getTableWhereClause
+     *
+     * @return string
+     */
+    protected function getTableWhereClauseFormat()
+    {
+      return self::TABLE_WHERE_CLAUSE_FORMAT;
+    }
+
     /**
      * {@inheritDoc}
      */
