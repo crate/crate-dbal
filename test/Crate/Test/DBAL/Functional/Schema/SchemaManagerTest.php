@@ -26,6 +26,7 @@ use Crate\DBAL\Types\TimestampType;
 use Crate\Test\DBAL\DBALFunctionalTestCase;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Types\IntegerType;
 use Doctrine\DBAL\Types\Type;
 
 class SchemaManagerTest extends DBALFunctionalTestCase
@@ -53,7 +54,7 @@ class SchemaManagerTest extends DBALFunctionalTestCase
         $this->createTestTable('list_tables_test');
         $tables = $this->_sm->listTables();
 
-        $this->assertInternalType('array', $tables);
+        $this->assertIsArray($tables);
         $this->assertTrue(count($tables) > 0, "List Tables has to find at least one table named 'list_tables_test'.");
 
         $foundTable = false;
@@ -121,6 +122,16 @@ class SchemaManagerTest extends DBALFunctionalTestCase
         $this->_sm->dropAndCreateTable($table);
 
         $columns = $this->_sm->listTableColumns('list_table_columns');
+        $columnsKeys = array_keys($columns);
+
+        self::assertArrayHasKey('id', $columns);
+        self::assertEquals(0, array_search('id', $columnsKeys));
+        self::assertEquals('id', strtolower($columns['id']->getname()));
+        self::assertInstanceOf(IntegerType::class, $columns['id']->gettype());
+        self::assertFalse($columns['id']->getunsigned());
+        self::assertTrue($columns['id']->getnotnull());
+        self::assertNull($columns['id']->getdefault());
+        self::assertIsArray($columns['id']->getPlatformOptions());
 
         $this->assertArrayHasKey('text', $columns);
         $this->assertEquals('text', strtolower($columns['text']->getname()));
@@ -231,4 +242,19 @@ class SchemaManagerTest extends DBALFunctionalTestCase
         $this->assertTrue($foundTable, "Could not find new table");
     }
 
+    public function testListTableIndexes()
+    {
+        $table = $this->getTestCompositeTable('list_table_indexes_test');
+
+        $this->_sm->dropAndCreateTable($table);
+
+        $tableIndexes = $this->_sm->listTableIndexes('list_table_indexes_test');
+
+        self::assertEquals(1, count($tableIndexes));
+
+        self::assertArrayHasKey('primary', $tableIndexes, 'listTableIndexes() has to return a "primary" array key.');
+        self::assertEquals(['id', 'other_id'], array_map('strtolower', $tableIndexes['primary']->getColumns()));
+        self::assertTrue($tableIndexes['primary']->isUnique());
+        self::assertTrue($tableIndexes['primary']->isPrimary());
+    }
 }

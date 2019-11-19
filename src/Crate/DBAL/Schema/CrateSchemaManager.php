@@ -21,51 +21,32 @@
  */
 namespace Crate\DBAL\Schema;
 
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
-use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Types\Type;
 
 class CrateSchemaManager extends AbstractSchemaManager
 {
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
+     *
      */
-    public function listTableDetails($tableName)
+    protected function _getPortableTableIndexesList($tableIndexes, $tableName = null)
     {
-        $columns = $this->listTableColumns($tableName);
-        $foreignKeys = array();
-        $indexes = array();
-
-        return new Table($tableName, $columns, $indexes, $foreignKeys);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function listTableIndexes($table)
-    {
-        throw DBALException::notSupported(__METHOD__);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function listTableColumns($table, $database = null)
-    {
-        $tableColumns = $this->_conn->fetchAll($this->_platform->getListTableColumnsSQL($table));
-        $tableConstraints = $this->_conn->fetchAll($this->_platform->getListTableConstraintsSQL($table));
-
-        $columns = array();
-        foreach ($tableColumns as $tableColumn) {
-            $tableColumn['primary'] = in_array($tableColumn['column_name'], [$tableConstraints[0]['constraint_name']]);
-            $columns[] = $tableColumn;
+        $buffer = [];
+        foreach ($tableIndexes as $row) {
+            $isPrimary = $row['constraint_type'] == 'PRIMARY KEY';
+            $buffer[] = [
+                'key_name' => $row['constraint_name'],
+                'column_name' => $row['column_name'],
+                'non_unique' => ! $isPrimary,
+                'primary' => $isPrimary,
+                'where' => '',
+            ];
         }
 
-        return $this->_getPortableTableColumnList($table, $database, $columns);
+        return parent::_getPortableTableIndexesList($buffer, $tableName);
     }
-
     /**
      * {@inheritDoc}
      */
@@ -76,15 +57,17 @@ class CrateSchemaManager extends AbstractSchemaManager
         if (!isset($tableColumn['column_name'])) {
             $tableColumn['column_name'] = '';
         }
+        if (!isset($tableColumn['is_nullable'])) {
+            $tableColumn['is_nullable'] = true;
+        }
 
         $dbType = strtolower($tableColumn['data_type']);
         $type = $this->_platform->getDoctrineTypeMapping($dbType);
 
         $options = array(
             'length'        => null,
-            'notnull'       => false,
+            'notnull'       => ! $tableColumn['is_nullable'],
             'default'       => null,
-            'primary'       => $tableColumn['primary'],
             'precision'     => null,
             'scale'         => null,
             'fixed'         => null,
@@ -93,7 +76,7 @@ class CrateSchemaManager extends AbstractSchemaManager
             'comment'       => '',
         );
 
-        return new Column($tableColumn['column_name'], \Doctrine\DBAL\Types\Type::getType($type), $options);
+        return new Column($tableColumn['column_name'], Type::getType($type), $options);
     }
 
     /**

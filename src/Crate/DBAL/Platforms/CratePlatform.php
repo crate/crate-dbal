@@ -219,6 +219,45 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
+    public function getListTableIndexesSQL($table, $currentDatabase = null)
+    {
+        $t = $this->tableAndSchema($table);
+        return "SELECT c.constraint_name, c.constraint_type, k. column_name from information_schema.table_constraints c " .
+                "JOIN information_schema.key_column_usage k on c.constraint_name = k.constraint_name " .
+                "WHERE c.table_name = '$t[1]' AND c.schema_name = '$t[0]'";
+    }
+
+    /**
+     * @param string $table
+     * @param string $classAlias
+     * @param string $namespaceAlias
+     *
+     * @return string
+     */
+    private function getTableWhereClause($table, $classAlias = 'c', $namespaceAlias = 'n')
+    {
+        $whereClause = $namespaceAlias . ".nspname NOT IN ('pg_catalog', 'information_schema', 'pg_toast') AND ";
+        if (strpos($table, '.') !== false) {
+            [$schema, $table] = explode('.', $table);
+            $schema           = $this->quoteStringLiteral($schema);
+        } else {
+            $schema = "ANY(string_to_array((select replace(replace(setting,'\"\$user\"',user),' ','') from pg_catalog.pg_settings where name = 'search_path'),','))";
+        }
+
+        $table = new Identifier($table);
+        $table = $this->quoteStringLiteral($table->getName());
+
+        return $whereClause . sprintf(
+            '%s.relname = %s AND %s.nspname = %s',
+            $classAlias,
+            $table,
+            $namespaceAlias,
+            $schema
+        );
+    }
+    /**
+     * {@inheritDoc}
+     */
     public function getAlterTableSQL(TableDiff $diff)
     {
         $sql = array();

@@ -55,4 +55,15 @@ class CratePlatform1 extends CratePlatform
         return "SELECT constraint_name, constraint_type from information_schema.table_constraints " .
             "WHERE table_name = '$t[1]' AND table_schema = '$t[0]' AND constraint_type = 'PRIMARY KEY'";
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getListTableIndexesSQL($table, $currentDatabase = null)
+    {
+        $t = $this->tableAndSchema($table);
+        return "SELECT c.constraint_name, c.constraint_type, k. column_name from information_schema.table_constraints c " .
+                "JOIN information_schema.key_column_usage k on c.constraint_name = k.constraint_name " .
+                "WHERE c.table_name = '$t[1]' AND c.table_schema = '$t[0]'";
+    }
 }
