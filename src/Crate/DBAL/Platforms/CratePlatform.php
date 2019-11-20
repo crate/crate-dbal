@@ -32,6 +32,8 @@ use Doctrine\DBAL\Schema\Identifier;
 use Doctrine\DBAL\Schema\Index;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
+use Doctrine\DBAL\Types\BooleanType;
+use Doctrine\DBAL\Types\PhpIntegerMappingType;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use InvalidArgumentException;
@@ -295,14 +297,14 @@ class CratePlatform extends AbstractPlatform
      */
     public function getColumnDeclarationSQL($name, array $field)
     {
-        if (isset($field['columnDefinition'])) {
-            $columnDef = $this->getCustomTypeDeclarationSQL($field);
-        } else {
-            $typeDecl = $field['type']->getSqlDeclaration($field, $this);
-            $columnDef = $typeDecl;
+        if (isset($field['check'])) {
+            throw DBALException::notSupported("Column CHECK constraint is not supported");
         }
 
-        return $name . ' ' . $columnDef;
+        // explicitly unset notnull constraint as this is `true` by default and thus breaks backward compatibility
+        unset($field['notnull']);
+
+        return parent::getColumnDeclarationSQL($name, $field);
     }
 
     /**
@@ -320,6 +322,26 @@ class CratePlatform extends AbstractPlatform
 
         return 'INDEX ' . $name->getQuotedName($this) . ' USING FULLTEXT ('. $this->getIndexFieldDeclarationListSQL($columns) . ')';
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDefaultValueDeclarationSQL($field)
+    {
+        if (! isset($field['default'])) {
+            return '';
+        }
+        throw DBALException::notSupported("Column DEFAULT clause is not supported on CrateDB < 4.x");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUniqueFieldDeclarationSQL()
+    {
+        throw DBALException::notSupported("Column UNIQUE constraint is not supported");
+    }
+
 
     /**
      * {@inheritDoc}

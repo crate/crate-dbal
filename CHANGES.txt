@@ -5,11 +5,20 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
-- Fixed handling of ``PRIMARY KEY`` contraints.
+Changes
+-------
+
+- Added support for ``DEFAULT`` column clause.
+
+- Added support for CrateDB specific table options incl. usage documentation.
+
+Fixes
+-----
+
+- Fixed handling of ``PRIMARY KEY`` and ``NOT NULL`` contraints.
   Tables *without* any PK raised an exception while reading, on Tables
   *with* any PK, the constraints weren't read/processed correctly.
 
-- Added support for CrateDB specific table options incl. usage documentation.
 
 2019/08/20 2.0.0
 ================

@@ -257,4 +257,31 @@ class SchemaManagerTest extends DBALFunctionalTestCase
         self::assertTrue($tableIndexes['primary']->isUnique());
         self::assertTrue($tableIndexes['primary']->isPrimary());
     }
+
+    public function testColumnDefaultClause()
+    {
+        $table = new Table('t1');
+        $table->addColumn('ts', 'timestamp', array('default' => 'current_timestamp'));
+
+        $this->_sm->dropAndCreateTable($table);
+
+        $schema = $this->_sm->createSchema();
+        $table = $schema->getTable('t1');
+
+        self::assertEquals('"current_timestamp"(3)', $table->getColumn('ts')->getDefault());
+    }
+
+    public function testColumnNotNullConstraint()
+    {
+        $table = new Table('t1');
+        // not_null is `true` by default
+        $table->addColumn('id', 'integer', array('notnull' => false));
+
+        $this->_sm->dropAndCreateTable($table);
+
+        $schema = $this->_sm->createSchema();
+        $table = $schema->getTable('t1');
+
+        self::assertFalse($table->getColumn('id')->getNotnull());
+    }
 }

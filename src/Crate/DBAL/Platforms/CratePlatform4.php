@@ -23,6 +23,10 @@
 namespace Crate\DBAL\Platforms;
 
 
+use Crate\DBAL\Types\TimestampType;
+use Doctrine\DBAL\Types\BooleanType;
+use Doctrine\DBAL\Types\PhpIntegerMappingType;
+
 class CratePlatform4 extends CratePlatform1
 {
     /**
@@ -90,5 +94,37 @@ class CratePlatform4 extends CratePlatform1
     public function getClobTypeDeclarationSQL(array $field)
     {
         return 'TEXT';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDefaultValueDeclarationSQL($field)
+    {
+        if (! isset($field['default'])) {
+            return '';
+        }
+
+        $default = $field['default'];
+
+        if (! isset($field['type'])) {
+            return " DEFAULT '" . $default . "'";
+        }
+
+        $type = $field['type'];
+
+        if ($type instanceof PhpIntegerMappingType) {
+            return ' DEFAULT ' . $default;
+        }
+
+        if ($type instanceof TimestampType) {
+            return ' DEFAULT ' . $default;
+        }
+
+        if ($type instanceof BooleanType) {
+            return " DEFAULT '" . $this->convertBooleans($default) . "'";
+        }
+
+        return " DEFAULT '" . $default . "'";
     }
 }

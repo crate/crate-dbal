@@ -503,4 +503,20 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     {
         $this->markTestSkipped('Platform does not support TRUNCATE TABLE.');
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function testGetDefaultValueDeclarationSQLDateTime() : void
+    {
+        $this->markTestSkipped('Platform does not support DateTime types, use Timestamp instead.');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function testGetDefaultValueDeclarationSQLForDateType() : void
+    {
+        $this->markTestSkipped('Platform does not support Date types, use Timestamp instead.');
+    }
 }

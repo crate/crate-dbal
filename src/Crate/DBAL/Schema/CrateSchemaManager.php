@@ -60,6 +60,9 @@ class CrateSchemaManager extends AbstractSchemaManager
         if (!isset($tableColumn['is_nullable'])) {
             $tableColumn['is_nullable'] = true;
         }
+        if (!isset($tableColumn['column_default'])) {
+            $tableColumn['column_default'] = null;
+        }
 
         $dbType = strtolower($tableColumn['data_type']);
         $type = $this->_platform->getDoctrineTypeMapping($dbType);
@@ -67,7 +70,7 @@ class CrateSchemaManager extends AbstractSchemaManager
         $options = array(
             'length'        => null,
             'notnull'       => ! $tableColumn['is_nullable'],
-            'default'       => null,
+            'default'       => $tableColumn['column_default'],
             'precision'     => null,
             'scale'         => null,
             'fixed'         => null,
