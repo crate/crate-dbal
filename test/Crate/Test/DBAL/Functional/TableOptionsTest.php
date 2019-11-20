@@ -44,9 +44,9 @@ class TableOptionsTest extends DBALFunctionalTestCase {
         $options['table_options']['write.wait_for_active_shards'] = 'ALL';
 
         $table = new Table('t1', [], [], [], 0, $options);
-        $table->addColumn('id', 'integer');
-        $table->addColumn('parted', 'integer');
-        $table->addColumn('date', 'timestamp');
+        $table->addColumn('id', 'integer', array('notnull' => false));
+        $table->addColumn('parted', 'integer', array('notnull' => false));
+        $table->addColumn('date', 'timestamp', array('notnull' => false));
 
         $sql = $platform->getCreateTableSQL($table);
         $this->assertEquals(array(

@@ -30,43 +30,43 @@ use PDO;
 
 class WriteTest extends DBALFunctionalTestCase
 {
-    static private $generated = false;
+    /**
+     * @var \Doctrine\DBAL\Schema\AbstractSchemaManager
+     */
+    protected $_sm;
 
     public function setUp()
     {
         parent::setUp();
 
-        if (self::$generated === false) {
-            self::$generated = true;
-            /* @var $sm \Doctrine\DBAL\Schema\AbstractSchemaManager */
-            $table = new \Doctrine\DBAL\Schema\Table("write_table");
-            $table->addColumn('test_int', Type::INTEGER);
-            $table->addColumn('test_string', Type::STRING);
-            $table->addColumn('test_float', Type::FLOAT);
-            $table->addColumn('test_array', Type::TARRAY, array('columnDefinition'=>'ARRAY(STRING)'));
-            $table->addColumn("test_map", MapType::NAME);
-            $table->addColumn("test_bool", Type::BOOLEAN);
+        // call this first to ensure that custom Crate data types are registered by the CratePlatform
+        $this->_sm = $this->_conn->getSchemaManager();
 
-            $platformOptions = array(
-                'type'   => MapType::STRICT,
-                'fields' => array(
-                    new Column('id',    Type::getType(Type::INTEGER), array()),
-                    new Column('name',  Type::getType(Type::STRING), array()),
-                    new Column('value', Type::getType(Type::FLOAT), array()),
-                ),
-            );
-            $table->addColumn('test_obj', MapType::NAME, array('platformOptions'=>$platformOptions));
+        $table = new \Doctrine\DBAL\Schema\Table("write_table");
+        $table->addColumn('test_int', Type::INTEGER);
+        $table->addColumn('test_string', Type::STRING, array('notnull' => false));
+        $table->addColumn('test_float', Type::FLOAT, array('notnull' => false));
+        $table->addColumn('test_array', Type::TARRAY, array('columnDefinition'=>'ARRAY(STRING)'));
+        $table->addColumn("test_map", MapType::NAME, array('notnull' => false));
+        $table->addColumn("test_bool", Type::BOOLEAN, array('notnull' => false));
 
-            $sm = $this->_conn->getSchemaManager();
-            $sm->createTable($table);
-        }
+        $platformOptions = array(
+            'type'   => MapType::STRICT,
+            'fields' => array(
+                new Column('id',    Type::getType(Type::INTEGER), array('notnull' => false)),
+                new Column('name',  Type::getType(Type::STRING), array('notnull' => false)),
+                new Column('value', Type::getType(Type::FLOAT), array('notnull' => false)),
+            ),
+        );
+        $table->addColumn('test_obj', MapType::NAME, array('platformOptions'=>$platformOptions, 'notnull' => false));
+
+        $this->_sm->createTable($table);
     }
 
     public function tearDown()
     {
-        if (self::$generated === true) {
-            $this->execute('drop table write_table');
-            self::$generated = false;
+        foreach ($this->_sm->listTableNames() as $tableName) {
+            $this->_sm->dropTable($tableName);
         }
     }
 

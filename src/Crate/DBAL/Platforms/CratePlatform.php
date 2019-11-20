@@ -301,9 +301,6 @@ class CratePlatform extends AbstractPlatform
             throw DBALException::notSupported("Column CHECK constraint is not supported");
         }
 
-        // explicitly unset notnull constraint as this is `true` by default and thus breaks backward compatibility
-        unset($field['notnull']);
-
         return parent::getColumnDeclarationSQL($name, $field);
     }
 

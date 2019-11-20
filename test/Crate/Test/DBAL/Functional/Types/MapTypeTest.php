@@ -39,13 +39,13 @@ class MapTypeTest extends DBALFunctionalTestCase {
         $objDefinition = array(
             'type' => MapType::STRICT,
             'fields' => array(
-                new Column('id',  Type::getType(Type::INTEGER), array()),
-                new Column('name',  Type::getType(Type::STRING), array()),
+                new Column('id',  Type::getType(Type::INTEGER), array('notnull' => false)),
+                new Column('name',  Type::getType(Type::STRING), array('notnull' => false)),
             ),
         );
         $table->addColumn(
             'object_column', MapType::NAME,
-            array('platformOptions' => $objDefinition)
+            array('platformOptions' => $objDefinition, 'notnull' => false)
         );
 
         $createFlags = CratePlatform::CREATE_INDEXES|CratePlatform::CREATE_FOREIGNKEYS;

@@ -51,13 +51,13 @@ class DataAccessTestCase extends DBALFunctionalTestCase
             $platformOptions = array(
                 'type'   => MapType::STRICT,
                 'fields' => array(
-                    new Column('id',    Type::getType('integer'), array()),
-                    new Column('name',  Type::getType('string'), array()),
-                    new Column('value', Type::getType('float'), array()),
+                    new Column('id',    Type::getType('integer'), array('notnull' => false)),
+                    new Column('name',  Type::getType('string'), array('notnull' => false)),
+                    new Column('value', Type::getType('float'), array('notnull' => false)),
                 ),
             );
             $table->addColumn('test_object', MapType::NAME,
-                array('platformOptions'=>$platformOptions));
+                array('platformOptions'=>$platformOptions, 'notnull' => false));
             $table->setPrimaryKey(array('test_int'));
 
             $sm->createTable($table);

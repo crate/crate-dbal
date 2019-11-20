@@ -48,7 +48,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function getGenerateTableSql()
     {
-        return 'CREATE TABLE test (id INTEGER, test TEXT, PRIMARY KEY(id))';
+        return 'CREATE TABLE test (id INTEGER NOT NULL, test TEXT, PRIMARY KEY(id))';
     }
 
     public function getGenerateTableWithMultiColumnUniqueIndexSql()
@@ -109,7 +109,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     protected function getQuotedColumnInPrimaryKeySQL()
     {
         return array(
-            'CREATE TABLE "quoted" ("create" TEXT, PRIMARY KEY("create"))',
+            'CREATE TABLE "quoted" ("create" TEXT NOT NULL, PRIMARY KEY("create"))',
         );
     }
 
@@ -338,16 +338,16 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     public function testGenerateTableSql()
     {
         $table = new Table("foo");
-        $table->addColumn('col_bool', 'boolean');
-        $table->addColumn('col_int', 'integer');
-        $table->addColumn('col_float', 'float');
-        $table->addColumn('col_timestamp', 'timestamp');
-        $table->addColumn('col_datetimetz', 'datetimetz');
-        $table->addColumn('col_datetime', 'datetime');
-        $table->addColumn('col_date', 'date');
-        $table->addColumn('col_time', 'time');
-        $table->addColumn('col_array', 'array');
-        $table->addColumn('col_object', 'map');
+        $table->addColumn('col_bool', 'boolean', array('notnull' => false));
+        $table->addColumn('col_int', 'integer', array('notnull' => false));
+        $table->addColumn('col_float', 'float', array('notnull' => false));
+        $table->addColumn('col_timestamp', 'timestamp', array('notnull' => false));
+        $table->addColumn('col_datetimetz', 'datetimetz', array('notnull' => false));
+        $table->addColumn('col_datetime', 'datetime', array('notnull' => false));
+        $table->addColumn('col_date', 'date', array('notnull' => false));
+        $table->addColumn('col_time', 'time', array('notnull' => false));
+        $table->addColumn('col_array', 'array', array('notnull' => false));
+        $table->addColumn('col_object', 'map', array('notnull' => false));
         $this->assertEquals($this->platform->getCreateTableSQL($table)[0],
             'CREATE TABLE foo (col_bool BOOLEAN, col_int INTEGER, col_float DOUBLE PRECISION, col_timestamp TIMESTAMP, col_datetimetz TIMESTAMP, col_datetime TIMESTAMP, col_date TIMESTAMP, col_time TIMESTAMP, col_array ARRAY ( TEXT ), col_object OBJECT ( dynamic ))');
     }
@@ -448,38 +448,39 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     public function testGenerateObjectSQLDeclaration()
     {
 
-        $column = new Column('obj', Type::getType(MapType::NAME));
+        $column = new Column('obj', Type::getType(MapType::NAME), array('notnull' => false));
         $this->assertEquals($this->getSQLDeclaration($column), 'obj OBJECT ( dynamic )');
 
         $column = new Column('obj', Type::getType(MapType::NAME),
-            array('platformOptions'=>array('type'=>MapType::STRICT)));
+            array('platformOptions'=>array('type'=>MapType::STRICT), 'notnull' => false));
         $this->assertEquals($this->getSQLDeclaration($column), 'obj OBJECT ( strict )');
 
         $column = new Column('obj', Type::getType(MapType::NAME),
-            array('platformOptions'=>array('type'=>MapType::IGNORED, 'fields'=>array())));
+            array('platformOptions'=>array('type'=>MapType::IGNORED, 'fields'=>array()), 'notnull' => false));
         $this->assertEquals($this->getSQLDeclaration($column), 'obj OBJECT ( ignored )');
 
         $column = new Column('obj', Type::getType(MapType::NAME),
             array('platformOptions'=>array(
                 'type'=>MapType::STRICT,
                 'fields'=>array(
-                    new Column('num', Type::getType(Type::INTEGER)),
-                    new Column('text', Type::getType(Type::STRING)),
-                    new Column('arr', Type::getType(ArrayType::NAME)),
-                    new Column('obj', Type::getType(MapType::NAME)),
+                    new Column('num', Type::getType(Type::INTEGER), array('notnull' => false)),
+                    new Column('text', Type::getType(Type::STRING), array('notnull' => false)),
+                    new Column('arr', Type::getType(ArrayType::NAME), array('notnull' => false)),
+                    new Column('obj', Type::getType(MapType::NAME), array('notnull' => false)),
                 ),
-            )));
+            ),
+            'notnull' => false));
         $this->assertEquals($this->getSQLDeclaration($column), 'obj OBJECT ( strict ) AS ( num INTEGER, text TEXT, arr ARRAY ( TEXT ), obj OBJECT ( dynamic ) )');
 
     }
 
     public function testGenerateArraySQLDeclaration()
     {
-        $column = new Column('arr', Type::getType(ArrayType::NAME));
+        $column = new Column('arr', Type::getType(ArrayType::NAME), array('notnull' => false));
         $this->assertEquals($this->getSQLDeclaration($column), 'arr ARRAY ( TEXT )');
 
         $column = new Column('arr', Type::getType(ArrayType::NAME),
-            array('platformOptions'=> array('type'=>Type::INTEGER)));
+            array('platformOptions'=> array('type'=>Type::INTEGER), 'notnull' => false));
         $this->assertEquals($this->getSQLDeclaration($column), 'arr ARRAY ( INTEGER )');
 
     }

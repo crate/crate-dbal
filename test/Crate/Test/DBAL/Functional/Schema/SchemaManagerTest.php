@@ -276,6 +276,7 @@ class SchemaManagerTest extends DBALFunctionalTestCase
         $table = new Table('t1');
         // not_null is `true` by default
         $table->addColumn('id', 'integer', array('notnull' => false));
+        $table->addColumn('id2', 'integer', array('notnull' => true));
 
         $this->_sm->dropAndCreateTable($table);
 
@@ -283,5 +284,6 @@ class SchemaManagerTest extends DBALFunctionalTestCase
         $table = $schema->getTable('t1');
 
         self::assertFalse($table->getColumn('id')->getNotnull());
+        self::assertTrue($table->getColumn('id2')->getNotnull());
     }
 }

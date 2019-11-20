@@ -5,6 +5,13 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+Breaking Changes
+----------------
+
+- Added support for the ``NOT NULL`` column contraint.
+  All columns are created with the ``NOT NULL`` constraint by default.
+  Allowing ``NULL`` values must be explicitly defined per column.
+
 Changes
 -------
 
