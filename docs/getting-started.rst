@@ -37,7 +37,7 @@ too. So the both additions together will look like this:
 
    {
      "require": {
-       "crate/crate-dbal":"~2.0.0",
+       "crate/crate-dbal":"~2.1.0",
        "doctrine/orm": "*"
      }
    }

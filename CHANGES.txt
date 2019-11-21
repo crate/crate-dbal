@@ -5,11 +5,21 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+2019/11/21 2.1.0
+================
+
+Changes
+-------
+
+- Added support for CrateDB specific table options incl. usage documentation.
+
+Fixes
+-----
+
 - Fixed handling of ``PRIMARY KEY`` contraints.
   Tables *without* any PK raised an exception while reading, on Tables
   *with* any PK, the constraints weren't read/processed correctly.
 
-- Added support for CrateDB specific table options incl. usage documentation.
 
 2019/08/20 2.0.0
 ================
