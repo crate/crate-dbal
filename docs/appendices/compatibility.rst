@@ -38,6 +38,8 @@ Consult the following table for CrateDB version compatibility notes:
 +----------------+-----------------+-------------------------------------------+
 | >= 1.0         | >= 2.3.x        |                                           |
 +----------------+-----------------+-------------------------------------------+
+| >= 2.0         | >= 4.0.x        |                                           |
++----------------+-----------------+-------------------------------------------+
 
 .. _implementations:
 
@@ -70,11 +72,15 @@ DBAL
 |                | - Joins (with or without a `query builder`_) |            |
 |                | - Fulltext indexes (without a query builder) |            |
 +----------------+----------------------------------------------+------------+
-| >= 1.1         | [BREAKING]: POD library requires PHP 7.2     | Supported. |
+| >= 1.1         | [BREAKING]: PDO library requires PHP 7.2     | Supported. |
 +                +----------------------------------------------+------------+
 |                | Added SSL support                            | Supported. |
 +                +----------------------------------------------+------------+
 |                | Based on Doctrine 2.6.3                      | Supported. |
++----------------+----------------------------------------------+------------+
+| >= 2.0         | Based on Doctrine 2.9                        | Supported. |
++----------------+----------------------------------------------+------------+
+| >= 2.2         | Based on Doctrine 2.10                       | Supported. |
 +----------------+----------------------------------------------+------------+
 
 .. _create your own users: https://crate.io/docs/crate/reference/en/latest/admin/user-management.html
