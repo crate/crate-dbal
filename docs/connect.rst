@@ -48,7 +48,7 @@ authenticate as ``crate`` with a CrateDB node listening on ``localhost:4200``.
 
 .. SEEALSO::
 
-   For more help using DBAL, consult the `DBAL documentation`_.
+   For more help using DBAL_, consult the `DBAL documentation`_.
 
 Doctrine ORM
 ============
@@ -92,14 +92,13 @@ Here's what we changed in the above example:
 Next steps
 ==========
 
-Use the standard the `DBAL`_ or `Doctrine ORM`_ documentation for the rest of
+Use the standard the `DBAL documentation`_ or `Doctrine ORM documentation`_ for the rest of
 your setup process.
 
 .. _database user: https://crate.io/docs/crate/reference/en/latest/admin/user-management.html
-.. _DBAL documentation: https://www.doctrine-project.org/projects/doctrine-dbal/en/2.7/index.html
-.. _DBAL: https://www.doctrine-project.org/projects/doctrine-dbal/en/2.7/index.html
-.. _Doctrine provided example: https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/configuration.html#obtaining-an-entitymanager
+.. _DBAL: https://www.doctrine-project.org/projects/dbal.html
+.. _DBAL documentation: https://www.doctrine-project.org/projects/doctrine-dbal/en/2.10/index.html
+.. _Doctrine provided example: https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/reference/configuration.html#obtaining-an-entitymanager
 .. _Object-Relational Mapping: https://www.doctrine-project.org/projects/orm.html
-.. _ORM documentation: https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/index.html
-.. _Doctrine ORM: https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/index.html
-.. _standard DBAL parameters: http://doctrine-orm.readthedocs.org/projects/doctrine-dbal/en/latest/reference/configuration.html
+.. _Doctrine ORM documentation: https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/index.html
+.. _standard DBAL parameters: https://www.doctrine-project.org/projects/doctrine-dbal/en/2.10/reference/configuration.html

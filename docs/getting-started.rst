@@ -26,7 +26,7 @@ Add the driver package to you project `composer.json`_ file, like this:
 
     {
       "require": {
-        "crate/crate-dbal":"~1.1.0"
+        "crate/crate-dbal":"~2.1.0"
       }
     }
 
