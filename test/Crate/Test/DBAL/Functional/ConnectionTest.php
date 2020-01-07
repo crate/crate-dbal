@@ -26,13 +26,13 @@ use Crate\PDO\PDO;
 
 class ConnectionTestCase extends DBALFunctionalTestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $this->resetSharedConn();
         parent::setUp();
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         parent::tearDown();
         $this->resetSharedConn();

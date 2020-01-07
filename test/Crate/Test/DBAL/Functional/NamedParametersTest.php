@@ -102,7 +102,7 @@ class NamedParametersTest extends DBALFunctionalTestCase
         );
     }
 
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
 
@@ -144,7 +144,7 @@ class NamedParametersTest extends DBALFunctionalTestCase
         }
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         parent::tearDown();
         if ($this->_conn->getSchemaManager()->tablesExist("ddc1372_foobar")) {

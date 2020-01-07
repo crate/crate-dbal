@@ -30,7 +30,7 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
 {
     private static $tableCreated = false;
 
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
 
@@ -52,7 +52,7 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
         }
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         parent::tearDown();
         if (self::$tableCreated) {

@@ -35,13 +35,13 @@ class SchemaManagerTest extends DBALFunctionalTestCase
      */
     protected $_sm;
 
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
         $this->_sm = $this->_conn->getSchemaManager();
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         foreach ($this->_sm->listTableNames() as $tableName) {
             $this->_sm->dropTable($tableName);
@@ -53,7 +53,7 @@ class SchemaManagerTest extends DBALFunctionalTestCase
         $this->createTestTable('list_tables_test');
         $tables = $this->_sm->listTables();
 
-        $this->assertInternalType('array', $tables);
+        $this->assertIsArray($tables);
         $this->assertTrue(count($tables) > 0, "List Tables has to find at least one table named 'list_tables_test'.");
 
         $foundTable = false;
