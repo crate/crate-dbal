@@ -5,6 +5,16 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+Changes
+-------
+
+- Updated Doctrine DBAL version to 2.10
+
+Fixes
+-----
+
+None
+
 2019/11/21 2.1.0
 ================
 

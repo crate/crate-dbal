@@ -54,7 +54,7 @@ abstract class DBALFunctionalTestCase extends TestCase
         }
     }
 
-    public function setUp()
+    public function setUp() : void
     {
         if ( ! isset(self::$_sharedConn)) {
             $params = array(
@@ -70,7 +70,7 @@ abstract class DBALFunctionalTestCase extends TestCase
         $this->_conn->getConfiguration()->setSQLLogger($this->_sqlLoggerStack);
     }
 
-    protected function onNotSuccessfulTest(Throwable $e)
+    protected function onNotSuccessfulTest(Throwable $e) : void
     {
         if ($e instanceof AssertionFailedError) {
             throw $e;

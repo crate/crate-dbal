@@ -36,13 +36,13 @@ class SchemaManagerTest extends DBALFunctionalTestCase
      */
     protected $_sm;
 
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
         $this->_sm = $this->_conn->getSchemaManager();
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         foreach ($this->_sm->listTableNames() as $tableName) {
             $this->_sm->dropTable($tableName);

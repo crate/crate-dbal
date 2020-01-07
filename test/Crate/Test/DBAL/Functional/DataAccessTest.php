@@ -35,7 +35,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
 {
     static private $generated = false;
 
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
 
@@ -73,7 +73,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         }
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         if (self::$generated === true) {
             $this->_conn->getSchemaManager()->dropTable('fetch_table');

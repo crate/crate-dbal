@@ -32,7 +32,7 @@ class WriteTest extends DBALFunctionalTestCase
 {
     static private $generated = false;
 
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
 
@@ -62,7 +62,7 @@ class WriteTest extends DBALFunctionalTestCase
         }
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         if (self::$generated === true) {
             $this->execute('drop table write_table');
