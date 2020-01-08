@@ -5,6 +5,9 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+2020/01/08 2.2.0
+================
+
 Changes
 -------
 

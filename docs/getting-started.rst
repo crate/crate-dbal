@@ -26,7 +26,7 @@ Add the driver package to you project `composer.json`_ file, like this:
 
     {
       "require": {
-        "crate/crate-dbal":"~2.1.0"
+        "crate/crate-dbal":"~2.2.0"
       }
     }
 
@@ -37,7 +37,7 @@ too. So the both additions together will look like this:
 
    {
      "require": {
-       "crate/crate-dbal":"~2.1.0",
+       "crate/crate-dbal":"~2.2.0",
        "doctrine/orm": "*"
      }
    }
