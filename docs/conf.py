@@ -1,4 +1,4 @@
-from crate.theme.rtd.conf.clients_dbal import *
+from crate.theme.rtd.conf.dbal import *
 
 from sphinx.highlighting import lexers
 from pygments.lexers.web import PhpLexer
@@ -8,9 +8,9 @@ lexers["php-annotations"] = PhpLexer(startinline=True, linenos=1)
 
 source_suffix = '.rst'
 html_theme_options.update({
-    'canonical_url_path': 'docs/reference/dbal/',
+    'canonical_url_path': 'docs/dbal/',
     'tracking_project': 'crate-dbal',
 })
 
-site_url = 'https://crate.io/docs/clients/dbal/en/latest/'
+site_url = 'https://crate.io/docs/dbal/en/latest/'
 extensions = ['sphinx_sitemap']
