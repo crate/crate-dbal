@@ -25,6 +25,7 @@ namespace Crate\Test\DBAL\Functional;
 use Crate\DBAL\Types\MapType;
 use Crate\Test\DBAL\DBALFunctionalTestCase;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Connection;
@@ -212,7 +213,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $paramStr = 'foo';
 
         $sql = "SELECT test_int, test_string FROM " . $this->_conn->quoteIdentifier($table) . " ".
-               "WHERE test_int = " . $this->_conn->quote($paramInt) . " AND test_string = " . $this->_conn->quote($paramStr);
+               "WHERE test_int = " . $this->_conn->quote($paramInt, ParameterType::INTEGER) . " AND test_string = '" . $paramStr . "')";
         $stmt = $this->_conn->prepare($sql);
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
     }
@@ -403,7 +404,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
     {
         $this->expectException(DBALException::class);
 
-        $sql = "SELECT * FROM fetch_table WHERE test_string = " . $this->_conn->quote("bar' OR '1'='1");
+        $sql = "SELECT * FROM fetch_table WHERE test_string = bar' OR '1'='1";
         $this->_conn->fetchAll($sql);
     }
 
