@@ -107,7 +107,7 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
 
         $this->refresh('modify_limit_table2');
 
-        $sql = "SELECT test_int FROM modify_limit_table2 GROUP BY test_int";
+        $sql = "SELECT test_int FROM modify_limit_table2 GROUP BY test_int order by test_int";
         $this->assertLimitResult(array(1, 2), $sql, 10, 0);
         $this->assertLimitResult(array(1), $sql, 1, 0);
         $this->assertLimitResult(array(2), $sql, 1, 1);
