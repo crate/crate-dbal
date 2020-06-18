@@ -840,4 +840,17 @@ class CratePlatform extends AbstractPlatform
     {
         throw DBALException::notSupported(__METHOD__);
     }
+
+    /**
+     * Returns the SQL query to return the CrateDB specific table options associated
+     * with a given table.
+     *
+     * @return string
+     */
+    public function getTableOptionsSQL(string $table) : string
+    {
+        return "SELECT clustered_by, number_of_shards, partitioned_by, number_of_replicas, column_policy, settings " .
+		"FROM information_schema.tables c " .
+		"WHERE " . $this->getTableWhereClause($table);
+    }
 }

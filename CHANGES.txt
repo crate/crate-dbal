@@ -5,6 +5,9 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+- Added support for CrateDB specific table options when retrieving table information
+  from the schema manager.
+
 2020/01/08 2.2.0
 ================
 

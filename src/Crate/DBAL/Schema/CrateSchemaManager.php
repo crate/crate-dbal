@@ -24,6 +24,7 @@ namespace Crate\DBAL\Schema;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Schema\Table;
 
 class CrateSchemaManager extends AbstractSchemaManager
 {
@@ -91,5 +92,45 @@ class CrateSchemaManager extends AbstractSchemaManager
         }
 
         return $tableNames;
+    }
+
+    /**
+     * Flattens a multidimensional array into a 1 dimensional array, where
+     * keys are concatinated with '.'
+     *
+     * @return array
+     */
+    private function flatten(array $array, string $prefix = '') : array
+    {
+        $result = array();
+        foreach($array as $key=>$value) {
+            if(is_array($value)) {
+                $result = $result + self::flatten($value, $prefix . $key . '.');
+            }
+            else {
+                $result[$prefix . $key] = $value;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function listTableDetails($tableName) : Table
+    {
+	$columns = $this->listTableColumns($tableName);
+	$indexes = $this->listTableIndexes($tableName);
+	$options = [];
+
+	$s = $this->_conn->fetchAssoc($this->_platform->getTableOptionsSQL($tableName));
+
+	$options['sharding_routing_column'] = $s['clustered_by'];
+	$options['sharding_num_shards'] = $s['number_of_shards'];
+	$options['partition_columns'] = $s['partitioned_by'];
+	$options['table_options'] = self::flatten($s['settings']);
+	$options['table_options']['number_of_replicas'] = $s['number_of_replicas'];
+	$options['table_options']['column_policy'] = $s['column_policy'];
+	return new Table($tableName, $columns, $indexes, [], [], $options);
     }
 }

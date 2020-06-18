@@ -31,6 +31,19 @@ use InvalidArgumentException;
 
 class TableOptionsTest extends DBALFunctionalTestCase {
 
+    public function tearDown() : void
+    {
+        parent::tearDown();
+        if ($this->_conn->getSchemaManager()->tablesExist("ddc1372_foobar")) {
+            try {
+                $sm = $this->_conn->getSchemaManager();
+                $sm->dropTable('table_option_test');
+            } catch(\Exception $e) {
+                $this->fail($e->getMessage());
+            }
+        }
+    }
+
     public function testAdditionalTableOptions()
     {
         $platform = $this->_conn->getDatabasePlatform();
@@ -55,6 +68,36 @@ class TableOptionsTest extends DBALFunctionalTestCase {
                 . ' PARTITIONED BY (parted, date)'
                 . ' WITH ("number_of_replicas" = \'0-2\', "write.wait_for_active_shards" = \'ALL\')')
                 , $sql);
+    }
+
+    public function testGetAdditionalTableOptions()
+    {
+        $options = [];
+        $options['sharding_routing_column'] = 'id';
+        $options['sharding_num_shards'] = 6;
+        $options['partition_columns'] = ['parted', 'date'];
+        $options['table_options'] = [];
+        $options['table_options']['number_of_replicas'] = '0-2';
+        $options['table_options']['write.wait_for_active_shards'] = 'ALL';
+
+        $table = new Table('table_option_test', [], [], [], 0, $options);
+        $table->addColumn('id', 'integer');
+        $table->addColumn('parted', 'integer');
+        $table->addColumn('date', 'timestamp');
+
+        $sm = $this->_conn->getSchemaManager();
+        $sm->createTable($table);
+
+        $schema = $sm->createSchema();
+
+        $retrievedTable = $schema->getTable($table->getName());
+        $options = $retrievedTable->getOptions();
+
+        $this->assertEquals($options['sharding_routing_column'], 'id');
+        $this->assertEquals($options['sharding_num_shards'], 6);
+        $this->assertEquals($options['partition_columns'], ['parted', 'date']);
+        $this->assertEquals($options['table_options']['number_of_replicas'], '0-2');
+        $this->assertEquals($options['table_options']['write.wait_for_active_shards'], 'ALL');
     }
 
     public function testPartitionColumnsNotArray()
