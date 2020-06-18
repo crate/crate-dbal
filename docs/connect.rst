@@ -36,7 +36,7 @@ If you plan to query CrateDB via DBAL, you can get a connection from the
 
     $params = array(
         'driverClass' => 'Crate\DBAL\Driver\PDOCrate\Driver',
-        'user' => 'crate'
+        'user' => 'crate',
         'host' => 'localhost',
         'port' => 4200
     );
