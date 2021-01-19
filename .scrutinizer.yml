@@ -38,3 +38,14 @@ checks:
     php:
         code_rating: true
         duplication: true
+
+
+# Use new PHP Analysis Engine.
+# https://scrutinizer-ci.com/docs/tools/php/php-scrutinizer/
+# https://scrutinizer-ci.com/docs/tools/php/php-analyzer/guides/migrate_to_new_php_analysis
+build:
+    nodes:
+        analysis:
+            tests:
+                override:
+                    - php-scrutinizer-run
