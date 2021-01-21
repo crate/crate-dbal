@@ -108,9 +108,9 @@ via calls to the the use of the ``Column`` class and calls to the
    The Doctrine `ORM documentation`_ has more about type mapping.
 
 .. _array: https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#array
-.. _ArrayType: https://github.com/crate/crate-dbal/blob/master/src/Crate/DBAL/Types/ArrayType.php
-.. _MapType: https://github.com/crate/crate-dbal/blob/master/src/Crate/DBAL/Types/MapType.php
+.. _ArrayType: https://github.com/crate/crate-dbal/blob/main/src/Crate/DBAL/Types/ArrayType.php
+.. _MapType: https://github.com/crate/crate-dbal/blob/main/src/Crate/DBAL/Types/MapType.php
 .. _object: https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#object
 .. _ORM documentation: https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/basic-mapping.html
-.. _timestamp: https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#timestamp
-.. _TimestampType: https://github.com/crate/crate-dbal/blob/master/src/Crate/DBAL/Types/TimestampType.php
+.. _timestamp: https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#date-time-types
+.. _TimestampType: https://github.com/crate/crate-dbal/blob/main/src/Crate/DBAL/Types/TimestampType.php

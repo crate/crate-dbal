@@ -2,17 +2,21 @@
 CrateDB DBAL Driver
 ===================
 
-.. image:: https://travis-ci.org/crate/crate-dbal.svg?branch=master
-    :target: https://travis-ci.org/crate/crate-dbal
+.. image:: https://github.com/crate/crate-dbal/workflows/Tests/badge.svg
+    :target: https://github.com/crate/crate-dbal/actions?workflow=Tests
     :alt: Build status
 
-.. image:: https://scrutinizer-ci.com/g/crate/crate-dbal/badges/coverage.png?b=master
-    :target: https://scrutinizer-ci.com/g/crate/crate-dbal
+.. image:: https://coveralls.io/repos/github/crate/crate-dbal/badge.svg?branch=main
+    :target: https://coveralls.io/github/crate/crate-dbal?branch=main
     :alt: Coverage
 
-.. image:: https://scrutinizer-ci.com/g/crate/crate-dbal/badges/quality-score.png?b=master
+.. image:: https://scrutinizer-ci.com/g/crate/crate-dbal/badges/quality-score.png?b=main
     :target: https://scrutinizer-ci.com/g/crate/crate-dbal
     :alt: Quality
+
+.. image:: https://scrutinizer-ci.com/g/crate/crate-dbal/badges/coverage.png?b=main
+    :target: https://scrutinizer-ci.com/g/crate/crate-dbal
+    :alt: Coverage
 
 |
 

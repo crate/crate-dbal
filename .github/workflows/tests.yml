@@ -1,0 +1,69 @@
+name: Tests
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  tests:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ] #, macos-latest, windows-latest ]
+        php-version: [ '7.2', '7.3', '7.4' ]
+
+    # https://docs.github.com/en/free-pro-team@latest/actions/guides/about-service-containers
+    services:
+      cratedb:
+        image: crate:latest
+        ports:
+          - 4200:4200
+
+    # https://github.com/marketplace/actions/setup-php-action
+    name: PHP ${{ matrix.php-version }} on OS ${{ matrix.os }}
+    steps:
+
+      - name: Acquire sources
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          # Select PHPUnit version suitable for PHP 7.2.
+          tools: composer, phpunit:8.5.13
+
+      # Cache Composer Dependencies
+      # https://github.com/marketplace/actions/setup-php-action#cache-composer-dependencies
+      - name: Get composer cache directory
+        id: composer-cache-dir
+        run: echo "::set-output name=dir::$(composer config cache-dir)"
+      - name: Cache dependencies
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache-dir.outputs.dir }}
+          key: os=${{ matrix.os }}-composer-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install package
+        # Remark: --prefer-source is needed for "Doctrine\Tests\DBAL\Platforms\AbstractPlatformTestCase"
+        run: composer install --prefer-source
+
+      - name: Run tests
+        run: phpunit --coverage-clover build/logs/clover.xml
+
+      # https://github.com/php-coveralls/php-coveralls#github-actions
+      - name: Upload coverage results to Coveralls
+        if: matrix.php-version == '7.4'
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          composer global require php-coveralls/php-coveralls
+          php-coveralls --coverage_clover=build/logs/clover.xml -v
+
+      - name: Upload coverage results to Scrutinizer CI
+        if: matrix.php-version == '7.4'
+        run: |
+          composer global require scrutinizer/ocular
+          ocular code-coverage:upload --format=php-clover build/logs/clover.xml

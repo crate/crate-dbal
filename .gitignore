@@ -2,9 +2,10 @@
 .installed.cfg
 .project
 .vagrant
+.phpunit.result.cache
+*-console.log
 bin/
 build/
-composer.lock
 composer.phar
 out/
 report/

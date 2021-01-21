@@ -293,7 +293,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getColumnDeclarationSQL($name, array $field)
+    public function getColumnDeclarationSQL(string $name, array $field)
     {
         if (isset($field['columnDefinition'])) {
             $columnDef = $this->getCustomTypeDeclarationSQL($field);
@@ -309,7 +309,7 @@ class CratePlatform extends AbstractPlatform
      * Generate table index column declaration
      * @codeCoverageIgnore
      */
-    public function getIndexDeclarationSQL($name, Index $index)
+    public function getIndexDeclarationSQL(string $name, Index $index)
     {
         $columns = $index->getQuotedColumns($this);
         $name = new Identifier($name);
@@ -666,7 +666,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    protected function _getCreateTableSQL($tableName, array $columns, array $options = array())
+    protected function _getCreateTableSQL(string $tableName, array $columns, array $options = array())
     {
         $columnListSql = $this->getColumnDeclarationListSQL($columns);
 
