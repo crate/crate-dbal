@@ -4,14 +4,17 @@ before_commands:
 tools:
     external_code_coverage:
         enabled: true
+        timeout: 600
     php_code_sniffer:
         enabled: true
         config:
             standard: PSR2
         filter:
             paths: ["src/*"]
-    php_cpd:
+    php_sim:
         enabled: true
+    php_cpd:
+        enabled: false
         excluded_dirs: ["build/*", "test", "vendor"]
     php_cs_fixer:
         enabled: true
