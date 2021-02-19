@@ -6,17 +6,25 @@ CrateDB DBAL Driver
     :target: https://github.com/crate/crate-dbal/actions?workflow=Tests
     :alt: Build status
 
-.. image:: https://coveralls.io/repos/github/crate/crate-dbal/badge.svg?branch=main
-    :target: https://coveralls.io/github/crate/crate-dbal?branch=main
+.. image:: https://scrutinizer-ci.com/g/crate/crate-dbal/badges/coverage.png?b=main
+    :target: https://scrutinizer-ci.com/g/crate/crate-dbal
     :alt: Coverage
 
 .. image:: https://scrutinizer-ci.com/g/crate/crate-dbal/badges/quality-score.png?b=main
     :target: https://scrutinizer-ci.com/g/crate/crate-dbal
     :alt: Quality
 
-.. image:: https://scrutinizer-ci.com/g/crate/crate-dbal/badges/coverage.png?b=main
-    :target: https://scrutinizer-ci.com/g/crate/crate-dbal
-    :alt: Coverage
+.. image:: https://poser.pugx.org/crate/crate-dbal/v/stable
+    :target: https://packagist.org/packages/crate/crate-dbal
+    :alt: Latest stable version
+
+.. image:: https://poser.pugx.org/crate/crate-dbal/downloads
+    :target: https://packagist.org/packages/crate/crate-dbal
+    :alt: Total downloads
+
+.. image:: https://poser.pugx.org/crate/crate-dbal/license
+    :target: https://packagist.org/packages/crate/crate-dbal
+    :alt: License
 
 |
 
@@ -33,7 +41,9 @@ You need to be using PHP and Composer_.
 
 Installation
 ============
-
+```bash
+composer add crate/crate-dbal
+```
 The CrateDB PDO adapter is available as a Composer package.
 
 See the `installation documentation`_ for more info.
