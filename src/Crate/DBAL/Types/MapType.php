@@ -114,5 +114,4 @@ class MapType extends Type
         $declaration = count($columns) > 0 ? ' AS ( ' . $objectFields . ' )' : '';
         return 'OBJECT ( ' . $type . ' )' . $declaration ;
     }
-
 }

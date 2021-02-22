@@ -22,7 +22,6 @@
 
 namespace Crate\DBAL\Platforms;
 
-
 class CratePlatform4 extends CratePlatform1
 {
     /**

@@ -99,5 +99,4 @@ class ArrayType extends Type
         $type = array_key_exists('type', $options) ? $options['type'] : Type::STRING;
         return 'ARRAY ( ' . Type::getType($type)->getSQLDeclaration($field, $platform) . ' )';
     }
-
 }

@@ -36,6 +36,6 @@
     },
     "scripts": {
         "test": "XDEBUG_MODE=coverage phpunit --coverage-clover build/logs/clover.xml",
-        "style": "phpcs ./src"
+        "style": "phpcs"
     }
 }

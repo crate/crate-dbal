@@ -103,11 +103,10 @@ class CrateSchemaManager extends AbstractSchemaManager
     private function flatten(array $array, string $prefix = '') : array
     {
         $result = array();
-        foreach($array as $key=>$value) {
-            if(is_array($value)) {
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
                 $result = $result + self::flatten($value, $prefix . $key . '.');
-            }
-            else {
+            } else {
                 $result[$prefix . $key] = $value;
             }
         }
@@ -119,18 +118,18 @@ class CrateSchemaManager extends AbstractSchemaManager
      */
     public function listTableDetails($tableName) : Table
     {
-	$columns = $this->listTableColumns($tableName);
-	$indexes = $this->listTableIndexes($tableName);
-	$options = [];
+        $columns = $this->listTableColumns($tableName);
+        $indexes = $this->listTableIndexes($tableName);
+        $options = [];
 
-	$s = $this->_conn->fetchAssoc($this->_platform->getTableOptionsSQL($tableName));
+        $s = $this->_conn->fetchAssoc($this->_platform->getTableOptionsSQL($tableName));
 
-	$options['sharding_routing_column'] = $s['clustered_by'];
-	$options['sharding_num_shards'] = $s['number_of_shards'];
-	$options['partition_columns'] = $s['partitioned_by'];
-	$options['table_options'] = self::flatten($s['settings']);
-	$options['table_options']['number_of_replicas'] = $s['number_of_replicas'];
-	$options['table_options']['column_policy'] = $s['column_policy'];
-	return new Table($tableName, $columns, $indexes, [], [], $options);
+        $options['sharding_routing_column'] = $s['clustered_by'];
+        $options['sharding_num_shards'] = $s['number_of_shards'];
+        $options['partition_columns'] = $s['partitioned_by'];
+        $options['table_options'] = self::flatten($s['settings']);
+        $options['table_options']['number_of_replicas'] = $s['number_of_replicas'];
+        $options['table_options']['column_policy'] = $s['column_policy'];
+        return new Table($tableName, $columns, $indexes, [], [], $options);
     }
 }
