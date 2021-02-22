@@ -10,13 +10,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest ] #, macos-latest, windows-latest ]
+        os: [ 'ubuntu-18.04' ] #, macos-latest, windows-latest ]
         php-version: [ '7.2', '7.3', '7.4' ]
 
     # https://docs.github.com/en/free-pro-team@latest/actions/guides/about-service-containers
     services:
       cratedb:
-        image: crate:latest
+        image: crate/crate:nightly
         ports:
           - 4200:4200
 
@@ -32,13 +32,13 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           # Select PHPUnit version suitable for PHP 7.2.
-          tools: composer, phpunit:8.5.13
+          tools: composer, phpunit:^8.5
 
       # Cache Composer Dependencies
       # https://github.com/marketplace/actions/setup-php-action#cache-composer-dependencies
       - name: Get composer cache directory
         id: composer-cache-dir
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+        run: echo "::set-output name=dir::$(composer config cache-dir)"
       - name: Apply dependency caching
         id: composer-cache
         uses: actions/cache@v2
@@ -50,8 +50,11 @@ jobs:
         # Remark: --prefer-source is needed for "Doctrine\Tests\DBAL\Platforms\AbstractPlatformTestCase"
         run: composer install --prefer-source
 
+      - name: Run code style checks
+        run: composer run style
+
       - name: Run tests
-        run: phpunit --coverage-clover build/logs/clover.xml
+        run: composer run test
 
       # https://github.com/php-coveralls/php-coveralls#github-actions
       - name: Upload coverage results to Coveralls
