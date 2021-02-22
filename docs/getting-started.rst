@@ -18,38 +18,24 @@ Your project must be using `Composer`_.
 Set up as a dependency
 ======================
 
-The driver is available as `a package`_.
+The driver is available as a package at `crate/crate-dbal`_.
 
-Add the driver package to you project `composer.json`_ file, like this:
+Add the driver package to your project's `composer.json`_::
 
-.. code-block:: json
+    composer add crate/crate-dbal
 
-    {
-      "require": {
-        "crate/crate-dbal":"~2.3.0"
-      }
-    }
+If you're using `Doctrine ORM`_, you should add the ``doctrine/orm`` dependency
+too::
 
-If you're using `Doctrine ORM`_, you must add the ``doctrine/orm`` dependency
-too. So the both additions together will look like this:
-
-.. code-block:: json
-
-   {
-     "require": {
-       "crate/crate-dbal":"~2.3.0",
-       "doctrine/orm": "*"
-     }
-   }
+    composer add crate/crate-dbal
 
 
 Install
 =======
 
-Once the package has been configured as a dependency, you can install it, like
-so::
+Once the package has been configured as a dependency, you can install it, like::
 
-    sh$ composer install
+    composer install
 
 Afterwards, if you are not already doing so, you must require the Composer
 `autoload.php`_ file. You can do this by adding a line like this to your PHP
@@ -68,9 +54,9 @@ Next steps
 
 Learn how to :ref:`connect to CrateDB <connect>`.
 
+.. _autoload.php: https://getcomposer.org/doc/01-basic-usage.md#autoloading
 .. _Composer documentation: https://getcomposer.org
 .. _Composer: https://getcomposer.org/
-.. _autoload.php: https://getcomposer.org/doc/01-basic-usage.md#autoloading
 .. _composer.json: https://getcomposer.org/doc/01-basic-usage.md#composer-json-project-setup
-.. _a package: https://packagist.org/packages/crate/crate-dbal
+.. _crate/crate-dbal: https://packagist.org/packages/crate/crate-dbal
 .. _Doctrine ORM: https://www.doctrine-project.org/projects/orm.html

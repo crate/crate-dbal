@@ -4,6 +4,7 @@
 .vagrant
 .phpunit.result.cache
 *-console.log
+.crate-docs
 bin/
 build/
 composer.phar
