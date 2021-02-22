@@ -46,6 +46,10 @@ You can run the tests like::
     # Run code style checks
     composer run style
 
+    # Run code style checks
+    $ ./vendor/bin/phpcs ./src
+
+
 
 ************
 Using Docker
@@ -81,6 +85,9 @@ Running the Tests
 
     # Run code style checks
     composer run style
+
+    # Run code style checks
+    ./vendor/bin/phpcs ./src
 
 
 ****************************

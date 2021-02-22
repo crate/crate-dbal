@@ -22,7 +22,6 @@
 
 namespace Crate\DBAL\Platforms;
 
-
 class CratePlatform1 extends CratePlatform
 {
     const TABLE_WHERE_CLAUSE_FORMAT_1 = '%s.table_name = %s AND %s.table_schema = %s';

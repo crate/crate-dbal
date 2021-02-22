@@ -104,9 +104,9 @@ class CratePlatform extends AbstractPlatform
     }
 
     /**
-     * If we want to support Schemas, we need to implement 
+     * If we want to support Schemas, we need to implement
      * getListNamespacesSQL and getCreateSchemaSQL methods
-     * 
+     *
      * {@inheritDoc}
      */
     public function supportsSchemas()
@@ -201,7 +201,8 @@ class CratePlatform extends AbstractPlatform
      */
     public function getListTableConstraintsSQL($table, $database = null)
     {
-        return "SELECT c.constraint_name, c.constraint_type from information_schema.table_constraints c " .
+        return "SELECT c.constraint_name, c.constraint_type " .
+               "FROM information_schema.table_constraints c " .
                "WHERE " . $this->getTableWhereClause($table) . " AND constraint_type = 'PRIMARY KEY'";
     }
 
@@ -210,7 +211,8 @@ class CratePlatform extends AbstractPlatform
      */
     public function getListTableIndexesSQL($table, $currentDatabase = null)
     {
-        return "SELECT c.constraint_name, c.constraint_type, k.column_name from information_schema.table_constraints c " .
+        return "SELECT c.constraint_name, c.constraint_type, k.column_name " .
+               "FROM information_schema.table_constraints c " .
                "JOIN information_schema.key_column_usage k on c.constraint_name = k.constraint_name " .
                "WHERE " . $this->getTableWhereClause($table);
     }
@@ -243,7 +245,7 @@ class CratePlatform extends AbstractPlatform
      */
     protected function getTableWhereClauseFormat()
     {
-      return self::TABLE_WHERE_CLAUSE_FORMAT;
+        return self::TABLE_WHERE_CLAUSE_FORMAT;
     }
 
     /**
@@ -293,12 +295,12 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getColumnDeclarationSQL(string $name, array $field)
+    public function getColumnDeclarationSQL($name, array $column)
     {
-        if (isset($field['columnDefinition'])) {
-            $columnDef = $this->getCustomTypeDeclarationSQL($field);
+        if (isset($column['columnDefinition'])) {
+            $columnDef = $this->getCustomTypeDeclarationSQL($column);
         } else {
-            $typeDecl = $field['type']->getSqlDeclaration($field, $this);
+            $typeDecl = $column['type']->getSqlDeclaration($column, $this);
             $columnDef = $typeDecl;
         }
 
@@ -309,7 +311,7 @@ class CratePlatform extends AbstractPlatform
      * Generate table index column declaration
      * @codeCoverageIgnore
      */
-    public function getIndexDeclarationSQL(string $name, Index $index)
+    public function getIndexDeclarationSQL($name, Index $index)
     {
         $columns = $index->getQuotedColumns($this);
         $name = new Identifier($name);
@@ -318,7 +320,8 @@ class CratePlatform extends AbstractPlatform
             throw new \InvalidArgumentException("Incomplete definition. 'columns' required.");
         }
 
-        return 'INDEX ' . $name->getQuotedName($this) . ' USING FULLTEXT ('. $this->getIndexFieldDeclarationListSQL($columns) . ')';
+        return 'INDEX ' . $name->getQuotedName($this) .
+               ' USING FULLTEXT ('. $this->getIndexFieldDeclarationListSQL($columns) . ')';
     }
 
     /**
@@ -611,8 +614,10 @@ class CratePlatform extends AbstractPlatform
                         return $table->getColumn($columnName)->getQuotedName($platform);
                     }, $index->getColumns());
                     $options['primary_index'] = $index;
-                } else if ($index->isUnique()) {
-                    throw DBALException::notSupported("Unique constraints are not supported. Use `primary key` instead");
+                } elseif ($index->isUnique()) {
+                    throw DBALException::notSupported(
+                        "Unique constraints are not supported. Use `primary key` instead"
+                    );
                 } else {
                     $options['indexes'][$index->getName()] = $index;
                 }
@@ -624,8 +629,8 @@ class CratePlatform extends AbstractPlatform
 
         foreach ($table->getColumns() as $column) {
             if (null !== $this->_eventManager &&
-                $this->_eventManager->hasListeners(Events::onSchemaCreateTableColumn)) {
-
+                $this->_eventManager->hasListeners(Events::onSchemaCreateTableColumn)
+            ) {
                 $eventArgs = new SchemaCreateTableColumnEventArgs($column, $table, $this);
                 $this->_eventManager->dispatchEvent(Events::onSchemaCreateTableColumn, $eventArgs);
 
@@ -666,7 +671,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    protected function _getCreateTableSQL(string $tableName, array $columns, array $options = array())
+    protected function _getCreateTableSQL($name, array $columns, array $options = array())
     {
         $columnListSql = $this->getColumnDeclarationListSQL($columns);
 
@@ -685,7 +690,7 @@ class CratePlatform extends AbstractPlatform
             throw DBALException::notSupported("Create Table: foreign keys");
         }
 
-        $query = 'CREATE TABLE ' . $tableName . ' (' . $columnListSql . ')';
+        $query = 'CREATE TABLE ' . $name . ' (' . $columnListSql . ')';
         $query .= $this->buildShardingOptions($options);
         $query .= $this->buildPartitionOptions($options);
         $query .= $this->buildTableOptions($options);
@@ -706,7 +711,7 @@ class CratePlatform extends AbstractPlatform
         }
 
         $tableOptions = [];
-        foreach($options['table_options'] as $key => $val) {
+        foreach ($options['table_options'] as $key => $val) {
             $tableOptions[] = sprintf('"%s" = %s', $key, $this->quoteStringLiteral($val));
         }
         if (count($tableOptions) == 0) {
@@ -850,7 +855,7 @@ class CratePlatform extends AbstractPlatform
     public function getTableOptionsSQL(string $table) : string
     {
         return "SELECT clustered_by, number_of_shards, partitioned_by, number_of_replicas, column_policy, settings " .
-		"FROM information_schema.tables c " .
-		"WHERE " . $this->getTableWhereClause($table);
+               "FROM information_schema.tables c " .
+               "WHERE " . $this->getTableWhereClause($table);
     }
 }

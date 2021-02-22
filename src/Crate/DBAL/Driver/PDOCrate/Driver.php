@@ -102,7 +102,7 @@ class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
     {
         if (version_compare($version, self::VERSION_057, "<")) {
             return new CratePlatform();
-        } else if (version_compare($version, self::VERSION_4, "<")) {
+        } elseif (version_compare($version, self::VERSION_4, "<")) {
             return new CratePlatform1();
         } else {
             return new CratePlatform4();
