@@ -62,6 +62,8 @@ jobs:
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          echo "Git HEAD ref:"
+          git log --pretty=%P -n1 HEAD
           composer global require php-coveralls/php-coveralls
           php-coveralls --coverage_clover=build/logs/clover.xml -v
 
