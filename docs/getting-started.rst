@@ -22,12 +22,12 @@ The driver is available as a package at `crate/crate-dbal`_.
 
 Add the driver package to your project's `composer.json`_::
 
-    composer add crate/crate-dbal
+    composer require crate/crate-dbal
 
 If you're using `Doctrine ORM`_, you should add the ``doctrine/orm`` dependency
 too::
 
-    composer add crate/crate-dbal
+    composer require doctrine/orm
 
 
 Install
