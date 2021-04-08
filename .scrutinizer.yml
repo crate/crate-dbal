@@ -39,4 +39,10 @@ build:
 
 # https://scrutinizer-ci.com/docs/tools/external-code-coverage/
 tools:
-  external_code_coverage: true
+  external_code_coverage:
+
+    enabled: true
+
+    # Scrutinizer will wait for two code coverage submissions
+    # in order to cover both PHP7 and PHP8.
+    runs: 2

@@ -26,6 +26,8 @@ jobs:
 
       - name: Acquire sources
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -51,24 +53,21 @@ jobs:
         run: composer install --prefer-source
 
       - name: Run code style checks
-        run: composer run style
+        run: composer run check-style
 
       - name: Run tests
         run: composer run test
 
-      # https://github.com/php-coveralls/php-coveralls#github-actions
-      - name: Upload coverage results to Coveralls
-        if: matrix.php-version == '7.4'
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Git HEAD ref:"
-          git log --pretty=%P -n1 HEAD
-          composer global require php-coveralls/php-coveralls
-          php-coveralls --coverage_clover=build/logs/clover.xml -v
+      # https://github.com/codecov/codecov-action
+      - name: Upload coverage results to Codecov
+        uses: codecov/codecov-action@v1
+        if: always() && (matrix.php-version == '7.4' || matrix.php-version == '8.0')
+        with:
+          files: ./build/logs/clover.xml
+          fail_ci_if_error: true
 
       - name: Upload coverage results to Scrutinizer CI
-        if: matrix.php-version == '7.4'
+        if: always() && (matrix.php-version == '7.4' || matrix.php-version == '8.0')
         run: |
           composer global require scrutinizer/ocular
           ocular code-coverage:upload --format=php-clover build/logs/clover.xml

@@ -30,33 +30,33 @@ This driver maps CrateDB types to the following PHP types:
    "`array`__", "`array`__"
 
 __ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#boolean
-__ https://secure.php.net/manual/en/language.types.boolean.php
+__ https://www.php.net/manual/en/language.types.boolean.php
 __ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#numeric-types
-__ https://secure.php.net/manual/en/language.types.integer.php
+__ https://www.php.net/manual/en/language.types.integer.php
 __ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#numeric-types
-__ https://secure.php.net/manual/en/language.types.integer.php
+__ https://www.php.net/manual/en/language.types.integer.php
 __ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#numeric-types
-__ https://secure.php.net/manual/en/language.types.integer.php
+__ https://www.php.net/manual/en/language.types.integer.php
 __ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#numeric-types
-__ https://secure.php.net/manual/en/language.types.string.php
+__ https://www.php.net/manual/en/language.types.string.php
 __ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#numeric-types
-__ https://secure.php.net/manual/en/language.types.float.php
+__ https://www.php.net/manual/en/language.types.float.php
 __ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#numeric-types
-__ https://secure.php.net/manual/en/language.types.float.php
+__ https://www.php.net/manual/en/language.types.float.php
 __ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#character-types
-__ https://secure.php.net/manual/en/language.types.string.php
+__ https://www.php.net/manual/en/language.types.string.php
 __ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#ip
-__ https://secure.php.net/manual/en/language.types.string.php
+__ https://www.php.net/manual/en/language.types.string.php
 __ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#date-time-types
-__ https://secure.php.net/manual/en/class.datetime.php
+__ https://www.php.net/manual/en/class.datetime.php
 __ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#geo-point
-__ https://secure.php.net/manual/en/language.types.array.php
+__ https://www.php.net/manual/en/language.types.array.php
 __ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#geo-shape
-__ https://secure.php.net/manual/en/language.types.array.php
+__ https://www.php.net/manual/en/language.types.array.php
 __ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#object
-__ https://secure.php.net/manual/en/language.types.array.php
+__ https://www.php.net/manual/en/language.types.array.php
 __ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#array
-__ https://secure.php.net/manual/en/language.types.array.php
+__ https://www.php.net/manual/en/language.types.array.php
 
 .. _column-type-definitions:
 

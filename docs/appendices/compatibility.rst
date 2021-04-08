@@ -30,11 +30,6 @@ Consult the following table for CrateDB version compatibility notes:
 |                |                 | The default CrateDB user is ``crate`` and |
 |                |                 | has no password is set.                   |
 |                |                 |                                           |
-|                |                 | The `enterprise edition`_ of CrateDB      |
-|                |                 | allows you to `create your own users`_.   |
-|                |                 |                                           |
-|                |                 | Prior versions of CrateDB do not support  |
-|                |                 | this feature.                             |
 +----------------+-----------------+-------------------------------------------+
 | >= 1.0         | >= 2.3.x        |                                           |
 +----------------+-----------------+-------------------------------------------+
@@ -83,6 +78,4 @@ DBAL
 | >= 2.2         | Based on Doctrine 2.10                       | Supported. |
 +----------------+----------------------------------------------+------------+
 
-.. _create your own users: https://crate.io/docs/crate/reference/en/latest/admin/user-management.html
-.. _enterprise edition: https://crate.io/products/cratedb-enterprise/
 .. _query builder: https://www.doctrine-project.org/projects/doctrine-dbal/en/2.7/reference/query-builder.html#join-clauses

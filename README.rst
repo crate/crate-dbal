@@ -10,8 +10,8 @@ CrateDB DBAL Driver
     :target: https://github.com/crate/crate-dbal/actions?workflow=Docs
     :alt: Build status (documentation)
 
-.. image:: https://coveralls.io/repos/github/crate/crate-dbal/badge.svg?branch=main
-    :target: https://coveralls.io/github/crate/crate-dbal
+.. image:: https://codecov.io/gh/crate/crate-dbal/branch/main/graph/badge.svg
+    :target: https://app.codecov.io/gh/crate/crate-dbal
     :alt: Coverage
 
 .. image:: https://scrutinizer-ci.com/g/crate/crate-dbal/badges/quality-score.png?b=main
@@ -22,9 +22,13 @@ CrateDB DBAL Driver
     :target: https://packagist.org/packages/crate/crate-dbal
     :alt: Latest stable version
 
-.. image:: https://poser.pugx.org/crate/crate-dbal/downloads
+.. image:: https://img.shields.io/badge/PHP-7.2%2C%207.3%2C%207.4-green.svg
     :target: https://packagist.org/packages/crate/crate-dbal
-    :alt: Total downloads
+    :alt: Supported PHP versions
+
+.. image:: https://poser.pugx.org/crate/crate-dbal/d/monthly
+    :target: https://packagist.org/packages/crate/crate-dbal
+    :alt: Monthly downloads
 
 .. image:: https://poser.pugx.org/crate/crate-dbal/license
     :target: https://packagist.org/packages/crate/crate-dbal
@@ -48,7 +52,7 @@ Installation
 
 The CrateDB PDO adapter is available as a Composer package. Install it like::
 
-    composer add crate/crate-dbal
+    composer require crate/crate-dbal
 
 See the `installation documentation`_ for more info.
 
