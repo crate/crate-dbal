@@ -15,9 +15,9 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^7.2",
-        "doctrine/dbal": "^2.10",
-        "crate/crate-pdo": "^1.0.0"
+        "php": "^7.3|^8.0",
+        "doctrine/dbal": "^2.13",
+        "crate/crate-pdo": "^2.0.0"
     },
     "autoload": {
         "psr-0": {
