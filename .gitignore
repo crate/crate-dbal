@@ -5,6 +5,7 @@
 .phpunit.result.cache
 *-console.log
 .crate-docs
+/composer.lock
 bin/
 build/
 composer.phar
