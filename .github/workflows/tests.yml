@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [ 'ubuntu-18.04' ] #, macos-latest, windows-latest ]
-        php-version: [ '7.3', '7.4' ]
+        php-version: [ '7.3', '7.4', '8.0' ]
 
     # https://docs.github.com/en/free-pro-team@latest/actions/guides/about-service-containers
     services:
@@ -50,13 +50,13 @@ jobs:
       # https://github.com/codecov/codecov-action
       - name: Upload coverage results to Codecov
         uses: codecov/codecov-action@v1
-        if: always() && (matrix.php-version == '7.4' || matrix.php-version == '8.0')
+        if: always() && (matrix.php-version == '7.4')
         with:
           files: ./build/logs/clover.xml
           fail_ci_if_error: true
 
       - name: Upload coverage results to Scrutinizer CI
-        if: always() && (matrix.php-version == '7.4' || matrix.php-version == '8.0')
+        if: always() && (matrix.php-version == '7.4')
         run: |
           composer global require scrutinizer/ocular
           ocular code-coverage:upload --format=php-clover build/logs/clover.xml
