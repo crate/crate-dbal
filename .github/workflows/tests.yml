@@ -38,6 +38,15 @@ jobs:
 
       - uses: ramsey/composer-install@v1
 
+      - name: Composer clear cache
+        run: composer clearcache
+
+      - name: Composer clear cache
+        run: rm -rf vendor/
+
+      - name: Composer clear cache
+        run: composer update --prefer-source
+
       - name: Run code style checks
         run: composer run check-style
 
