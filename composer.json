@@ -16,7 +16,7 @@
     "prefer-stable": true,
     "require": {
         "php": "^7.3 || ^8.0",
-        "doctrine/dbal": "^2.10",
+        "doctrine/dbal": "^2.12",
         "crate/crate-pdo": "^2.1.1"
     },
     "autoload": {
