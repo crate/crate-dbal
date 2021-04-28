@@ -38,6 +38,11 @@ jobs:
 
       - uses: ramsey/composer-install@v1
 
+      - name: Install doctrine/dbal from source
+        run: |
+          rm -rf vendor/doctrine/dbal
+          composer update doctrine/dbal --prefer-source
+
       - name: Run code style checks
         run: composer run check-style
 
