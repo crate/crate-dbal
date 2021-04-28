@@ -5,6 +5,10 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+- Dropped support for PHP 7.2, it has reached end of life
+
+- Fixed compatibility with Doctrine DBAL 2.13
+
 2020/06/18 2.3.0
 ================
 
