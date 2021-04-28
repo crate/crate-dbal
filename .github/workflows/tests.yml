@@ -38,6 +38,7 @@ jobs:
 
       - uses: ramsey/composer-install@v1
 
+      # Remark: --prefer-source is needed for "Doctrine\Tests\DBAL\Platforms\AbstractPlatformTestCase"
       - name: Install doctrine/dbal from source
         run: |
           rm -rf vendor/doctrine/dbal
@@ -52,13 +53,13 @@ jobs:
       # https://github.com/codecov/codecov-action
       - name: Upload coverage results to Codecov
         uses: codecov/codecov-action@v1
-        if: always() && (matrix.php-version == '7.4')
+        if: always() && (matrix.php-version == '7.4' || matrix.php-version == '8.0')
         with:
           files: ./build/logs/clover.xml
           fail_ci_if_error: true
 
       - name: Upload coverage results to Scrutinizer CI
-        if: always() && (matrix.php-version == '7.4')
+        if: always() && (matrix.php-version == '7.4' || matrix.php-version == '8.0')
         run: |
           composer global require scrutinizer/ocular
           ocular code-coverage:upload --format=php-clover build/logs/clover.xml
