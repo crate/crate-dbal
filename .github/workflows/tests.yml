@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [ 'ubuntu-18.04' ] #, macos-latest, windows-latest ]
-        php-version: [ '7.3', '7.4' ]
+        php-version: [ '7.3', '7.4', '8.0' ]
 
     # https://docs.github.com/en/free-pro-team@latest/actions/guides/about-service-containers
     services:
@@ -37,9 +37,12 @@ jobs:
           tools: composer, phpunit:^8.5
 
       - uses: ramsey/composer-install@v1
-        with:
-          # Remark: --prefer-source is needed for "Doctrine\Tests\DBAL\Platforms\AbstractPlatformTestCase"
-          composer-options: "--prefer-source"
+
+      # Remark: --prefer-source is needed for "Doctrine\Tests\DBAL\Platforms\AbstractPlatformTestCase"
+      - name: Install doctrine/dbal from source
+        run: |
+          rm -rf vendor/doctrine/dbal
+          composer update doctrine/dbal --prefer-source
 
       - name: Run code style checks
         run: composer run check-style

@@ -45,4 +45,4 @@ tools:
 
     # Scrutinizer will wait for two code coverage submissions
     # in order to cover both PHP7 and PHP8.
-    #runs: 2
+    runs: 2
