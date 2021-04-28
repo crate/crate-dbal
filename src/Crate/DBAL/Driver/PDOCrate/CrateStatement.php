@@ -20,6 +20,9 @@
  * software solely pursuant to the terms of the relevant commercial agreement.
  */
 
+
+//.S....S.....SSS...........FF
+// S....S.....SSS...........
 namespace Crate\DBAL\Driver\PDOCrate;
 
 use Doctrine\DBAL\Driver\Statement as StatementInterface;

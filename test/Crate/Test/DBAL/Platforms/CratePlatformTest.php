@@ -37,49 +37,50 @@ use Doctrine\DBAL\Schema\TableDiff;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\Tests\DBAL\Platforms\AbstractPlatformTestCase;
 
-class CratePlatformTest extends AbstractPlatformTestCase {
+class CratePlatformTest extends AbstractPlatformTestCase
+{
 
     private const CRATE_TEST_VERSION = "4.0.0";
 
-    public function createPlatform() : AbstractPlatform
+    public function createPlatform(): AbstractPlatform
     {
         $driver = new Driver();
         return $driver->createDatabasePlatformForVersion(self::CRATE_TEST_VERSION);
     }
 
-    public function getGenerateTableSql() : string
+    public function getGenerateTableSql(): string
     {
         return 'CREATE TABLE test (id INTEGER, test TEXT, PRIMARY KEY(id))';
     }
 
-    public function getGenerateTableWithMultiColumnUniqueIndexSql() : array
+    public function getGenerateTableWithMultiColumnUniqueIndexSql(): array
     {
     }
 
     public function getGenerateTableWithMultiColumnIndexSql()
     {
         return array(
-                'CREATE TABLE test (foo TEXT, bar TEXT, ' .
-                'INDEX IDX_D87F7E0C8C73652176FF8CAA USING FULLTEXT (foo, bar))'
+            'CREATE TABLE test (foo TEXT, bar TEXT, ' .
+            'INDEX IDX_D87F7E0C8C73652176FF8CAA USING FULLTEXT (foo, bar))'
         );
     }
 
-    public function getGenerateIndexSql() : string
+    public function getGenerateIndexSql(): string
     {
         $this->markTestSkipped('Platform does not support CREATE INDEX.');
     }
 
-    public function getGenerateUniqueIndexSql() : string
+    public function getGenerateUniqueIndexSql(): string
     {
         $this->markTestSkipped('Platform does not support CREATE UNIQUE INDEX.');
     }
 
-    public function testGeneratesForeignKeyCreationSql() : void
+    public function testGeneratesForeignKeyCreationSql(): void
     {
         $this->markTestSkipped('Platform does not support FOREIGN KEY constraints.');
     }
 
-    public function getGenerateForeignKeySql() : string
+    public function getGenerateForeignKeySql(): string
     {
         $this->markTestSkipped('Platform does not support ADD FOREIGN KEY.');
     }
@@ -90,31 +91,31 @@ class CratePlatformTest extends AbstractPlatformTestCase {
      * @group DBAL-1082
      * @dataProvider getGeneratesDecimalTypeDeclarationSQL
      */
-    public function testGeneratesDecimalTypeDeclarationSQL(array $column, $expectedSql) : void
+    public function testGeneratesDecimalTypeDeclarationSQL(array $column, $expectedSql): void
     {
         $this->markTestSkipped('Platform does not support any decleration of datatype DECIMAL.');
     }
 
-    public function getGenerateAlterTableSql() : array
+    public function getGenerateAlterTableSql(): array
     {
         return array(
             'ALTER TABLE mytable ADD quota INTEGER',
         );
     }
 
-    public function testAlterTableChangeQuotedColumn() : void
+    public function testAlterTableChangeQuotedColumn(): void
     {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
 
-    protected function getQuotedColumnInPrimaryKeySQL() : array
+    protected function getQuotedColumnInPrimaryKeySQL(): array
     {
         return array(
             'CREATE TABLE "quoted" ("create" TEXT, PRIMARY KEY("create"))',
         );
     }
 
-    protected function getQuotedColumnInIndexSQL() : array
+    protected function getQuotedColumnInIndexSQL(): array
     {
         return array(
             'CREATE TABLE "quoted" ("create" TEXT, ' .
@@ -123,7 +124,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         );
     }
 
-    protected function getQuotedNameInIndexSQL() : array
+    protected function getQuotedNameInIndexSQL(): array
     {
         return array(
             'CREATE TABLE test (column1 TEXT, INDEX key USING FULLTEXT (column1))'
@@ -133,19 +134,21 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     /**
      * @group DBAL-374
      */
-    public function testQuotedColumnInForeignKeyPropagation() : void
+    public function testQuotedColumnInForeignKeyPropagation(): void
     {
         $this->markTestSkipped('Platform does not support ADD FOREIGN KEY.');
     }
 
-    protected function getQuotedColumnInForeignKeySQL() : array {}
+    protected function getQuotedColumnInForeignKeySQL(): array
+    {
+    }
 
-    protected function getQuotesReservedKeywordInUniqueConstraintDeclarationSQL() : string
+    protected function getQuotesReservedKeywordInUniqueConstraintDeclarationSQL(): string
     {
         return 'CONSTRAINT "select" UNIQUE (foo)';
     }
 
-    protected function getQuotesReservedKeywordInIndexDeclarationSQL() : string
+    protected function getQuotesReservedKeywordInIndexDeclarationSQL(): string
     {
         return 'INDEX "select" USING FULLTEXT (foo)';
     }
@@ -153,32 +156,36 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     /**
      * @group DBAL-835
      */
-    public function testQuotesAlterTableRenameColumn() : void
+    public function testQuotesAlterTableRenameColumn(): void
     {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
 
-    protected function getQuotedAlterTableRenameColumnSQL() : array {}
+    protected function getQuotedAlterTableRenameColumnSQL(): array
+    {
+    }
 
     /**
      * @group DBAL-835
      */
-    public function testQuotesAlterTableChangeColumnLength() : void
+    public function testQuotesAlterTableChangeColumnLength(): void
     {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
 
-    protected function getQuotedAlterTableChangeColumnLengthSQL() : array {}
+    protected function getQuotedAlterTableChangeColumnLengthSQL(): array
+    {
+    }
 
     /**
      * @group DBAL-807
      */
-    public function testQuotesAlterTableRenameIndexInSchema() : void
+    public function testQuotesAlterTableRenameIndexInSchema(): void
     {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
 
-    protected function getCommentOnColumnSQL() : array
+    protected function getCommentOnColumnSQL(): array
     {
         return array(
             "COMMENT ON COLUMN foo.bar IS 'comment'",
@@ -190,42 +197,50 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     /**
      * @group DBAL-1010
      */
-    public function testGeneratesAlterTableRenameColumnSQL() : void
+    public function testGeneratesAlterTableRenameColumnSQL(): void
     {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
 
-    public function getAlterTableRenameColumnSQL() : array {}
+    public function getAlterTableRenameColumnSQL(): array
+    {
+    }
 
     /**
      * @group DBAL-1016
      */
-    public function testQuotesTableIdentifiersInAlterTableSQL() : void
+    public function testQuotesTableIdentifiersInAlterTableSQL(): void
     {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
 
-    protected function getQuotesTableIdentifiersInAlterTableSQL() : array {}
+    protected function getQuotesTableIdentifiersInAlterTableSQL(): array
+    {
+    }
 
     /**
      * @group DBAL-1062
      */
-    public function testGeneratesAlterTableRenameIndexUsedByForeignKeySQL() : void
+    public function testGeneratesAlterTableRenameIndexUsedByForeignKeySQL(): void
     {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
 
-    protected function getGeneratesAlterTableRenameIndexUsedByForeignKeySQL() : array {}
+    protected function getGeneratesAlterTableRenameIndexUsedByForeignKeySQL(): array
+    {
+    }
 
     /**
      * @group DBAL-1090
      */
-    public function testAlterStringToFixedString() : void
+    public function testAlterStringToFixedString(): void
     {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
 
-    protected function getAlterStringToFixedStringSQL() : array {}
+    protected function getAlterStringToFixedStringSQL(): array
+    {
+    }
 
     public function testGenerateSubstrExpression()
     {
@@ -365,7 +380,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->platform->getCreateTableSQL($table);
     }
 
-    public function testGeneratesTableAlterationSql() : void
+    public function testGeneratesTableAlterationSql(): void
     {
         $expectedSql = $this->getGenerateAlterTableSql();
 
@@ -377,15 +392,15 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->assertEquals($expectedSql, $sql);
     }
 
-    public function testGetAlterTableSqlDispatchEvent() : void
+    public function testGetAlterTableSqlDispatchEvent(): void
     {
         $events = array(
             'onSchemaAlterTableAddColumn'
         );
 
         $listenerMock = $this->getMockBuilder('GetAlterTableSqlDispatchEvenListener')
-                ->setMethods($events)
-                ->getMock();
+            ->setMethods($events)
+            ->getMock();
         $listenerMock
             ->expects($this->once())
             ->method('onSchemaAlterTableAddColumn');
@@ -404,7 +419,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->platform->getAlterTableSQL($tableDiff);
     }
 
-    public function testGenerateTableWithMultiColumnUniqueIndex() : void
+    public function testGenerateTableWithMultiColumnUniqueIndex(): void
     {
         $table = new Table('test');
         $table->addColumn('foo', 'string', array('notnull' => false, 'length' => 255));
@@ -444,17 +459,17 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->assertEquals($this->getSQLDeclaration($column), 'obj OBJECT ( dynamic )');
 
         $column = new Column('obj', Type::getType(MapType::NAME),
-            array('platformOptions'=>array('type'=>MapType::STRICT)));
+            array('platformOptions' => array('type' => MapType::STRICT)));
         $this->assertEquals($this->getSQLDeclaration($column), 'obj OBJECT ( strict )');
 
         $column = new Column('obj', Type::getType(MapType::NAME),
-            array('platformOptions'=>array('type'=>MapType::IGNORED, 'fields'=>array())));
+            array('platformOptions' => array('type' => MapType::IGNORED, 'fields' => array())));
         $this->assertEquals($this->getSQLDeclaration($column), 'obj OBJECT ( ignored )');
 
         $column = new Column('obj', Type::getType(MapType::NAME),
-            array('platformOptions'=>array(
-                'type'=>MapType::STRICT,
-                'fields'=>array(
+            array('platformOptions' => array(
+                'type' => MapType::STRICT,
+                'fields' => array(
                     new Column('num', Type::getType(Type::INTEGER)),
                     new Column('text', Type::getType(Type::STRING)),
                     new Column('arr', Type::getType(ArrayType::NAME)),
@@ -471,12 +486,13 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->assertEquals($this->getSQLDeclaration($column), 'arr ARRAY ( TEXT )');
 
         $column = new Column('arr', Type::getType(ArrayType::NAME),
-            array('platformOptions'=> array('type'=>Type::INTEGER)));
+            array('platformOptions' => array('type' => Type::INTEGER)));
         $this->assertEquals($this->getSQLDeclaration($column), 'arr ARRAY ( INTEGER )');
 
     }
 
-    public function testPlatformSupport() {
+    public function testPlatformSupport()
+    {
         $this->assertFalse($this->platform->supportsSequences());
         $this->assertFalse($this->platform->supportsSchemas());
         $this->assertTrue($this->platform->supportsIdentityColumns());
@@ -489,9 +505,20 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     }
 
     /**
+     * @return array<int, array{string, array<string, mixed>}>
+     */
+    public function asciiStringSqlDeclarationDataProvider(): array
+    {
+        return [
+            ['TEXT', ['length' => 12]],
+            ['TEXT', ['length' => 12, 'fixed' => true]],
+        ];
+    }
+
+    /**
      * @return string
      */
-    protected function getQuotesReservedKeywordInTruncateTableSQL() : string
+    protected function getQuotesReservedKeywordInTruncateTableSQL(): string
     {
         $this->markTestSkipped('Platform does not support TRUNCATE TABLE.');
     }
