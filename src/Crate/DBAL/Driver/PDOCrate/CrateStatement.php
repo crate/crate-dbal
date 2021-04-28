@@ -22,31 +22,12 @@
 
 namespace Crate\DBAL\Driver\PDOCrate;
 
-use Crate\PDO\PDO;
-use Doctrine\DBAL\Driver\ServerInfoAwareConnection;
+use Doctrine\DBAL\Driver\Statement as StatementInterface;
+use Crate\PDO\PDOStatement;
 
-class PDOConnection extends PDO implements ServerInfoAwareConnection
+/**
+ * @internal
+ */
+class CrateStatement extends PDOStatement implements StatementInterface
 {
-    /**
-     * @param string $dsn
-     * @param string $user
-     * @param string $password
-     * @param array $options
-     */
-    public function __construct($dsn, $user = null, $password = null, array $options = null)
-    {
-        parent::__construct($dsn, $user, $password, $options);
-        $this->setAttribute(PDO::ATTR_STATEMENT_CLASS, CrateStatement::class);
-        $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    }
-
-    /**
-     * Checks whether a query is required to retrieve the database server version.
-     *
-     * @return boolean True if a query is required to retrieve the database server version, false otherwise.
-     */
-    public function requiresQueryForServerVersion()
-    {
-        return false;
-    }
 }

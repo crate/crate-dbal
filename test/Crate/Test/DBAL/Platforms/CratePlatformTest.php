@@ -59,8 +59,8 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     public function getGenerateTableWithMultiColumnIndexSql()
     {
         return array(
-                'CREATE TABLE test (foo TEXT, bar TEXT, ' .
-                'INDEX IDX_D87F7E0C8C73652176FF8CAA USING FULLTEXT (foo, bar))'
+            'CREATE TABLE test (foo TEXT, bar TEXT, ' .
+            'INDEX IDX_D87F7E0C8C73652176FF8CAA USING FULLTEXT (foo, bar))'
         );
     }
 
@@ -384,8 +384,8 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         );
 
         $listenerMock = $this->getMockBuilder('GetAlterTableSqlDispatchEvenListener')
-                ->setMethods($events)
-                ->getMock();
+            ->setMethods($events)
+            ->getMock();
         $listenerMock
             ->expects($this->once())
             ->method('onSchemaAlterTableAddColumn');
@@ -494,5 +494,16 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     protected function getQuotesReservedKeywordInTruncateTableSQL() : string
     {
         $this->markTestSkipped('Platform does not support TRUNCATE TABLE.');
+    }
+
+    /**
+     * @return array<int, array{string, array<string, mixed>}>
+     */
+    public function asciiStringSqlDeclarationDataProvider() : array
+    {
+        return [
+            ['TEXT', ['length' => 12]],
+            ['TEXT', ['length' => 12, 'fixed' => true]],
+        ];
     }
 }
