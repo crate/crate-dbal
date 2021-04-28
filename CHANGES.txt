@@ -5,9 +5,16 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+2021/04/28 3.0.0
+================
+
 - Dropped support for PHP 7.2, it has reached end of life
 
+- Upgraded to CrateDB PDO Adapter 2.1.2
+
 - Fixed compatibility with Doctrine DBAL 2.13
+
+- Added support for PHP 8.0
 
 2020/06/18 2.3.0
 ================
