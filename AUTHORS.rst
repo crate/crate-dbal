@@ -9,5 +9,6 @@ Code Contributors
 =================
 
 Kamil Adryjanek (@kadryjanek) <kamil.adryjanek@gmail.com>
+Alexander Schranz (@alexander-schranz) <alexander@sulu.io>
 
 Note: (@user) means a github user name.
