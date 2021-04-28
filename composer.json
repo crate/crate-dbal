@@ -34,6 +34,11 @@
             "Doctrine\\Tests": "vendor/doctrine/dbal/tests"
         }
     },
+    "config": {
+        "preferred-install": {
+            "doctrine/dbal": "source"
+        }
+    },
     "scripts": {
         "test": "XDEBUG_MODE=coverage phpunit --coverage-clover build/logs/clover.xml",
         "check-style": "phpcs",
