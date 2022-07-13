@@ -31,23 +31,23 @@ This driver maps CrateDB types to the following PHP types:
 
 __ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#boolean
 __ https://www.php.net/manual/en/language.types.boolean.php
-__ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#numeric-types
+__ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#numeric-data
 __ https://www.php.net/manual/en/language.types.integer.php
-__ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#numeric-types
+__ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#numeric-data
 __ https://www.php.net/manual/en/language.types.integer.php
-__ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#numeric-types
+__ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#numeric-data
 __ https://www.php.net/manual/en/language.types.integer.php
-__ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#numeric-types
+__ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#numeric-data
 __ https://www.php.net/manual/en/language.types.string.php
-__ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#numeric-types
+__ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#numeric-data
 __ https://www.php.net/manual/en/language.types.float.php
-__ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#numeric-types
+__ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#numeric-data
 __ https://www.php.net/manual/en/language.types.float.php
-__ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#character-types
+__ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#character-data
 __ https://www.php.net/manual/en/language.types.string.php
 __ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#ip
 __ https://www.php.net/manual/en/language.types.string.php
-__ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#date-time-types
+__ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#dates-and-times
 __ https://www.php.net/manual/en/class.datetime.php
 __ https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#geo-point
 __ https://www.php.net/manual/en/language.types.array.php
@@ -112,5 +112,5 @@ via calls to the the use of the ``Column`` class and calls to the
 .. _MapType: https://github.com/crate/crate-dbal/blob/main/src/Crate/DBAL/Types/MapType.php
 .. _object: https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#object
 .. _ORM documentation: https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/basic-mapping.html
-.. _timestamp: https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#date-time-types
+.. _timestamp: https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#dates-and-times
 .. _TimestampType: https://github.com/crate/crate-dbal/blob/main/src/Crate/DBAL/Types/TimestampType.php
