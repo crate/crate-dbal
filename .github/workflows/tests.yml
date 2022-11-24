@@ -25,7 +25,7 @@ jobs:
     steps:
 
       - name: Acquire sources
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 2
 
@@ -36,7 +36,7 @@ jobs:
           # Select PHPUnit version suitable for PHP 7.2.
           tools: composer, phpunit:^8.5
 
-      - uses: ramsey/composer-install@v1
+      - uses: ramsey/composer-install@v2
 
       # Remark: --prefer-source is needed for "Doctrine\Tests\DBAL\Platforms\AbstractPlatformTestCase"
       - name: Install doctrine/dbal from source
@@ -52,7 +52,7 @@ jobs:
 
       # https://github.com/codecov/codecov-action
       - name: Upload coverage results to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         if: always() && (matrix.php-version == '7.4' || matrix.php-version == '8.0')
         with:
           files: ./build/logs/clover.xml
