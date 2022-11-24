@@ -5,6 +5,8 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+- Added support for PHP 8.1
+
 2021/04/28 3.0.0
 ================
 
