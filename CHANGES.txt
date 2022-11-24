@@ -5,6 +5,8 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+- Added support for Doctrine 3
+
 2025/11/13 4.0.3
 ================
 
