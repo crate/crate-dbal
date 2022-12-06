@@ -40,4 +40,4 @@ This driver also works with `Doctrine ORM`_, an `Object-Relational Mapper`_.
 .. _hosted on GitHub: https://github.com/crate/crate-dbal
 .. _Object-Relational Mapper: https://www.doctrine-project.org/projects/orm.html
 .. _open source: https://en.wikipedia.org/wiki/Open-source_software
-.. _PDO: http://www.php.net/manual/en/intro.pdo.php
+.. _PDO: https://www.php.net/manual/en/intro.pdo.php
