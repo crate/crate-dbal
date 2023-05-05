@@ -66,6 +66,12 @@ class ConnectionTestCase extends DBALFunctionalTestCase
         $this->assertInstanceOf('Crate\DBAL\Driver\PDOCrate\Driver', $this->_conn->getDriver());
     }
 
+    /**
+     * @var \Doctrine\DBAL\Statement $stmt
+     *
+     * @return void
+     * @throws \Doctrine\DBAL\Exception
+     */
     public function testStatement()
     {
         $sql = 'SELECT * FROM sys.cluster';
