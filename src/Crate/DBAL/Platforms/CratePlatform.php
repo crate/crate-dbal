@@ -858,4 +858,13 @@ class CratePlatform extends AbstractPlatform
                "FROM information_schema.tables c " .
                "WHERE " . $this->getTableWhereClause($table);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCurrentDatabaseExpression(): string
+    {
+        // TODO: Implement getCurrentDatabaseExpression() method.
+        //       Added when upgrading to Doctrine3.
+    }
 }
