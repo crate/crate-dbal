@@ -88,5 +88,4 @@ class PDOConnection extends PDOCrateDB implements ServerInfoAwareConnection
             throw Exception::new($exception);
         }
     }
-
 }
