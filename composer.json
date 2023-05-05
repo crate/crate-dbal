@@ -30,8 +30,10 @@
     },
     "autoload-dev": {
         "psr-0": {
-            "Crate\\Test": "test",
-            "Doctrine\\Tests": "vendor/doctrine/dbal/tests"
+            "Crate\\Test": "test"
+        },
+        "psr-4": {
+            "Doctrine\\DBAL\\Tests\\": "vendor/doctrine/dbal/tests"
         }
     },
     "config": {
