@@ -23,7 +23,10 @@
 namespace Crate\DBAL\Driver\PDOCrate;
 
 use Crate\PDO\PDO;
+use Doctrine\DBAL\Driver\PDO\Exception;
+use Doctrine\DBAL\Driver\PDO\Statement;
 use Doctrine\DBAL\Driver\ServerInfoAwareConnection;
+use Doctrine\DBAL\Driver\Statement as StatementInterface;
 
 class PDOConnection extends PDO implements ServerInfoAwareConnection
 {
@@ -49,4 +52,41 @@ class PDOConnection extends PDO implements ServerInfoAwareConnection
     {
         return false;
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * References:
+     * - https://github.com/doctrine/dbal/issues/2025
+     * - https://github.com/doctrine/dbal/pull/517
+     * - https://github.com/doctrine/dbal/pull/373
+     */
+    public function prepare($sql, $options = null): StatementInterface
+    {
+        try {
+            $stmt = $this->connection->prepare($sql, $options);
+            assert($stmt instanceof PDOStatement);
+
+            return new Statement($stmt);
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function exec($sql): int
+    {
+        try {
+            $result = $this->connection->exec($sql);
+
+            assert($result !== false);
+
+            return $result;
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
+        }
+    }
+
 }
