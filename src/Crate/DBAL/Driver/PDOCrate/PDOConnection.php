@@ -88,5 +88,4 @@ class PDOConnection extends PDO implements ServerInfoAwareConnection
             throw Exception::new($exception);
         }
     }
-
 }

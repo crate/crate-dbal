@@ -433,6 +433,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     protected function _getCommonIntegerTypeDeclarationSQL(array $columnDef)
     {
         return '';
@@ -671,6 +672,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     protected function _getCreateTableSQL($name, array $columns, array $options = array())
     {
         $columnListSql = $this->getColumnDeclarationListSQL($columns);
