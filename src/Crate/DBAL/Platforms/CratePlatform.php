@@ -433,6 +433,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     protected function _getCommonIntegerTypeDeclarationSQL(array $columnDef)
     {
         return '';
@@ -671,6 +672,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     protected function _getCreateTableSQL($name, array $columns, array $options = array())
     {
         $columnListSql = $this->getColumnDeclarationListSQL($columns);
@@ -857,5 +859,14 @@ class CratePlatform extends AbstractPlatform
         return "SELECT clustered_by, number_of_shards, partitioned_by, number_of_replicas, column_policy, settings " .
                "FROM information_schema.tables c " .
                "WHERE " . $this->getTableWhereClause($table);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCurrentDatabaseExpression(): string
+    {
+        // TODO: Implement getCurrentDatabaseExpression() method.
+        //       Added when upgrading to Doctrine3.
     }
 }

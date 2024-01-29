@@ -32,6 +32,7 @@ class CrateSchemaManager extends AbstractSchemaManager
      * {@inheritdoc}
      *
      */
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     protected function _getPortableTableIndexesList($tableIndexes, $tableName = null)
     {
         $buffer = [];
@@ -51,6 +52,7 @@ class CrateSchemaManager extends AbstractSchemaManager
     /**
      * {@inheritDoc}
      */
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     protected function _getPortableTableColumnDefinition($tableColumn)
     {
         $tableColumn = array_change_key_case($tableColumn, CASE_LOWER);
@@ -83,6 +85,7 @@ class CrateSchemaManager extends AbstractSchemaManager
     /**
      * {@inheritDoc}
      */
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     protected function _getPortableTablesList($tables)
     {
         $tableNames = array();
