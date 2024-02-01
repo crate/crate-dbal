@@ -6,6 +6,7 @@ Unreleased
 ==========
 
 - Dropped support for PHP 7.x
+- Added support for PHP 8.3
 
 2022/11/29 3.0.1
 ================
