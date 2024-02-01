@@ -66,7 +66,7 @@ jobs:
         if: always() && (matrix.php-version == '7.4' || startsWith(matrix.php-version, '8.'))
         with:
           files: ./build/logs/clover.xml
-          fail_ci_if_error: true
+          fail_ci_if_error: false
 
       - name: Upload coverage results to Scrutinizer CI
         if: always() && (matrix.php-version == '7.4' || startsWith(matrix.php-version, '8.'))
