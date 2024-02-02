@@ -5,6 +5,9 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+2024/02/02 4.0.1
+================
+
 - README: Update list of supported PHP versions
 
 2024/02/02 4.0.0
