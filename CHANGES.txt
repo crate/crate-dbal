@@ -5,7 +5,10 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
-- Dropped support for PHP 7.x
+2024/02/02 4.0.0
+================
+
+- Dropped support for PHP 7.x, it has reached end of life
 - Added support for PHP 8.3
 
 2022/11/29 3.0.1
