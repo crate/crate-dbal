@@ -5,6 +5,11 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+2024/02/02 4.0.2
+================
+
+- Update internal version number
+
 2024/02/02 4.0.1
 ================
 
