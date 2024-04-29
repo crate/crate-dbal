@@ -32,7 +32,8 @@ This driver also works with `Doctrine ORM`_, an `Object-Relational Mapper`_.
    connect
    appendices/index
 
-.. _CrateDB: https://crate.io/products/cratedb/
+
+.. _CrateDB: https://cratedb.com/product
 .. _DBAL documentation: https://www.doctrine-project.org/projects/doctrine-dbal/en/3.0/index.html
 .. _DBAL: https://www.doctrine-project.org/projects/dbal.html
 .. _Doctrine ORM: https://www.doctrine-project.org/projects/orm.html
