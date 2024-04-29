@@ -95,7 +95,7 @@ Next steps
 Use the standard the `DBAL documentation`_ or `Doctrine ORM documentation`_ for the rest of
 your setup process.
 
-.. _database user: https://cratedb.com/docs/crate/reference/en/master/admin/user-management.html
+.. _database user: https://cratedb.com/docs/crate/reference/en/latest/admin/user-management.html
 .. _DBAL: https://www.doctrine-project.org/projects/dbal.html
 .. _DBAL documentation: https://www.doctrine-project.org/projects/doctrine-dbal/en/2.10/index.html
 .. _Doctrine provided example: https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/reference/configuration.html#obtaining-an-entitymanager
