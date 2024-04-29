@@ -69,6 +69,6 @@ Example on how to adjust the replicas:
    $myTable = new Table('my_table', [], [], [], 0, $options);
 
 
-.. _CrateDB CREATE TABLE Documentation: https://crate.io/docs/crate/reference/en/latest/sql/statements/create-table.html
-.. _CrateDB Sharding Documentation: https://crate.io/docs/crate/reference/en/latest/general/ddl/sharding.html
-.. _CrateDB Partitioned Tables Documentation: https://crate.io/docs/crate/reference/en/latest/general/ddl/partitioned-tables.html
+.. _CrateDB CREATE TABLE Documentation: https://cratedb.com/docs/crate/reference/en/master/sql/statements/create-table.html
+.. _CrateDB Sharding Documentation: https://cratedb.com/docs/crate/reference/en/master/general/ddl/sharding.html
+.. _CrateDB Partitioned Tables Documentation: https://cratedb.com/docs/crate/reference/en/master/general/ddl/partitioned-tables.html
