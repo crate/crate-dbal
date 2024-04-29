@@ -111,6 +111,6 @@ via calls to the the use of the ``Column`` class and calls to the
 .. _ArrayType: https://github.com/crate/crate-dbal/blob/main/src/Crate/DBAL/Types/ArrayType.php
 .. _MapType: https://github.com/crate/crate-dbal/blob/main/src/Crate/DBAL/Types/MapType.php
 .. _object: https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#object
-.. _ORM documentation: https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/basic-mapping.html
+.. _ORM documentation: https://www.doctrine-project.org/projects/doctrine-orm/en/3.0/reference/basic-mapping.html
 .. _timestamp: https://crate.io/docs/crate/reference/en/latest/general/ddl/data-types.html#dates-and-times
 .. _TimestampType: https://github.com/crate/crate-dbal/blob/main/src/Crate/DBAL/Types/TimestampType.php
