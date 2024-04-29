@@ -97,8 +97,8 @@ your setup process.
 
 .. _database user: https://crate.io/docs/crate/reference/en/latest/admin/user-management.html
 .. _DBAL: https://www.doctrine-project.org/projects/dbal.html
-.. _DBAL documentation: https://www.doctrine-project.org/projects/doctrine-dbal/en/2.10/index.html
-.. _Doctrine provided example: https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/reference/configuration.html#obtaining-an-entitymanager
+.. _DBAL documentation: https://www.doctrine-project.org/projects/doctrine-dbal/en/3.0/index.html
+.. _Doctrine provided example: https://www.doctrine-project.org/projects/doctrine-orm/en/3.0/reference/configuration.html#obtaining-an-entitymanager
 .. _Object-Relational Mapping: https://www.doctrine-project.org/projects/orm.html
-.. _Doctrine ORM documentation: https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/index.html
-.. _standard DBAL parameters: https://www.doctrine-project.org/projects/doctrine-dbal/en/2.10/reference/configuration.html
+.. _Doctrine ORM documentation: https://www.doctrine-project.org/projects/doctrine-orm/en/3.0/index.html
+.. _standard DBAL parameters: https://www.doctrine-project.org/projects/doctrine-dbal/en/3.0/reference/configuration.html
