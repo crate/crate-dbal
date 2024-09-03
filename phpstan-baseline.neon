@@ -1,0 +1,756 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Method Crate\\\\DBAL\\\\Driver\\\\PDOCrate\\\\Driver\\:\\:constructPdoDsn\\(\\) has parameter \\$params with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Driver/PDOCrate/Driver.php
+
+		-
+			message: "#^Method Crate\\\\DBAL\\\\Driver\\\\PDOCrate\\\\Driver\\:\\:getDatabase\\(\\) should return string but returns null\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Driver/PDOCrate/Driver.php
+
+		-
+			message: "#^Method Crate\\\\DBAL\\\\Driver\\\\PDOCrate\\\\PDOConnection\\:\\:__construct\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Driver/PDOCrate/PDOConnection.php
+
+		-
+			message: "#^Parameter \\#2 \\$username of method Crate\\\\PDO\\\\PDO\\:\\:__construct\\(\\) expects null, string\\|null given\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Driver/PDOCrate/PDOConnection.php
+
+		-
+			message: "#^Parameter \\#3 \\$passwd of method Crate\\\\PDO\\\\PDO\\:\\:__construct\\(\\) expects null, string\\|null given\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Driver/PDOCrate/PDOConnection.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\DBAL\\\\Platforms\\\\AbstractPlatform\\:\\:getTableOptionsSQL\\(\\)\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Schema/CrateSchemaManager.php
+
+		-
+			message: "#^Cannot access offset 'clustered_by' on array\\<string, mixed\\>\\|false\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Schema/CrateSchemaManager.php
+
+		-
+			message: "#^Cannot access offset 'column_policy' on array\\<string, mixed\\>\\|false\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Schema/CrateSchemaManager.php
+
+		-
+			message: "#^Cannot access offset 'number_of_replicas' on array\\<string, mixed\\>\\|false\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Schema/CrateSchemaManager.php
+
+		-
+			message: "#^Cannot access offset 'number_of_shards' on array\\<string, mixed\\>\\|false\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Schema/CrateSchemaManager.php
+
+		-
+			message: "#^Cannot access offset 'partitioned_by' on array\\<string, mixed\\>\\|false\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Schema/CrateSchemaManager.php
+
+		-
+			message: "#^Cannot access offset 'settings' on array\\<string, mixed\\>\\|false\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Schema/CrateSchemaManager.php
+
+		-
+			message: "#^Method Crate\\\\DBAL\\\\Schema\\\\CrateSchemaManager\\:\\:flatten\\(\\) has parameter \\$array with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Schema/CrateSchemaManager.php
+
+		-
+			message: "#^Method Crate\\\\DBAL\\\\Schema\\\\CrateSchemaManager\\:\\:flatten\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Schema/CrateSchemaManager.php
+
+		-
+			message: "#^Parameter \\#5 \\$idGeneratorType of class Doctrine\\\\DBAL\\\\Schema\\\\Table constructor expects int, array given\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Schema/CrateSchemaManager.php
+
+		-
+			message: "#^Method Crate\\\\DBAL\\\\Types\\\\ArrayType\\:\\:getArrayTypeDeclarationSQL\\(\\) has parameter \\$field with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Types/ArrayType.php
+
+		-
+			message: "#^Method Crate\\\\DBAL\\\\Types\\\\ArrayType\\:\\:getArrayTypeDeclarationSQL\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Types/ArrayType.php
+
+		-
+			message: "#^Method Crate\\\\DBAL\\\\Types\\\\ArrayType\\:\\:getSQLDeclaration\\(\\) has parameter \\$fieldDeclaration with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Types/ArrayType.php
+
+		-
+			message: "#^Method Crate\\\\DBAL\\\\Types\\\\MapType\\:\\:getMapTypeDeclarationSQL\\(\\) has parameter \\$field with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Types/MapType.php
+
+		-
+			message: "#^Method Crate\\\\DBAL\\\\Types\\\\MapType\\:\\:getMapTypeDeclarationSQL\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Types/MapType.php
+
+		-
+			message: "#^Method Crate\\\\DBAL\\\\Types\\\\MapType\\:\\:getSQLDeclaration\\(\\) has parameter \\$fieldDeclaration with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Types/MapType.php
+
+		-
+			message: "#^Method Crate\\\\DBAL\\\\Types\\\\TimestampType\\:\\:getSQLDeclaration\\(\\) has parameter \\$fieldDeclaration with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Crate/DBAL/Types/TimestampType.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\BindingTestCase\\:\\:testBindNamedParam\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/BindingTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\BindingTestCase\\:\\:testBindNamedValue\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/BindingTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\BindingTestCase\\:\\:testBindPositionalParam\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/BindingTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\BindingTestCase\\:\\:testBindPositionalValue\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/BindingTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\BindingTestCase\\:\\:testBindTimestamp\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/BindingTest.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\DBAL\\\\Driver\\\\Connection\\:\\:getAttribute\\(\\)\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/ConnectionTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\ConnectionTestCase\\:\\:testBasicAuthConnection\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/ConnectionTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\ConnectionTestCase\\:\\:testConnect\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/ConnectionTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\ConnectionTestCase\\:\\:testGetConnection\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/ConnectionTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\ConnectionTestCase\\:\\:testGetDriver\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/ConnectionTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\ConnectionTestCase\\:\\:testStatement\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/ConnectionTest.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverResultStatement\\|Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\:\\:execute\\(\\)\\.$#"
+			count: 2
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Cannot access offset 0 on array\\<int, mixed\\>\\|false\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Cannot access offset 1 on array\\<int, mixed\\>\\|false\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:setupFixture\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:setupFixture\\(\\) is unused\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testBitComparisonExpressionSupport\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testDateArithmetics\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testEmptyFetchColumnReturnsFalse\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testExecuteQueryBindDateTimeType\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testExecuteUpdateBindDateTimeType\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testFetchAll\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testFetchAllStyleColumn\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testFetchAllSupportFetchClass\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testFetchArray\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testFetchBoth\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testFetchColumn\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testFetchRow\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testNativeArrayListSupport\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testPrepareQueryBindValueDateTimeType\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testPrepareWithBindParam\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testPrepareWithBindValue\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testPrepareWithExecuteParams\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testPrepareWithFetchAll\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testPrepareWithFetchAllBoth\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testPrepareWithFetchColumn\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testPrepareWithIterator\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testPrepareWithQuoted\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testQuoteSQLInjection\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testSetDefaultFetchMode\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testSetFetchModeClassFetch\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testSetFetchModeClassFetchAll\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:testSetFetchModeOnDbalStatement\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Property Crate\\\\Test\\\\DBAL\\\\Functional\\\\DataAccessTestCase\\:\\:\\$generated has no type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 5
+			path: test/Crate/Test/DBAL/Functional/DataAccessTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\ModifyLimitQueryTest\\:\\:assertLimitResult\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/ModifyLimitQueryTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\ModifyLimitQueryTest\\:\\:assertLimitResult\\(\\) has parameter \\$expectedResults with no type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/ModifyLimitQueryTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\ModifyLimitQueryTest\\:\\:assertLimitResult\\(\\) has parameter \\$limit with no type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/ModifyLimitQueryTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\ModifyLimitQueryTest\\:\\:assertLimitResult\\(\\) has parameter \\$offset with no type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/ModifyLimitQueryTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\ModifyLimitQueryTest\\:\\:assertLimitResult\\(\\) has parameter \\$sql with no type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/ModifyLimitQueryTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\ModifyLimitQueryTest\\:\\:testModifyLimitQueryGroupBy\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/ModifyLimitQueryTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\ModifyLimitQueryTest\\:\\:testModifyLimitQueryOrderBy\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/ModifyLimitQueryTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\ModifyLimitQueryTest\\:\\:testModifyLimitQuerySimpleQuery\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/ModifyLimitQueryTest.php
+
+		-
+			message: "#^Property Crate\\\\Test\\\\DBAL\\\\Functional\\\\ModifyLimitQueryTest\\:\\:\\$tableCreated has no type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/ModifyLimitQueryTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\NamedParametersTest\\:\\:testTicket\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/NamedParametersTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\NamedParametersTest\\:\\:testTicket\\(\\) has parameter \\$expected with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/NamedParametersTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\NamedParametersTest\\:\\:testTicket\\(\\) has parameter \\$params with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/NamedParametersTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\NamedParametersTest\\:\\:testTicket\\(\\) has parameter \\$types with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/NamedParametersTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\NamedParametersTest\\:\\:ticketProvider\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/NamedParametersTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\Schema\\\\SchemaManagerTest\\:\\:assertHasTable\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/Schema/SchemaManagerTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\Schema\\\\SchemaManagerTest\\:\\:assertHasTable\\(\\) has parameter \\$tableName with no type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/Schema/SchemaManagerTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\Schema\\\\SchemaManagerTest\\:\\:assertHasTable\\(\\) has parameter \\$tables with no type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/Schema/SchemaManagerTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\Schema\\\\SchemaManagerTest\\:\\:createListTableColumns\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/Schema/SchemaManagerTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\Schema\\\\SchemaManagerTest\\:\\:createTestTable\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/Schema/SchemaManagerTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\Schema\\\\SchemaManagerTest\\:\\:createTestTable\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/Schema/SchemaManagerTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\Schema\\\\SchemaManagerTest\\:\\:getTestCompositeTable\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/Schema/SchemaManagerTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\Schema\\\\SchemaManagerTest\\:\\:getTestCompositeTable\\(\\) has parameter \\$name with no type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/Schema/SchemaManagerTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\Schema\\\\SchemaManagerTest\\:\\:getTestTable\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/Schema/SchemaManagerTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\Schema\\\\SchemaManagerTest\\:\\:getTestTable\\(\\) has parameter \\$name with no type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/Schema/SchemaManagerTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\Schema\\\\SchemaManagerTest\\:\\:getTestTable\\(\\) has parameter \\$options with no type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/Schema/SchemaManagerTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\Schema\\\\SchemaManagerTest\\:\\:testCreateSchema\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/Schema/SchemaManagerTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\Schema\\\\SchemaManagerTest\\:\\:testListTableColumns\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/Schema/SchemaManagerTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\Schema\\\\SchemaManagerTest\\:\\:testListTableIndexes\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/Schema/SchemaManagerTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\Schema\\\\SchemaManagerTest\\:\\:testListTables\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/Schema/SchemaManagerTest.php
+
+		-
+			message: "#^Parameter \\#5 \\$idGeneratorType of class Doctrine\\\\DBAL\\\\Schema\\\\Table constructor expects int, false given\\.$#"
+			count: 2
+			path: test/Crate/Test/DBAL/Functional/Schema/SchemaManagerTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\TableOptionsTest\\:\\:testAdditionalTableOptions\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/TableOptionsTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\TableOptionsTest\\:\\:testGetAdditionalTableOptions\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/TableOptionsTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\TableOptionsTest\\:\\:testPartitionColumnsNotArray\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/TableOptionsTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\TypeConversionTestCase\\:\\:testArrayType\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/TypeConversionTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\TypeConversionTestCase\\:\\:testArrayTypeInvalid\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/TypeConversionTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\TypeConversionTestCase\\:\\:testArrayTypeNullValue\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/TypeConversionTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\TypeConversionTestCase\\:\\:testMapType\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/TypeConversionTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\TypeConversionTestCase\\:\\:testMapTypeInvalid\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/TypeConversionTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\TypeConversionTestCase\\:\\:testMapTypeNullValue\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/TypeConversionTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\TypeConversionTestCase\\:\\:testTimestampType\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/TypeConversionTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\TypeConversionTestCase\\:\\:testTimestampTypeNull\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/TypeConversionTest.php
+
+		-
+			message: "#^Property Crate\\\\Test\\\\DBAL\\\\Functional\\\\TypeConversionTestCase\\:\\:\\$platform has no type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/TypeConversionTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\Types\\\\MapTypeTest\\:\\:testStrictMapTableCreationWithSchemaManager\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/Types/MapTypeTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\WriteTest\\:\\:insertRows\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/WriteTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\WriteTest\\:\\:testDelete\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/WriteTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\WriteTest\\:\\:testExecuteUpdate\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/WriteTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\WriteTest\\:\\:testExecuteUpdateFirstTypeIsNull\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/WriteTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\WriteTest\\:\\:testExecuteUpdateWithTypes\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/WriteTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\WriteTest\\:\\:testInsert\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/WriteTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\WriteTest\\:\\:testPrepareRowCountReturnsAffectedRows\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/WriteTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\WriteTest\\:\\:testPrepareWithDbalTypeNames\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/WriteTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\WriteTest\\:\\:testPrepareWithDbalTypes\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/WriteTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\WriteTest\\:\\:testPrepareWithPdoTypes\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/WriteTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Functional\\\\WriteTest\\:\\:testUpdate\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/WriteTest.php
+
+		-
+			message: "#^Property Crate\\\\Test\\\\DBAL\\\\Functional\\\\WriteTest\\:\\:\\$generated has no type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Functional/WriteTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\PDOCrate\\\\DriverTest\\:\\:testCreatePlatformForVersionGreaterEquals_4\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/PDOCrate/DriverTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\PDOCrate\\\\DriverTest\\:\\:testCreatePlatformForVersionLess_0_57\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/PDOCrate/DriverTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\PDOCrate\\\\DriverTest\\:\\:testCreatePlatformForVersionLess_4\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/PDOCrate/DriverTest.php
+
+		-
+			message: "#^Call to method expects\\(\\) on an unknown class GetAlterTableSqlDispatchEvenListener\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Class Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest extends generic class Doctrine\\\\Tests\\\\DBAL\\\\Platforms\\\\AbstractPlatformTestCase but does not specify its types\\: T$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:getGenerateTableWithMultiColumnIndexSql\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:getSQLDeclaration\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testConvertBooleans\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testCreateDatabases\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testDropDatabases\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testGenerateArraySQLDeclaration\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testGenerateBlobTypeGeneration\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testGenerateDateDiffExpression\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testGenerateNowExpression\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testGenerateObjectSQLDeclaration\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testGenerateRegexExpression\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testGenerateSubstrExpression\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testGenerateTableSql\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testGenerateTableSqlWithoutColumns\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testGenerateTableWithMultiColumnIndex\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testGeneratesDecimalTypeDeclarationSQL\\(\\) has parameter \\$expectedSql with no type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testListDatabases\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testPlatformSupport\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testReadLockSQL\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testSQLResultCasting\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testTruncateTableSQL\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testUniqueConstraintInCustomSchemaOptions\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Method Crate\\\\Test\\\\DBAL\\\\Platforms\\\\CratePlatformTest\\:\\:testUnsupportedUniqueIndexConstraint\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$className of method PHPUnit\\\\Framework\\\\TestCase\\:\\:getMockBuilder\\(\\) expects class\\-string\\<GetAlterTableSqlDispatchEvenListener\\>, string given\\.$#"
+			count: 1
+			path: test/Crate/Test/DBAL/Platforms/CratePlatformTest.php
