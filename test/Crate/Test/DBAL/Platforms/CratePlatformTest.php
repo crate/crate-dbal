@@ -30,11 +30,13 @@ use Crate\DBAL\Types\MapType;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Events;
+use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\Tests\DBAL\Platforms\AbstractPlatformTestCase;
 
 class CratePlatformTest extends AbstractPlatformTestCase {
@@ -255,7 +257,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function testGenerateNowExpression()
     {
-        $this->expectException(DBALException::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Operation \'Crate\DBAL\Platforms\CratePlatform::getNowExpression\' is not supported by platform.');
         $this->platform->getNowExpression();
     }
@@ -267,7 +269,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function testGenerateDateDiffExpression()
     {
-        $this->expectException(DBALException::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Operation \'Crate\DBAL\Platforms\CratePlatform::getDateDiffExpression\' is not supported by platform.');
 
         $this->platform->getDateDiffExpression('2014-10-10 10:10:10', '2014-10-20 20:20:20');
@@ -275,7 +277,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function testCreateDatabases()
     {
-        $this->expectException(DBALException::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Operation \'Crate\DBAL\Platforms\CratePlatform::getCreateDatabaseSQL\' is not supported by platform.');
 
         $this->platform->getCreateDatabaseSQL('foo');
@@ -283,7 +285,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function testListDatabases()
     {
-        $this->expectException(DBALException::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Operation \'Crate\DBAL\Platforms\CratePlatform::getListDatabasesSQL\' is not supported by platform.');
 
         $this->platform->getListDatabasesSQL();
@@ -291,7 +293,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function testDropDatabases()
     {
-        $this->expectException(DBALException::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Operation \'Crate\DBAL\Platforms\CratePlatform::getDropDatabaseSQL\' is not supported by platform.');
 
         $this->platform->getDropDatabaseSQL('foo');
@@ -299,7 +301,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function testGenerateBlobTypeGeneration()
     {
-        $this->expectException(DBALException::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Operation \'Crate\DBAL\Platforms\CratePlatform::getBlobTypeDeclarationSQL\' is not supported by platform.');
 
         $this->platform->getBlobTypeDeclarationSQL(array());
@@ -307,14 +309,14 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function testTruncateTableSQL()
     {
-        $this->expectException(DBALException::class);
+        $this->expectException(Exception::class);
 
         $this->platform->getTruncateTableSQL('foo');
     }
 
     public function testReadLockSQL()
     {
-        $this->expectException(DBALException::class);
+        $this->expectException(Exception::class);
 
         $this->platform->getReadLockSQL();
     }
@@ -338,7 +340,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function testGenerateTableSqlWithoutColumns()
     {
-        $this->expectException(DBALException::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('No columns specified for table foo');
 
 
@@ -366,7 +368,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function testUnsupportedUniqueIndexConstraint()
     {
-        $this->expectException(DBALException::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage("Unique constraints are not supported. Use `primary key` instead");
 
         $table = new Table("foo");
@@ -377,7 +379,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function testUniqueConstraintInCustomSchemaOptions()
     {
-        $this->expectException(DBALException::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage("Unique constraints are not supported. Use `primary key` instead");
 
         $table = new Table("foo");
@@ -404,7 +406,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         );
 
         $listenerMock = $this->getMockBuilder('GetAlterTableSqlDispatchEvenListener')
-            ->setMethods($events)
+            ->addMethods($events)
             ->getMock();
         $listenerMock
             ->expects($this->once())
@@ -431,7 +433,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $table->addColumn('bar', 'string', array('notnull' => false, 'length' => 255));
         $table->addUniqueIndex(array("foo", "bar"));
 
-        $this->expectException(DBALException::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Operation \'Unique constraints are not supported. Use `primary key` instead\' is not supported by platform.');
 
         $this->platform->getCreateTableSQL($table);
@@ -475,8 +477,8 @@ class CratePlatformTest extends AbstractPlatformTestCase {
             array('platformOptions'=>array(
                 'type'=>MapType::STRICT,
                 'fields'=>array(
-                    new Column('num', Type::getType(Type::INTEGER)),
-                    new Column('text', Type::getType(Type::STRING)),
+                    new Column('num', Type::getType(Types::INTEGER)),
+                    new Column('text', Type::getType(Types::STRING)),
                     new Column('arr', Type::getType(ArrayType::NAME)),
                     new Column('obj', Type::getType(MapType::NAME)),
                 ),
@@ -491,7 +493,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->assertEquals($this->getSQLDeclaration($column), 'arr ARRAY ( TEXT )');
 
         $column = new Column('arr', Type::getType(ArrayType::NAME),
-            array('platformOptions'=> array('type'=>Type::INTEGER)));
+            array('platformOptions'=> array('type'=> Types::INTEGER)));
         $this->assertEquals($this->getSQLDeclaration($column), 'arr ARRAY ( INTEGER )');
 
     }
@@ -503,9 +505,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->assertFalse($this->platform->supportsIndexes());
         $this->assertFalse($this->platform->supportsCommentOnStatement());
         $this->assertFalse($this->platform->supportsForeignKeyConstraints());
-        $this->assertFalse($this->platform->supportsForeignKeyOnUpdate());
         $this->assertFalse($this->platform->supportsViews());
-        $this->assertFalse($this->platform->prefersSequences());
     }
 
     /**

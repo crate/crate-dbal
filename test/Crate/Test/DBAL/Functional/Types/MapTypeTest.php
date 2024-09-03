@@ -29,6 +29,7 @@ use Crate\Test\DBAL\DBALFunctionalTestCase;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 
 class MapTypeTest extends DBALFunctionalTestCase {
 
@@ -39,8 +40,8 @@ class MapTypeTest extends DBALFunctionalTestCase {
         $objDefinition = array(
             'type' => MapType::STRICT,
             'fields' => array(
-                new Column('id',  Type::getType(Type::INTEGER), array()),
-                new Column('name',  Type::getType(Type::STRING), array()),
+                new Column('id',  Type::getType(Types::INTEGER), array()),
+                new Column('name',  Type::getType(Types::STRING), array()),
             ),
         );
         $table->addColumn(
@@ -53,4 +54,4 @@ class MapTypeTest extends DBALFunctionalTestCase {
         $this->assertEquals(array('CREATE TABLE items (object_column OBJECT ( strict ) AS ( id INTEGER, name TEXT ))'), $sql);
     }
 
-} 
+}

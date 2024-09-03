@@ -122,7 +122,7 @@ class CrateSchemaManager extends AbstractSchemaManager
         $indexes = $this->listTableIndexes($tableName);
         $options = [];
 
-        $s = $this->_conn->fetchAssoc($this->_platform->getTableOptionsSQL($tableName));
+        $s = $this->_conn->fetchAssociative($this->_platform->getTableOptionsSQL($tableName));
 
         $options['sharding_routing_column'] = $s['clustered_by'];
         $options['sharding_num_shards'] = $s['number_of_shards'];

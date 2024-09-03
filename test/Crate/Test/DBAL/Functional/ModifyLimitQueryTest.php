@@ -117,7 +117,7 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
     {
         $p = $this->_conn->getDatabasePlatform();
         $data = array();
-        foreach ($this->_conn->fetchAll($p->modifyLimitQuery($sql, $limit, $offset)) AS $row) {
+        foreach ($this->_conn->fetchAllAssociative($p->modifyLimitQuery($sql, $limit, $offset)) AS $row) {
             $row = array_change_key_case($row, CASE_LOWER);
             $data[] = $row['test_int'];
         }

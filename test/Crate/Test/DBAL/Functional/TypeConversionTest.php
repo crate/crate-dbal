@@ -28,6 +28,7 @@ use Crate\Test\DBAL\DBALFunctionalTestCase;
 use Crate\DBAL\Types\ArrayType;
 use Crate\DBAL\Types\MapType;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use PHPUnit\Framework\TestCase;
 
 class TypeConversionTestCase extends TestCase {
@@ -44,7 +45,7 @@ class TypeConversionTestCase extends TestCase {
         $input = new \DateTime("2014-10-21 15:23:38");
 
         // datetimetz
-        $type = Type::getType(Type::DATETIMETZ);
+        $type = Type::getType(Types::DATETIMETZ_MUTABLE);
         $expected = $input->format('Y-m-d\TH:i:sO');
         $output = $type->convertToDatabaseValue($input, $this->platform);
         $this->assertEquals($output, $expected);
@@ -54,7 +55,7 @@ class TypeConversionTestCase extends TestCase {
         $this->assertEquals($inputRestored, $input);
 
         // datetime
-        $type = Type::getType(Type::DATETIME);
+        $type = Type::getType(Types::DATETIME_MUTABLE);
         $expected = $input->format('Y-m-d\TH:i:s');
         $output = $type->convertToDatabaseValue($input, $this->platform);
         $this->assertEquals($output, $expected);
@@ -64,7 +65,7 @@ class TypeConversionTestCase extends TestCase {
         $this->assertEquals($inputRestored, $input);
 
         // date
-        $type = Type::getType(Type::DATE);
+        $type = Type::getType(Types::DATE_MUTABLE);
         $expected = $input->format('Y-m-d\TH:i:s');
         $output = $type->convertToDatabaseValue($input, $this->platform);
         $this->assertEquals($output, $expected);
@@ -74,7 +75,7 @@ class TypeConversionTestCase extends TestCase {
         $this->assertEquals($inputRestored, $input);
 
         // time
-        $type = Type::getType(Type::TIME);
+        $type = Type::getType(Types::TIME_MUTABLE);
         $expected = $input->format('Y-m-d\TH:i:s');
         $output = $type->convertToDatabaseValue($input, $this->platform);
         $this->assertEquals($output, $expected);
@@ -96,10 +97,10 @@ class TypeConversionTestCase extends TestCase {
 
     public function testTimestampTypeNull()
     {
-        $types = array(Type::getType(Type::DATETIMETZ),
-            Type::getType(Type::DATETIME),
-            Type::getType(Type::DATE),
-            Type::getType(Type::TIME),
+        $types = array(Type::getType(Types::DATETIMETZ_MUTABLE),
+            Type::getType(Types::DATETIME_MUTABLE),
+            Type::getType(Types::DATE_MUTABLE),
+            Type::getType(Types::TIME_MUTABLE),
             Type::getType(TimestampType::NAME)
         );
         foreach ($types as $type) {

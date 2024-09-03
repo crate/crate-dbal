@@ -167,7 +167,7 @@ class NamedParametersTest extends DBALFunctionalTestCase
     public function testTicket($query,$params,$types,$expected)
     {
         $stmt   = $this->_conn->executeQuery($query, $params, $types);
-        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $result = $stmt->fetchAllAssociative();
 
         foreach ($result as $k => $v) {
             $result[$k] = array_change_key_case($v, CASE_LOWER);

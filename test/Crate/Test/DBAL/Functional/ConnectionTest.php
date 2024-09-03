@@ -21,8 +21,8 @@
  */
 namespace Crate\Test\DBAL\Functional;
 
+use Crate\PDO\PDOCrateDB;
 use Crate\Test\DBAL\DBALFunctionalTestCase;
-use Crate\PDO\PDO;
 
 class ConnectionTestCase extends DBALFunctionalTestCase
 {
@@ -49,9 +49,9 @@ class ConnectionTestCase extends DBALFunctionalTestCase
             'password' => $auth[1],
         );
         $conn = \Doctrine\DBAL\DriverManager::getConnection($params);
-        $this->assertEquals($auth[0], $conn->getUsername());
-        $this->assertEquals($auth[1], $conn->getPassword());
-        $auth_attr = $conn->getWrappedConnection()->getAttribute(PDO::CRATE_ATTR_HTTP_BASIC_AUTH);
+        $this->assertEquals($auth[0], $conn->getParams()['username']);
+        $this->assertEquals($auth[1], $conn->getParams()['password']);
+        $auth_attr = $conn->getWrappedConnection()->getAttribute(PDOCrateDB::CRATE_ATTR_HTTP_BASIC_AUTH);
         $this->assertEquals($auth_attr, $auth);
     }
 
@@ -79,10 +79,10 @@ class ConnectionTestCase extends DBALFunctionalTestCase
     {
         $this->assertTrue($this->_conn->connect());
 
-        $stmt = $this->_conn->query('select * from sys.cluster');
+        $stmt = $this->_conn->executeQuery('select * from sys.cluster');
         $this->assertEquals(1, $stmt->rowCount());
 
-        $row = $stmt->fetch();
+        $row = $stmt->fetchOne();
         $this->assertEquals('crate', $row['name']);
     }
 

@@ -28,6 +28,7 @@ use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\IntegerType;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 
 class SchemaManagerTest extends DBALFunctionalTestCase
 {
@@ -75,12 +76,12 @@ class SchemaManagerTest extends DBALFunctionalTestCase
     public function createListTableColumns()
     {
         $table = new Table('list_table_columns');
-        $table->addColumn('text', Type::STRING);
+        $table->addColumn('text', Types::STRING);
         $table->addColumn('ts', TimestampType::NAME);
-        $table->addColumn('num_float_double', Type::FLOAT);
-        $table->addColumn('num_short', Type::SMALLINT);
-        $table->addColumn('num_int', Type::INTEGER);
-        $table->addColumn('num_long', Type::BIGINT);
+        $table->addColumn('num_float_double', Types::FLOAT);
+        $table->addColumn('num_short', Types::SMALLINT);
+        $table->addColumn('num_int', Types::INTEGER);
+        $table->addColumn('num_long', Types::BIGINT);
         $table->addColumn('id', 'integer', array('notnull' => true));
         $table->setPrimaryKey(array('id'));
 
@@ -101,7 +102,7 @@ class SchemaManagerTest extends DBALFunctionalTestCase
 
         // ARRAY schema definition via platform options
         $arrOpts = array(
-            'type' => Type::FLOAT,
+            'type' => Types::FLOAT,
         );
         $table->addColumn('arr_float', 'array',
             array('platformOptions'=>$arrOpts));

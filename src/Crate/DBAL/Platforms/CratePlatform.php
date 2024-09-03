@@ -23,7 +23,7 @@ namespace Crate\DBAL\Platforms;
 
 use Crate\DBAL\Types\MapType;
 use Crate\DBAL\Types\TimestampType;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Event\SchemaCreateTableColumnEventArgs;
 use Doctrine\DBAL\Event\SchemaCreateTableEventArgs;
 use Doctrine\DBAL\Events;
@@ -76,7 +76,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getNowExpression()
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw Exception::notSupported(__METHOD__);
     }
 
     /**
@@ -92,7 +92,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getDateDiffExpression($date1, $date2)
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw Exception::notSupported(__METHOD__);
     }
 
     /**
@@ -149,23 +149,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function supportsForeignKeyOnUpdate()
-    {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function supportsViews()
-    {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function prefersSequences()
     {
         return false;
     }
@@ -175,7 +159,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getListDatabasesSQL()
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw Exception::notSupported(__METHOD__);
     }
 
     /**
@@ -270,23 +254,23 @@ class CratePlatform extends AbstractPlatform
         }
 
         if (count($diff->removedColumns) > 0) {
-            throw DBALException::notSupported("Alter Table: drop columns");
+            throw Exception::notSupported("Alter Table: drop columns");
         }
         if (count($diff->changedColumns) > 0) {
-            throw DBALException::notSupported("Alter Table: change column options");
+            throw Exception::notSupported("Alter Table: change column options");
         }
         if (count($diff->renamedColumns) > 0) {
-            throw DBALException::notSupported("Alter Table: rename columns");
+            throw Exception::notSupported("Alter Table: rename columns");
         }
 
         $tableSql = array();
 
         if (!$this->onSchemaAlterTable($diff, $tableSql)) {
             if ($diff->newName !== false) {
-                throw DBALException::notSupported("Alter Table: rename table");
+                throw Exception::notSupported("Alter Table: rename table");
             }
 
-            $sql = array_merge($sql, $this->_getAlterTableIndexForeignKeySQL($diff), $commentsSQL);
+            $sql = array_merge($sql, $this->getPreAlterTableIndexForeignKeySQL($diff), $this->getPostAlterTableIndexForeignKeySQL($diff), $commentsSQL);
         }
 
         return array_merge($sql, $tableSql, $columnSql);
@@ -469,6 +453,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getSQLResultCasing($column)
     {
+
         return strtolower($column);
     }
 
@@ -509,7 +494,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getTruncateTableSQL($tableName, $cascade = false)
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw Exception::notSupported(__METHOD__);
     }
 
     /**
@@ -517,7 +502,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getReadLockSQL()
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw Exception::notSupported(__METHOD__);
     }
 
     /**
@@ -575,7 +560,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getBlobTypeDeclarationSQL(array $field)
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw Exception::notSupported(__METHOD__);
     }
 
     /**
@@ -596,7 +581,7 @@ class CratePlatform extends AbstractPlatform
         }
 
         if (count($table->getColumns()) === 0) {
-            throw DBALException::noColumnsSpecifiedForTable($table->getName());
+            throw Exception::noColumnsSpecifiedForTable($table->getName());
         }
 
         $tableName = $table->getQuotedName($this);
@@ -615,7 +600,7 @@ class CratePlatform extends AbstractPlatform
                     }, $index->getColumns());
                     $options['primary_index'] = $index;
                 } elseif ($index->isUnique()) {
-                    throw DBALException::notSupported(
+                    throw Exception::notSupported(
                         "Unique constraints are not supported. Use `primary key` instead"
                     );
                 } else {
@@ -685,9 +670,9 @@ class CratePlatform extends AbstractPlatform
                 $columnListSql .= ', ' . $this->getIndexDeclarationSQL($index, $definition);
             }
         }
- 
+
         if (isset($options['foreignKeys'])) {
-            throw DBALException::notSupported("Create Table: foreign keys");
+            throw Exception::notSupported("Create Table: foreign keys");
         }
 
         $query = 'CREATE TABLE ' . $name . ' (' . $columnListSql . ')';
@@ -774,15 +759,15 @@ class CratePlatform extends AbstractPlatform
 
     /**
      * @param \Doctrine\DBAL\Schema\Column $column The name of the table.
-     * @param array List of primary key column names
+     * @param array $primaries List of primary key column names
      *
      * @return array The column data as associative array.
-     * @throws DBALException
+     * @throws Exception
      */
     public static function prepareColumnData(AbstractPlatform $platform, $column, $primaries = array())
     {
         if ($column->hasCustomSchemaOption("unique") ? $column->getCustomSchemaOption("unique") : false) {
-            throw DBALException::notSupported("Unique constraints are not supported. Use `primary key` instead");
+            throw Exception::notSupported("Unique constraints are not supported. Use `primary key` instead");
         }
 
         $columnData = array();
@@ -819,7 +804,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getCreateDatabaseSQL($database)
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw Exception::notSupported(__METHOD__);
     }
 
     /**
@@ -827,23 +812,23 @@ class CratePlatform extends AbstractPlatform
      */
     public function getDropDatabaseSQL($database)
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw Exception::notSupported(__METHOD__);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public function getCreateForeignKeySQL(ForeignKeyConstraint $foreignKey, $table)
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw Exception::notSupported(__METHOD__);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public function getGuidTypeDeclarationSQL(array $field)
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw Exception::notSupported(__METHOD__);
     }
 
     /**

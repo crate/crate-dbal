@@ -22,9 +22,10 @@
 
 namespace Crate\DBAL\Types;
 
-use Crate\PDO\PDO;
+use Crate\PDO\PDOCrateDB;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\Types;
 
 /**
  * Type that maps a PHP sequential array to an array SQL type.
@@ -53,7 +54,7 @@ class ArrayType extends Type
      */
     public function getBindingType()
     {
-        return PDO::PARAM_ARRAY;
+        return PDOCrateDB::PARAM_ARRAY;
     }
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
@@ -96,7 +97,7 @@ class ArrayType extends Type
      */
     public function getArrayTypeDeclarationSQL(AbstractPlatform $platform, array $field, array $options)
     {
-        $type = array_key_exists('type', $options) ? $options['type'] : Type::STRING;
+        $type = array_key_exists('type', $options) ? $options['type'] : Types::STRING;
         return 'ARRAY ( ' . Type::getType($type)->getSQLDeclaration($field, $platform) . ' )';
     }
 }
