@@ -82,9 +82,9 @@ class WriteTest extends DBALFunctionalTestCase
         $this->refresh('write_table');
 
         $sql = "SELECT test_obj, test_string, test_int FROM write_table WHERE test_string = ? AND test_int = ?";
-        $this->assertEquals($this->_conn->fetchOne($sql, array("text", 1111)), null);
-        $this->assertEquals($this->_conn->fetchOne($sql, array("text", 1111)), "text");
-        $this->assertEquals($this->_conn->fetchOne($sql, array("text", 1111)), 1111);
+        $this->assertEquals($this->_conn->fetchColumn($sql, array("text", 1111)), null);
+        $this->assertEquals($this->_conn->fetchColumn($sql, array("text", 1111), 1), "text");
+        $this->assertEquals($this->_conn->fetchColumn($sql, array("text", 1111), 2), 1111);
     }
 
     public function testExecuteUpdate()

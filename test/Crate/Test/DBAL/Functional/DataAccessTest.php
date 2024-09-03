@@ -34,7 +34,7 @@ use Doctrine\DBAL\Types\Types;
 use PDO;
 
 
-class DataAccessTestCase extends DBALFunctionalTestCase
+class DataAccessTest extends DBALFunctionalTestCase
 {
     static private $generated = false;
 
@@ -164,7 +164,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $stmt->bindParam(2, $paramStr, PDO::PARAM_STR);
         $result = $stmt->executeQuery();
 
-        $rows = $result->fetchAllAssociative();
+        $rows = $result->fetchAll(PDO::FETCH_BOTH);
         $rows[0] = array_change_key_case($rows[0], \CASE_LOWER);
         $this->assertEquals(array('test_int' => 1, 'test_string' => 'foo', 0 => 1, 1 => 'foo'), $rows[0]);
     }
@@ -296,7 +296,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $this->assertEquals(1, $testInt);
 
         $sql = "SELECT test_int, test_string FROM fetch_table WHERE test_int = ? AND test_string = ?";
-        $testString = $this->_conn->fetchOne($sql, array(1, 'foo'));
+        $testString = $this->_conn->fetchColumn($sql, array(1, 'foo'), 1);
 
         $this->assertEquals('foo', $testString);
     }
@@ -485,7 +485,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $this->refresh("fetch_table");
 
         $sql = "SELECT test_int FROM fetch_table ORDER BY test_int ASC";
-        $rows = $this->_conn->executeQuery($sql)->fetchOne();
+        $rows = $this->_conn->executeQuery($sql)->fetchAll(PDO::FETCH_COLUMN);
 
         $this->assertEquals(array(1, 10), $rows);
     }

@@ -38,6 +38,7 @@ use Doctrine\DBAL\Schema\TableDiff;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\Tests\DBAL\Platforms\AbstractPlatformTestCase;
+use Doctrine\Tests\DBAL\Platforms\GetAlterTableSqlDispatchEventListener;
 
 class CratePlatformTest extends AbstractPlatformTestCase {
 
@@ -402,11 +403,15 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     public function testGetAlterTableSqlDispatchEvent() : void
     {
         $events = array(
-            'onSchemaAlterTableAddColumn'
+            'onSchemaAlterTableAddColumn',
+            'onSchemaAlterTableChangeColumn',
+            'onSchemaAlterTableRemoveColumn',
+            'onSchemaAlterTableRenameColumn',
+            'onSchemaAlterTable'
         );
 
-        $listenerMock = $this->getMockBuilder('GetAlterTableSqlDispatchEvenListener')
-            ->addMethods($events)
+        $listenerMock = $this->getMockBuilder(GetAlterTableSqlDispatchEventListener::class)
+            ->onlyMethods($events)
             ->getMock();
         $listenerMock
             ->expects($this->once())
