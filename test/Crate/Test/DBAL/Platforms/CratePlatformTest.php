@@ -54,6 +54,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function getGenerateTableWithMultiColumnUniqueIndexSql() : array
     {
+        return [];
     }
 
     public function getGenerateTableWithMultiColumnIndexSql()
@@ -138,7 +139,9 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->markTestSkipped('Platform does not support ADD FOREIGN KEY.');
     }
 
-    protected function getQuotedColumnInForeignKeySQL() : array {}
+    protected function getQuotedColumnInForeignKeySQL() : array {
+        return [];
+    }
 
     protected function getQuotesReservedKeywordInUniqueConstraintDeclarationSQL() : string
     {
@@ -158,7 +161,9 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
 
-    protected function getQuotedAlterTableRenameColumnSQL() : array {}
+    protected function getQuotedAlterTableRenameColumnSQL() : array {
+        return [];
+    }
 
     /**
      * @group DBAL-835
@@ -168,7 +173,10 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
 
-    protected function getQuotedAlterTableChangeColumnLengthSQL() : array {}
+    protected function getQuotedAlterTableChangeColumnLengthSQL() : array
+    {
+        return [];
+    }
 
     /**
      * @group DBAL-807
@@ -195,7 +203,10 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
 
-    public function getAlterTableRenameColumnSQL() : array {}
+    public function getAlterTableRenameColumnSQL() : array
+    {
+        return [];
+    }
 
     /**
      * @group DBAL-1016
@@ -205,7 +216,10 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
 
-    protected function getQuotesTableIdentifiersInAlterTableSQL() : array {}
+    protected function getQuotesTableIdentifiersInAlterTableSQL() : array
+    {
+        return [];
+    }
 
     /**
      * @group DBAL-1062
@@ -215,7 +229,10 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
 
-    protected function getGeneratesAlterTableRenameIndexUsedByForeignKeySQL() : array {}
+    protected function getGeneratesAlterTableRenameIndexUsedByForeignKeySQL() : array
+    {
+        return [];
+    }
 
     /**
      * @group DBAL-1090
@@ -225,7 +242,10 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->markTestSkipped('Platform does not support ALTER TABLE.');
     }
 
-    protected function getAlterStringToFixedStringSQL() : array {}
+    protected function getAlterStringToFixedStringSQL() : array
+    {
+        return [];
+    }
 
     public function testGenerateSubstrExpression()
     {
