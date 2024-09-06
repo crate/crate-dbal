@@ -23,7 +23,7 @@
 namespace Crate\Test\DBAL\Functional;
 
 use Crate\Test\DBAL\DBALFunctionalTestCase;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception;
 
 
 class ModifyLimitQueryTest extends DBALFunctionalTestCase
@@ -61,7 +61,7 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
                 $sm->dropTable('modify_limit_table');
                 $sm->dropTable('modify_limit_table2');
                 self::$tableCreated = false;
-            } catch (DBALException $e) {}
+            } catch (Exception $e) {}
         }
     }
 

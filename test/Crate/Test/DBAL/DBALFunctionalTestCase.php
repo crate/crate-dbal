@@ -26,6 +26,7 @@ use Doctrine\DBAL\Logging\DebugStack;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
 use Throwable;
+use Crate\DBAL\Driver\PDOCrate\Driver;
 
 abstract class DBALFunctionalTestCase extends TestCase
 {
@@ -58,7 +59,7 @@ abstract class DBALFunctionalTestCase extends TestCase
     {
         if ( ! isset(self::$_sharedConn)) {
             $params = array(
-                'driverClass' => 'Crate\DBAL\Driver\PDOCrate\Driver',
+                'driverClass' => Driver::class,
                 'host' => 'localhost',
                 'port' => 4200
             );

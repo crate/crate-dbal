@@ -22,9 +22,9 @@
 namespace Crate\Test\DBAL\Functional;
 
 use Crate\Test\DBAL\DBALFunctionalTestCase;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Result;
 
-class BindingTestCase extends DBALFunctionalTestCase
+class BindingTest extends DBALFunctionalTestCase
 {
 
     public function testBindPositionalParam()
@@ -40,7 +40,7 @@ class BindingTestCase extends DBALFunctionalTestCase
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = ? OR master_node = ?');
         $stmt->bindParam(1, $name);
         $stmt->bindParam(2, $noName);
-        $this->assertTrue($stmt->execute());
+        $this->assertInstanceOf(Result::class, $stmt->execute());
     }
 
     public function testBindPositionalValue()
@@ -52,7 +52,7 @@ class BindingTestCase extends DBALFunctionalTestCase
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = ? OR master_node = ?');
         $stmt->bindValue(1, 'crate');
         $stmt->bindValue(2, 'i0ejfNlzSFCloGYtSzddTw');
-        $this->assertTrue($stmt->execute());
+        $this->assertInstanceOf(Result::class, $stmt->execute());
     }
 
     public function testBindNamedParam()
@@ -68,7 +68,7 @@ class BindingTestCase extends DBALFunctionalTestCase
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = :name OR master_node = :master_node');
         $stmt->bindParam('name', $name);
         $stmt->bindParam('master_node', $noName);
-        $this->assertTrue($stmt->execute());
+        $this->assertInstanceOf(Result::class, $stmt->execute());
     }
 
     public function testBindNamedValue()
@@ -80,7 +80,7 @@ class BindingTestCase extends DBALFunctionalTestCase
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = :name OR master_node = :master_node');
         $stmt->bindValue('name', 'crate');
         $stmt->bindValue('master_node', 'i0ejfNlzSFCloGYtSzddTw');
-        $this->assertTrue($stmt->execute());
+        $this->assertInstanceOf(Result::class, $stmt->execute());
     }
 
     public function testBindTimestamp()
@@ -99,15 +99,15 @@ class BindingTestCase extends DBALFunctionalTestCase
 
         $stmt = $this->prepareStatement('SELECT * FROM foo WHERE ts > ?');
         $stmt->bindValue(1, $date, 'datetimetz');
-        $stmt->execute();
-        $row = $stmt->fetchAll();
+        $result = $stmt->execute();
+        $row = $result->fetchAll();
         $this->assertEquals($row[0]['id'], 3);
         $this->assertEquals($row[0]['ts'], 1413901593000);
 
         $stmt = $this->prepareStatement('SELECT * FROM foo WHERE ts < ?');
         $stmt->bindValue(1, $date, 'datetime');
-        $stmt->execute();
-        $row = $stmt->fetchAll();
+        $result = $stmt->execute();
+        $row = $result->fetchAll();
         $this->assertEquals($row[0]['id'], 1);
         $this->assertEquals($row[0]['ts'], 1413901591000);
 

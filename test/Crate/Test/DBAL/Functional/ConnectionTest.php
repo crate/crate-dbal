@@ -23,6 +23,10 @@ namespace Crate\Test\DBAL\Functional;
 
 use Crate\PDO\PDOCrateDB;
 use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Doctrine\DBAL\Connection;
+use Crate\DBAL\Driver\PDOCrate\Driver;
+use Doctrine\DBAL\Statement;
+use Crate\PDO\PDOStatement;
 
 class ConnectionTest extends DBALFunctionalTestCase
 {
@@ -51,28 +55,26 @@ class ConnectionTest extends DBALFunctionalTestCase
         $conn = \Doctrine\DBAL\DriverManager::getConnection($params);
         $this->assertEquals($auth[0], $conn->getParams()['user']);
         $this->assertEquals($auth[1], $conn->getParams()['password']);
-        $auth_attr = $conn->getWrappedConnection()->getAttribute(PDOCrateDB::CRATE_ATTR_HTTP_BASIC_AUTH);
-        $this->assertEquals($auth_attr, $auth);
+        $auth_attr = $conn->getNativeConnection()->getAttribute(PDOCrateDB::CRATE_ATTR_HTTP_BASIC_AUTH);
+        $this->assertEquals($auth, $auth_attr);
     }
 
     public function testGetConnection()
     {
-      $this->assertInstanceOf('Doctrine\DBAL\Connection', $this->_conn);
-      $this->assertInstanceOf('Crate\DBAL\Driver\PDOCrate\PDOConnection', $this->_conn->getWrappedConnection());
+      $this->assertInstanceOf(Connection::class, $this->_conn);
     }
 
     public function testGetDriver()
     {
-        $this->assertInstanceOf('Crate\DBAL\Driver\PDOCrate\Driver', $this->_conn->getDriver());
+        $this->assertInstanceOf(Driver::class, $this->_conn->getDriver());
     }
 
     public function testStatement()
     {
         $sql = 'SELECT * FROM sys.cluster';
         $stmt = $this->_conn->prepare($sql);
-        $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
-        $this->assertInstanceOf('Crate\PDO\PDOStatement', $stmt->getWrappedStatement());
-
+        $this->assertInstanceOf(Statement::class, $stmt);
+        $this->assertInstanceOf(\Doctrine\DBAL\Driver\Statement::class, $stmt->getWrappedStatement());
     }
 
     public function testConnect()

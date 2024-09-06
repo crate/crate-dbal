@@ -120,7 +120,8 @@ class SchemaManagerTest extends DBALFunctionalTestCase
     {
         $table = $this->createListTableColumns();
 
-        $this->_sm->dropAndCreateTable($table);
+        $this->_sm->dropTable($table);
+        $this->_sm->createTable($table);
 
         $columns = $this->_sm->listTableColumns('list_table_columns');
         $columnsKeys = array_keys($columns);
@@ -210,7 +211,7 @@ class SchemaManagerTest extends DBALFunctionalTestCase
 
     protected function getTestTable($name, $options=array())
     {
-        $table = new Table($name, array(), array(), array(), false, $options);
+        $table = new Table($name, array(), array(), array(), [], $options);
         $table->setSchemaConfig($this->_sm->createSchemaConfig());
         $table->addColumn('id', 'integer', array('notnull' => true));
         $table->setPrimaryKey(array('id'));
@@ -221,7 +222,7 @@ class SchemaManagerTest extends DBALFunctionalTestCase
 
     protected function getTestCompositeTable($name)
     {
-        $table = new Table($name, array(), array(), array(), false, array());
+        $table = new Table($name, array(), array(), array(), [], array());
         $table->setSchemaConfig($this->_sm->createSchemaConfig());
         $table->addColumn('id', 'integer', array('notnull' => true));
         $table->addColumn('other_id', 'integer', array('notnull' => true));

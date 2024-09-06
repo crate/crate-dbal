@@ -22,31 +22,9 @@
 
 namespace Crate\DBAL\Driver\PDOCrate;
 
-use Crate\PDO\PDOCrateDB;
-use Doctrine\DBAL\Driver\ServerInfoAwareConnection;
+use Doctrine\DBAL\Exception\DriverException;
 
-class PDOConnection extends PDOCrateDB implements ServerInfoAwareConnection
+class CrateException extends DriverException
 {
-    /**
-     * @param string $dsn
-     * @param string|null $user
-     * @param string|null $password
-     * @param array $options
-     */
-    public function __construct($dsn, $user = null, $password = null, array $options = null)
-    {
-        parent::__construct($dsn, $user, $password, $options);
-        $this->setAttribute(PDOCrateDB::ATTR_STATEMENT_CLASS, CrateStatement::class);
-        $this->setAttribute(PDOCrateDB::ATTR_ERRMODE, PDOCrateDB::ERRMODE_EXCEPTION);
-    }
 
-    /**
-     * Checks whether a query is required to retrieve the database server version.
-     *
-     * @return boolean True if a query is required to retrieve the database server version, false otherwise.
-     */
-    public function requiresQueryForServerVersion()
-    {
-        return false;
-    }
 }

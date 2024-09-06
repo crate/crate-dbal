@@ -28,7 +28,6 @@ use Crate\DBAL\Platforms\CratePlatform;
 use Crate\DBAL\Types\ArrayType;
 use Crate\DBAL\Types\MapType;
 use Doctrine\Common\EventManager;
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Events;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
@@ -37,8 +36,8 @@ use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
-use Doctrine\Tests\DBAL\Platforms\AbstractPlatformTestCase;
-use Doctrine\Tests\DBAL\Platforms\GetAlterTableSqlDispatchEventListener;
+use Doctrine\DBAL\Tests\Platforms\AbstractPlatformTestCase;
+use Doctrine\DBAL\Tests\Platforms\GetAlterTableSqlDispatchEventListener;
 
 class CratePlatformTest extends AbstractPlatformTestCase {
 
@@ -524,7 +523,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     /**
      * @return array<int, array{string, array<string, mixed>}>
      */
-    public function asciiStringSqlDeclarationDataProvider() : array
+    public static function asciiStringSqlDeclarationDataProvider() : array
     {
         return [
             ['TEXT', ['length' => 12]],

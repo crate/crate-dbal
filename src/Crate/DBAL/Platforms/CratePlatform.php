@@ -21,8 +21,10 @@
  */
 namespace Crate\DBAL\Platforms;
 
+use Crate\DBAL\Schema\CrateSchemaManager;
 use Crate\DBAL\Types\MapType;
 use Crate\DBAL\Types\TimestampType;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Event\SchemaCreateTableColumnEventArgs;
 use Doctrine\DBAL\Event\SchemaCreateTableEventArgs;
@@ -34,7 +36,9 @@ use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
+use Doctrine\DBAL\Types\Types;
 use InvalidArgumentException;
+use Crate\DBAL\Types\ArrayType;
 
 class CratePlatform extends AbstractPlatform
 {
@@ -48,15 +52,16 @@ class CratePlatform extends AbstractPlatform
      */
     public function __construct()
     {
-        parent::__construct();
         $this->initializeDoctrineTypeMappings();
+
         if (!Type::hasType(MapType::NAME)) {
-            Type::addType(MapType::NAME, 'Crate\DBAL\Types\MapType');
+            Type::addType(MapType::NAME, MapType::class);
         }
         if (!Type::hasType(TimestampType::NAME)) {
-            Type::addType(TimestampType::NAME, 'Crate\DBAL\Types\TimestampType');
+            Type::addType(TimestampType::NAME, TimestampType::class);
         }
-        Type::overrideType('array', 'Crate\DBAL\Types\ArrayType');
+
+        Type::overrideType(Types::ARRAY, ArrayType::class);
     }
 
     /**
@@ -304,8 +309,9 @@ class CratePlatform extends AbstractPlatform
             throw new \InvalidArgumentException("Incomplete definition. 'columns' required.");
         }
 
+        $index = new Index($name->getQuotedName($this), $columns);
         return 'INDEX ' . $name->getQuotedName($this) .
-               ' USING FULLTEXT ('. $this->getIndexFieldDeclarationListSQL($columns) . ')';
+               ' USING FULLTEXT ('. $this->getIndexFieldDeclarationListSQL($index) . ')';
     }
 
     /**
@@ -427,7 +433,7 @@ class CratePlatform extends AbstractPlatform
      */
     protected function getVarcharTypeDeclarationSQLSnippet($length, $fixed)
     {
-        return 'STRING';
+        return Types::STRING;
     }
 
     /**
@@ -779,7 +785,7 @@ class CratePlatform extends AbstractPlatform
         $columnData['unique'] = false;
         $columnData['version'] = $column->hasPlatformOption("version") ? $column->getPlatformOption("version") : false;
 
-        if (strtolower($columnData['type']) == $platform->getVarcharTypeDeclarationSQLSnippet(0, false)
+        if ($columnData['type'] == $platform->getVarcharTypeDeclarationSQLSnippet(0, false)
                 && $columnData['length'] === null) {
             $columnData['length'] = 255;
         }
@@ -842,5 +848,18 @@ class CratePlatform extends AbstractPlatform
         return "SELECT clustered_by, number_of_shards, partitioned_by, number_of_replicas, column_policy, settings " .
                "FROM information_schema.tables c " .
                "WHERE " . $this->getTableWhereClause($table);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCurrentDatabaseExpression(): string
+    {
+        return 'current_database()';
+    }
+
+    public function createSchemaManager(Connection $connection): CrateSchemaManager
+    {
+        return new CrateSchemaManager($connection, $this);
     }
 }

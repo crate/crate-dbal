@@ -24,14 +24,13 @@ namespace Crate\Test\DBAL\Functional;
 
 use Crate\DBAL\Platforms\CratePlatform;
 use Crate\DBAL\Types\TimestampType;
-use Crate\Test\DBAL\DBALFunctionalTestCase;
 use Crate\DBAL\Types\ArrayType;
 use Crate\DBAL\Types\MapType;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 use PHPUnit\Framework\TestCase;
 
-class TypeConversionTestCase extends TestCase {
+class TypeConversionTest extends TestCase {
 
     private $platform;
 

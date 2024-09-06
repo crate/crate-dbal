@@ -49,7 +49,7 @@ jobs:
 
       - uses: ramsey/composer-install@v2
 
-      # Remark: --prefer-source is needed for "Doctrine\Tests\DBAL\Platforms\AbstractPlatformTestCase"
+      # Remark: --prefer-source is needed for "Doctrine\DBAL\Tests\Platforms\AbstractPlatformTestCase"
       - name: Install doctrine/dbal from source
         run: |
           rm -rf vendor/doctrine/dbal
