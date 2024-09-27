@@ -44,7 +44,7 @@ class DataAccessTest extends DBALFunctionalTestCase
         if (self::$generated === false) {
             self::$generated = true;
             /* @var $sm \Doctrine\DBAL\Schema\AbstractSchemaManager */
-            $sm = $this->_conn->getSchemaManager();
+            $sm = $this->_conn->createSchemaManager();
             $table = new \Doctrine\DBAL\Schema\Table("fetch_table");
             $table->addColumn('test_int', 'integer');
             $table->addColumn('test_string', 'string');
@@ -107,8 +107,8 @@ class DataAccessTest extends DBALFunctionalTestCase
         $stmt = $this->_conn->prepare($sql);
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
 
-        $stmt->bindParam(1, $paramInt, PDO::PARAM_INT);
-        $stmt->bindParam(2, $paramStr, PDO::PARAM_STR);
+        $stmt->bindValue(1, $paramInt, PDO::PARAM_INT);
+        $stmt->bindValue(2, $paramStr, PDO::PARAM_STR);
         $result = $stmt->executeQuery();
 
         $row = $result->fetchAssociative();
@@ -125,8 +125,8 @@ class DataAccessTest extends DBALFunctionalTestCase
         $stmt = $this->_conn->prepare($sql);
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
 
-        $stmt->bindParam(1, $paramInt, PDO::PARAM_INT);
-        $stmt->bindParam(2, $paramStr, PDO::PARAM_STR);
+        $stmt->bindValue(1, $paramInt, PDO::PARAM_INT);
+        $stmt->bindValue(2, $paramStr, PDO::PARAM_STR);
         $result = $stmt->executeQuery();
 
         $rows = $result->fetchAllAssociative();
@@ -159,8 +159,8 @@ class DataAccessTest extends DBALFunctionalTestCase
         $stmt = $this->_conn->prepare($sql);
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
 
-        $stmt->bindParam(1, $paramInt, PDO::PARAM_INT);
-        $stmt->bindParam(2, $paramStr, PDO::PARAM_STR);
+        $stmt->bindValue(1, $paramInt, PDO::PARAM_INT);
+        $stmt->bindValue(2, $paramStr, PDO::PARAM_STR);
         $result = $stmt->executeQuery();
 
         $rows = $result->fetchAll(PDO::FETCH_BOTH);
@@ -177,8 +177,8 @@ class DataAccessTest extends DBALFunctionalTestCase
         $stmt = $this->_conn->prepare($sql);
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
 
-        $stmt->bindParam(1, $paramInt, PDO::PARAM_INT);
-        $stmt->bindParam(2, $paramStr, PDO::PARAM_STR);
+        $stmt->bindValue(1, $paramInt, PDO::PARAM_INT);
+        $stmt->bindValue(2, $paramStr, PDO::PARAM_STR);
         $result = $stmt->executeQuery();
 
         $column = $result->fetchOne();
@@ -194,8 +194,8 @@ class DataAccessTest extends DBALFunctionalTestCase
         $stmt = $this->_conn->prepare($sql);
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
 
-        $stmt->bindParam(1, $paramInt, PDO::PARAM_INT);
-        $stmt->bindParam(2, $paramStr, PDO::PARAM_STR);
+        $stmt->bindValue(1, $paramInt, PDO::PARAM_INT);
+        $stmt->bindValue(2, $paramStr, PDO::PARAM_STR);
         $result = $stmt->executeQuery();
 
         $rows = array();

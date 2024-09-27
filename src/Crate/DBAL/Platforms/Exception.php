@@ -20,11 +20,11 @@
  * software solely pursuant to the terms of the relevant commercial agreement.
  */
 
-namespace Crate\DBAL\Driver\PDOCrate;
+namespace Crate\DBAL\Platforms;
 
-use Doctrine\DBAL\Exception\DriverException;
+use Doctrine\DBAL\Exception as DoctrineException;
 
-class CrateException extends DriverException
+class Exception extends \Exception implements DoctrineException
 {
     public static function notSupported(string $method): self
     {

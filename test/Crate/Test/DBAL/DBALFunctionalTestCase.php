@@ -42,10 +42,10 @@ abstract class DBALFunctionalTestCase extends TestCase
      */
     protected $_conn;
 
-    /**
-     * @var \Doctrine\DBAL\Logging\DebugStack
-     */
-    protected $_sqlLoggerStack;
+//    /**
+//     * @var \Doctrine\DBAL\Logging\DebugStack
+//     */
+//    protected $_sqlLoggerStack;
 
     protected function resetSharedConn()
     {
@@ -67,48 +67,49 @@ abstract class DBALFunctionalTestCase extends TestCase
         }
         $this->_conn = self::$_sharedConn;
 
-        $this->_sqlLoggerStack = new DebugStack();
-        $this->_conn->getConfiguration()->setSQLLogger($this->_sqlLoggerStack);
+//        $this->_sqlLoggerStack = new DebugStack();
+
+//        $this->_conn->getConfiguration()->setMiddlewares();
     }
 
-    protected function onNotSuccessfulTest(Throwable $e) : void
-    {
-        if ($e instanceof AssertionFailedError) {
-            throw $e;
-        }
-
-        if(isset($this->_sqlLoggerStack->queries) && count($this->_sqlLoggerStack->queries)) {
-            $queries = "";
-            $i = count($this->_sqlLoggerStack->queries);
-            foreach (array_reverse($this->_sqlLoggerStack->queries) AS $query) {
-                $params = array_map(function($p) { if (is_object($p)) return get_class($p); else return "'".print_r($p, true)."'"; }, $query['params'] ?: array());
-                $queries .= ($i+1).". SQL: '".$query['sql']."' Params: ".implode(", ", $params).PHP_EOL;
-                $i--;
-            }
-
-            $trace = $e->getTrace();
-            $traceMsg = "";
-            foreach($trace AS $part) {
-                if(isset($part['file'])) {
-                    if(strpos($part['file'], "PHPUnit/") !== false) {
-                        // Beginning with PHPUnit files we don't print the trace anymore.
-                        break;
-                    }
-
-                    $traceMsg .= $part['file'].":".$part['line'].PHP_EOL;
-                }
-            }
-
-            $message = "[".get_class($e)."] ".$e->getMessage().PHP_EOL.PHP_EOL."With queries:".PHP_EOL.$queries.PHP_EOL."Trace:".PHP_EOL.$traceMsg;
-
-            throw new \Exception($message, (int)$e->getCode(), $e);
-        }
-        throw $e;
-    }
+//    protected function onNotSuccessfulTest(Throwable $e) : void
+//    {
+//        if ($e instanceof AssertionFailedError) {
+//            throw $e;
+//        }
+//
+//        if(isset($this->_sqlLoggerStack->queries) && count($this->_sqlLoggerStack->queries)) {
+//            $queries = "";
+//            $i = count($this->_sqlLoggerStack->queries);
+//            foreach (array_reverse($this->_sqlLoggerStack->queries) AS $query) {
+//                $params = array_map(function($p) { if (is_object($p)) return get_class($p); else return "'".print_r($p, true)."'"; }, $query['params'] ?: array());
+//                $queries .= ($i+1).". SQL: '".$query['sql']."' Params: ".implode(", ", $params).PHP_EOL;
+//                $i--;
+//            }
+//
+//            $trace = $e->getTrace();
+//            $traceMsg = "";
+//            foreach($trace AS $part) {
+//                if(isset($part['file'])) {
+//                    if(strpos($part['file'], "PHPUnit/") !== false) {
+//                        // Beginning with PHPUnit files we don't print the trace anymore.
+//                        break;
+//                    }
+//
+//                    $traceMsg .= $part['file'].":".$part['line'].PHP_EOL;
+//                }
+//            }
+//
+//            $message = "[".get_class($e)."] ".$e->getMessage().PHP_EOL.PHP_EOL."With queries:".PHP_EOL.$queries.PHP_EOL."Trace:".PHP_EOL.$traceMsg;
+//
+//            throw new \Exception($message, (int)$e->getCode(), $e);
+//        }
+//        throw $e;
+//    }
 
     public function execute($stmt)
     {
-        return $this->_conn->query($stmt);
+        return $this->_conn->executeQuery($stmt);
     }
 
     public function refresh($table_name)

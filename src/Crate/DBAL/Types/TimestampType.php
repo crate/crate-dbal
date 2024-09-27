@@ -31,8 +31,8 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 class TimestampType extends Type
 {
-    const NAME = 'timestamp';
-    const S_TO_MS = 1000;
+    public const NAME = 'timestamp';
+    public const S_TO_MS = 1000;
 
     /**
      * Gets the name of this type.
@@ -44,13 +44,13 @@ class TimestampType extends Type
         return self::NAME;
     }
 
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
         return ($value !== null && $value instanceof DateTime)
             ? $value->getTimestamp()*self::S_TO_MS : null;
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): mixed
     {
         if ($value === null || $value instanceof DateTime) {
             return $value;
@@ -73,7 +73,7 @@ class TimestampType extends Type
      * @param  array            $fieldDeclaration The field declaration.
      * @param  AbstractPlatform $platform         The currently used database platform.
      */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
         return $platform->getDateTimeTypeDeclarationSQL($fieldDeclaration);
     }

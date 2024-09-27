@@ -21,8 +21,13 @@
  */
 namespace Crate\DBAL\Schema;
 
+use Crate\DBAL\Platforms\Exception;
+use Doctrine\DBAL\Result;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\ForeignKeyConstraint;
+use Doctrine\DBAL\Schema\View;
+use Doctrine\DBAL\Statement;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Schema\Table;
 
@@ -32,7 +37,7 @@ class CrateSchemaManager extends AbstractSchemaManager
      * {@inheritdoc}
      *
      */
-    protected function _getPortableTableIndexesList($tableIndexes, $tableName = null)
+    protected function _getPortableTableIndexesList(array $tableIndexes, string $tableName = null): array
     {
         $buffer = [];
         foreach ($tableIndexes as $row) {
@@ -51,7 +56,7 @@ class CrateSchemaManager extends AbstractSchemaManager
     /**
      * {@inheritDoc}
      */
-    protected function _getPortableTableColumnDefinition($tableColumn)
+    protected function _getPortableTableColumnDefinition(array $tableColumn): Column
     {
         $tableColumn = array_change_key_case($tableColumn, CASE_LOWER);
 
@@ -105,7 +110,7 @@ class CrateSchemaManager extends AbstractSchemaManager
         $result = array();
         foreach ($array as $key => $value) {
             if (is_array($value)) {
-                $result = $result + self::flatten($value, $prefix . $key . '.');
+                $result = $result + $this->flatten($value, $prefix . $key . '.');
             } else {
                 $result[$prefix . $key] = $value;
             }
@@ -127,9 +132,54 @@ class CrateSchemaManager extends AbstractSchemaManager
         $options['sharding_routing_column'] = $s['clustered_by'];
         $options['sharding_num_shards'] = $s['number_of_shards'];
         $options['partition_columns'] = $s['partitioned_by'];
-        $options['table_options'] = self::flatten($s['settings']);
+        $options['table_options'] = $this->flatten($s['settings']);
         $options['table_options']['number_of_replicas'] = $s['number_of_replicas'];
         $options['table_options']['column_policy'] = $s['column_policy'];
         return new Table($tableName, $columns, $indexes, [], [], $options);
+    }
+
+    public function listTableNames() : array
+    {
+        return ['doc'];
+    }
+
+    protected function selectTableNames(string $databaseName): Result
+    {
+        return $this->_conn->exec($this->_platform->getListTablesSQL());
+    }
+
+    protected function selectTableColumns(string $databaseName, ?string $tableName = null): Result
+    {
+        return $this->listTableColumns($tableName);
+    }
+
+    protected function selectIndexColumns(string $databaseName, ?string $tableName = null): Result
+    {
+        throw Exception::notSupported(__METHOD__);
+    }
+
+    protected function selectForeignKeyColumns(string $databaseName, ?string $tableName = null): Result
+    {
+        throw Exception::notSupported(__METHOD__);
+    }
+
+    protected function fetchTableOptionsByTable(string $databaseName, ?string $tableName = null): array
+    {
+        throw Exception::notSupported(__METHOD__);
+    }
+
+    protected function _getPortableTableDefinition(array $table): string
+    {
+        throw Exception::notSupported(__METHOD__);
+    }
+
+    protected function _getPortableViewDefinition(array $view): View
+    {
+        throw Exception::notSupported(__METHOD__);
+    }
+
+    protected function _getPortableTableForeignKeyDefinition(array $tableForeignKey): ForeignKeyConstraint
+    {
+        throw Exception::notSupported(__METHOD__);
     }
 }

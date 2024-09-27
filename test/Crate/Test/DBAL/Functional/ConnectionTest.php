@@ -79,8 +79,6 @@ class ConnectionTest extends DBALFunctionalTestCase
 
     public function testConnect()
     {
-        $this->assertTrue($this->_conn->connect());
-
         $stmt = $this->_conn->executeQuery('select * from sys.cluster');
         $this->assertEquals(1, $stmt->rowCount());
 
