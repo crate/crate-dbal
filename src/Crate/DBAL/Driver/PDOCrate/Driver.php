@@ -25,10 +25,17 @@ use Crate\DBAL\Platforms\CratePlatform1;
 use Crate\DBAL\Platforms\CratePlatform;
 use Crate\DBAL\Platforms\CratePlatform4;
 use Crate\DBAL\Schema\CrateSchemaManager;
+use Crate\PDO\PDOCrateDB;
+use Crate\PDO\PDOStatement;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\VersionAwarePlatformDriver;
+use Doctrine\DBAL\Driver\API\ExceptionConverter;
+use Doctrine\DBAL\Driver\Exception;
+use Doctrine\DBAL\Exception\DriverException;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Query;
+use Doctrine\DBAL\ServerVersionProvider;
 
-class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
+class Driver implements \Doctrine\DBAL\Driver
 {
     const VERSION = '4.0.2';
     const NAME = 'crate';
@@ -38,11 +45,17 @@ class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
 
     /**
      * {@inheritDoc}
-     * @return PDOConnection The database connection.
+     * @return \Doctrine\DBAL\Driver\PDO\Connection The database connection.
      */
-    public function connect(array $params, $username = null, $password = null, array $driverOptions = array())
+    public function connect(array $params): \Doctrine\DBAL\Driver\PDO\Connection
     {
-        return new PDOConnection($this->constructPdoDsn($params), $username, $password, $driverOptions);
+        $driverOptions = $params['driverOptions'] ?? [];
+
+        $pdo = new PDOCrateDB($this->constructPdoDsn($params), $params['user'] ?? null, $params['password'] ?? null, $driverOptions);
+        $pdo->setAttribute(PDOCrateDB::ATTR_STATEMENT_CLASS, PDOStatement::class);
+        $pdo->setAttribute(PDOCrateDB::ATTR_ERRMODE, PDOCrateDB::ERRMODE_EXCEPTION);
+
+        return new \Doctrine\DBAL\Driver\PDO\Connection($pdo);
     }
 
     /**
@@ -66,17 +79,26 @@ class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
     /**
      * {@inheritDoc}
      */
-    public function getDatabasePlatform()
+    public function getDatabasePlatform(ServerVersionProvider $versionProvider): AbstractPlatform
     {
-        return new CratePlatform();
+        $version = $versionProvider->getServerVersion();
+
+        if (version_compare($version, self::VERSION_057, "<")) {
+            return new CratePlatform();
+        }
+        if (version_compare($version, self::VERSION_4, "<")) {
+            return new CratePlatform1();
+        }
+
+        return new CratePlatform4();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getSchemaManager(Connection $conn)
+    public function getSchemaManager(Connection $conn, AbstractPlatform $platform)
     {
-        return new CrateSchemaManager($conn);
+        return new CrateSchemaManager($conn, $platform);
     }
 
     /**
@@ -98,14 +120,12 @@ class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
     /**
      * {@inheritDoc}
      */
-    public function createDatabasePlatformForVersion($version)
+    public function getExceptionConverter(): ExceptionConverter
     {
-        if (version_compare($version, self::VERSION_057, "<")) {
-            return new CratePlatform();
-        } elseif (version_compare($version, self::VERSION_4, "<")) {
-            return new CratePlatform1();
-        } else {
-            return new CratePlatform4();
-        }
+        return new Class implements ExceptionConverter {
+            public function convert(Exception $exception, ?Query $query): DriverException {
+                return new CrateException($exception, $query);
+            }
+        };
     }
 }

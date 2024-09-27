@@ -23,7 +23,7 @@
 namespace Crate\Test\DBAL\Functional;
 
 use Crate\Test\DBAL\DBALFunctionalTestCase;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception;
 
 
 class ModifyLimitQueryTest extends DBALFunctionalTestCase
@@ -61,7 +61,7 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
                 $sm->dropTable('modify_limit_table');
                 $sm->dropTable('modify_limit_table2');
                 self::$tableCreated = false;
-            } catch (DBALException $e) {}
+            } catch (Exception $e) {}
         }
     }
 
@@ -117,7 +117,7 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
     {
         $p = $this->_conn->getDatabasePlatform();
         $data = array();
-        foreach ($this->_conn->fetchAll($p->modifyLimitQuery($sql, $limit, $offset)) AS $row) {
+        foreach ($this->_conn->fetchAllAssociative($p->modifyLimitQuery($sql, $limit, $offset)) AS $row) {
             $row = array_change_key_case($row, CASE_LOWER);
             $data[] = $row['test_int'];
         }

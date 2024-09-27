@@ -30,7 +30,7 @@ class CrateKeywords extends KeywordList
         return 'Crate';
     }
 
-    protected function getKeywords()
+    protected function getKeywords(): array
     {
         return array(
             'ALL',

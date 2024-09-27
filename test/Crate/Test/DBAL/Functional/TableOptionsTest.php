@@ -22,10 +22,8 @@
 
 namespace Crate\Test\DBAL\Functional;
 
-
-use Crate\DBAL\Platforms\CratePlatform;
+use Crate\DBAL\Types\TimestampType;
 use Crate\Test\DBAL\DBALFunctionalTestCase;
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Schema\Table;
 use InvalidArgumentException;
 
@@ -56,7 +54,7 @@ class TableOptionsTest extends DBALFunctionalTestCase {
         $options['table_options']['number_of_replicas'] = '0-2';
         $options['table_options']['write.wait_for_active_shards'] = 'ALL';
 
-        $table = new Table('t1', [], [], [], 0, $options);
+        $table = new Table('t1', [], [], [], [], $options);
         $table->addColumn('id', 'integer');
         $table->addColumn('parted', 'integer');
         $table->addColumn('date', 'timestamp');
@@ -72,6 +70,8 @@ class TableOptionsTest extends DBALFunctionalTestCase {
 
     public function testGetAdditionalTableOptions()
     {
+        $platform = $this->_conn->getDatabasePlatform();
+
         $options = [];
         $options['sharding_routing_column'] = 'id';
         $options['sharding_num_shards'] = 6;
@@ -80,10 +80,10 @@ class TableOptionsTest extends DBALFunctionalTestCase {
         $options['table_options']['number_of_replicas'] = '0-2';
         $options['table_options']['write.wait_for_active_shards'] = 'ALL';
 
-        $table = new Table('table_option_test', [], [], [], 0, $options);
+        $table = new Table('table_option_test', [], [], [], [], $options);
         $table->addColumn('id', 'integer');
         $table->addColumn('parted', 'integer');
-        $table->addColumn('date', 'timestamp');
+        $table->addColumn('date', TimestampType::NAME);
 
         $sm = $this->_conn->getSchemaManager();
         $sm->createTable($table);
@@ -106,7 +106,7 @@ class TableOptionsTest extends DBALFunctionalTestCase {
 
         $options = [];
         $options['partition_columns'] = 'parted';
-        $table = new Table('t1', [], [], [], 0, $options);
+        $table = new Table('t1', [], [], [], [], $options);
         $table->addColumn('parted', 'integer');
 
         $this->expectException(InvalidArgumentException::class);

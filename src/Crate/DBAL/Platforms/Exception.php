@@ -20,16 +20,14 @@
  * software solely pursuant to the terms of the relevant commercial agreement.
  */
 
-namespace Crate\DBAL\Driver\PDOCrate;
+namespace Crate\DBAL\Platforms;
 
-use Doctrine\DBAL\Driver\PDOStatementImplementations;
-use Doctrine\DBAL\Driver\Statement as StatementInterface;
-use Crate\PDO\PDOStatement;
+use Doctrine\DBAL\Exception as DoctrineException;
 
-/**
- * @internal
- */
-class CrateStatement extends PDOStatement implements StatementInterface
+class Exception extends \Exception implements DoctrineException
 {
-    use PDOStatementImplementations;
+    public static function notSupported(string $method): self
+    {
+        return new self(sprintf("Operation '%s' is not supported by platform.", $method));
+    }
 }
