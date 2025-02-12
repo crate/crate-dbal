@@ -22,7 +22,7 @@ CrateDB DBAL Driver
     :target: https://packagist.org/packages/crate/crate-dbal
     :alt: Latest stable version
 
-.. image:: https://img.shields.io/badge/PHP-8.0%2C%208.1%2C%208.2%2C%208.3-green.svg
+.. image:: https://img.shields.io/badge/PHP-8.0%2C%208.1%2C%208.2%2C%208.3%2C%208.4-green.svg
     :target: https://packagist.org/packages/crate/crate-dbal
     :alt: Supported PHP versions
 
