@@ -4,11 +4,6 @@
 Connect to CrateDB
 ==================
 
-.. rubric:: Table of contents
-
-.. contents::
-   :local:
-
 Authentication
 ==============
 

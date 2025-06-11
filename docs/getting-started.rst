@@ -5,11 +5,6 @@ Getting started
 Learn how to install and get started with the :ref:`CrateDB DBAL driver
 <index>`.
 
-.. rubric:: Table of contents
-
-.. contents::
-   :local:
-
 Prerequisites
 =============
 
