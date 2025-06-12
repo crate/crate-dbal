@@ -93,11 +93,17 @@ Running the Tests
     # Run test suite
     composer run test
 
-    # Run code style checks
-    composer run style
+
+Invoke code style checks
+========================
+
+::
 
     # Run code style checks
-    ./vendor/bin/phpcs ./src
+    composer run check-style
+
+    # Some code style quirks can be automatically fixed
+    composer run fix-style
 
 
 ****************************

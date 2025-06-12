@@ -16,7 +16,7 @@
     "prefer-stable": true,
     "require": {
         "php": "^8.0|^8.1|^8.2|^8.3|^8.4",
-        "doctrine/dbal": "^2",
+        "doctrine/dbal": "^3",
         "crate/crate-pdo": "^2"
     },
     "autoload": {
@@ -30,8 +30,10 @@
     },
     "autoload-dev": {
         "psr-0": {
-            "Crate\\Test": "test",
-            "Doctrine\\Tests": "vendor/doctrine/dbal/tests"
+            "Crate\\Test": "test"
+        },
+        "psr-4": {
+            "Doctrine\\DBAL\\Tests\\": "vendor/doctrine/dbal/tests"
         }
     },
     "config": {
@@ -41,7 +43,7 @@
     },
     "scripts": {
         "test": "XDEBUG_MODE=coverage phpunit --coverage-clover build/logs/clover.xml",
-        "check-style": "phpcs",
+        "check-style": "phpcs -s",
         "fix-style": "phpcbf"
     }
 }

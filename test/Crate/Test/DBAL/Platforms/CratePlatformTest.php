@@ -35,7 +35,7 @@ use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\Tests\DBAL\Platforms\AbstractPlatformTestCase;
+use Doctrine\DBAL\Tests\Platforms\AbstractPlatformTestCase;
 
 class CratePlatformTest extends AbstractPlatformTestCase {
 
