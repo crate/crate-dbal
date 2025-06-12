@@ -26,7 +26,7 @@ This driver also works with `Doctrine ORM`_, an `Object-Relational Mapper`_.
 .. rubric:: Table of contents
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    getting-started
    connect
