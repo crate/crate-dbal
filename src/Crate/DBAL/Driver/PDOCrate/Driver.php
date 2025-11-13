@@ -30,7 +30,7 @@ use Doctrine\DBAL\VersionAwarePlatformDriver;
 
 class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
 {
-    const VERSION = '4.0.2';
+    const VERSION = '4.0.3';
     const NAME = 'crate';
 
     private const VERSION_057 = '0.57.0';

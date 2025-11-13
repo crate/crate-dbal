@@ -5,6 +5,9 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+2025/11/13 4.0.3
+================
+
 - Verified support on PHP 8.4 and PHP 8.5
 - Reflection: Adjusted evaluation of column's ``is_nullable`` attribute for CrateDB >= 6.1
 - Dependencies: Replaced use of ``Crate\PDO\PDO`` (deprecated) by ``Crate\PDO\PDOCrateDB``
