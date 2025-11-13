@@ -22,16 +22,21 @@ jobs:
       matrix:
         os: [ 'ubuntu-latest' ] #, macos-latest, windows-latest ]
         php-version: [ '8.0', '8.1', '8.2', '8.3', '8.4' ]
+        cratedb-version: [ 'nightly' ]
+        include:
+          - os: 'ubuntu-latest'
+            php-version: '8.4'
+            cratedb-version: '6.0.3'
 
     # https://docs.github.com/en/free-pro-team@latest/actions/guides/about-service-containers
     services:
       cratedb:
-        image: crate/crate:nightly
+        image: crate/crate:${{ matrix.cratedb-version }}
         ports:
           - 4200:4200
 
     # https://github.com/marketplace/actions/setup-php-action
-    name: PHP ${{ matrix.php-version }} on OS ${{ matrix.os }}
+    name: PHP ${{ matrix.php-version }}, CrateDB ${{ matrix.cratedb-version }}
     steps:
 
       - name: Acquire sources
