@@ -6,6 +6,7 @@ Unreleased
 ==========
 
 - Verified support on PHP 8.4
+- Reflection: Adjusted evaluation of column's ``is_nullable`` attribute for CrateDB >= 6.1
 
 2024/02/02 4.0.2
 ================
