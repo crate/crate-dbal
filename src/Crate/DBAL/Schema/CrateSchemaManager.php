@@ -58,8 +58,13 @@ class CrateSchemaManager extends AbstractSchemaManager
         if (!isset($tableColumn['column_name'])) {
             $tableColumn['column_name'] = '';
         }
+
+        // Normalize is_nullable to handle both boolean (< 6.1) and string (>= 6.1) values.
         if (!isset($tableColumn['is_nullable'])) {
-            $tableColumn['is_nullable'] = true;
+            $tableColumn['is_nullable'] = 'YES';
+        } elseif (is_bool($tableColumn['is_nullable'])) {
+            // Convert boolean to string for CrateDB < 6.1.
+            $tableColumn['is_nullable'] = $tableColumn['is_nullable'] ? 'YES' : 'NO';
         }
 
         $dbType = strtolower($tableColumn['data_type']);
@@ -67,7 +72,7 @@ class CrateSchemaManager extends AbstractSchemaManager
 
         $options = array(
             'length'        => null,
-            'notnull'       => ! $tableColumn['is_nullable'],
+            'notnull'       => $tableColumn['is_nullable'] !== 'YES',
             'default'       => null,
             'precision'     => null,
             'scale'         => null,
