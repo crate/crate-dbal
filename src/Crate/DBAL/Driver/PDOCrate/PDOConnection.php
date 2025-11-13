@@ -31,9 +31,9 @@ class PDOConnection extends PDOCrateDB implements ServerInfoAwareConnection
      * @param string $dsn
      * @param string $user
      * @param string $password
-     * @param array $options
+     * @param array|null $options
      */
-    public function __construct($dsn, $user = null, $password = null, array $options = null)
+    public function __construct($dsn, $user = null, $password = null, ?array $options = null)
     {
         parent::__construct($dsn, $user, $password, $options);
         $this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, CrateStatement::class);
