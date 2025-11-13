@@ -7,6 +7,7 @@ Unreleased
 
 - Verified support on PHP 8.4 and PHP 8.5
 - Reflection: Adjusted evaluation of column's ``is_nullable`` attribute for CrateDB >= 6.1
+- Dependencies: Replaced use of ``Crate\PDO\PDO`` (deprecated) by ``Crate\PDO\PDOCrateDB``
 
 2024/02/02 4.0.2
 ================

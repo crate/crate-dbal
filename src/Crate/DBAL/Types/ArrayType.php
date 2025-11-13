@@ -22,7 +22,7 @@
 
 namespace Crate\DBAL\Types;
 
-use Crate\PDO\PDO;
+use Crate\PDO\PDOCrateDB;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 
@@ -53,7 +53,7 @@ class ArrayType extends Type
      */
     public function getBindingType()
     {
-        return PDO::PARAM_ARRAY;
+        return PDOCrateDB::PARAM_ARRAY;
     }
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
