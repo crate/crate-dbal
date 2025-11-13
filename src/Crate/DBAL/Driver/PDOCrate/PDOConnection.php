@@ -22,10 +22,10 @@
 
 namespace Crate\DBAL\Driver\PDOCrate;
 
-use Crate\PDO\PDO;
+use Crate\PDO\PDOCrateDB;
 use Doctrine\DBAL\Driver\ServerInfoAwareConnection;
 
-class PDOConnection extends PDO implements ServerInfoAwareConnection
+class PDOConnection extends PDOCrateDB implements ServerInfoAwareConnection
 {
     /**
      * @param string $dsn
@@ -36,8 +36,8 @@ class PDOConnection extends PDO implements ServerInfoAwareConnection
     public function __construct($dsn, $user = null, $password = null, array $options = null)
     {
         parent::__construct($dsn, $user, $password, $options);
-        $this->setAttribute(PDO::ATTR_STATEMENT_CLASS, CrateStatement::class);
-        $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, CrateStatement::class);
+        $this->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     }
 
     /**
