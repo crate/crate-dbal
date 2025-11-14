@@ -795,7 +795,8 @@ class CratePlatform extends AbstractPlatform
         $columnData['unique'] = false;
         $columnData['version'] = $column->hasPlatformOption("version") ? $column->getPlatformOption("version") : false;
 
-        if (strtolower($columnData['type']->getName()) == $platform->getVarcharTypeDeclarationSQLSnippet(0, false)
+        if (strtolower($columnData['type']->getName()) ==
+            strtolower($platform->getVarcharTypeDeclarationSQLSnippet(0, false))
                 && $columnData['length'] === null) {
             $columnData['length'] = 255;
         }

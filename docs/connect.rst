@@ -29,13 +29,15 @@ If you plan to query CrateDB via DBAL, you can get a connection from the
 
 .. code-block:: php
 
+    use Doctrine\DBAL\DriverManager;
+
     $params = array(
         'driverClass' => 'Crate\DBAL\Driver\PDOCrate\Driver',
         'user' => 'crate',
         'host' => 'localhost',
         'port' => 4200
     );
-    $connection = \Doctrine\DBAL\DriverManager::getConnection($params);
+    $connection = DriverManager::getConnection($params);
     $schemaManager = $connection->createSchemaManager();
 
 With these connection parameters, the ``DriverManager`` will attempt to

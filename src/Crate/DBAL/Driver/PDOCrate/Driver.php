@@ -28,6 +28,7 @@ use Crate\DBAL\Schema\CrateSchemaManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use SensitiveParameter;
 
 class Driver implements \Doctrine\DBAL\Driver
 {
@@ -42,11 +43,12 @@ class Driver implements \Doctrine\DBAL\Driver
      * @return PDOConnection The database connection.
      */
     public function connect(
-        array $params,
-        $username = null,
-        $password = null,
-        array $driverOptions = array(),
+        #[SensitiveParameter]
+        array $params
     ): PDOConnection {
+        $username = $params['user'] ?? null;
+        $password = $params['password'] ?? null;
+        $driverOptions = $params['driver_options'] ?? [];
         return new PDOConnection($this->constructPdoDsn($params), $username, $password, $driverOptions);
     }
 
