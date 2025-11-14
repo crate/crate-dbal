@@ -6,15 +6,15 @@
  */
 require __DIR__ . '/../vendor/autoload.php';
 
+use Crate\DBAL\Platforms\CratePlatform4;
+use Crate\DBAL\Types\MapType;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
+
 use Doctrine\DBAL\Tools\DsnParser;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\DBAL\DriverManager;
-
-use Crate\DBAL\Platforms\CratePlatform4;
-use Crate\DBAL\Types\MapType;
 
 // Initialize machinery.
 // This ensures that the 'map' type is registered in the type system from the beginning.

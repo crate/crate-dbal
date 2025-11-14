@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Licensed to CRATE Technology GmbH("Crate") under one or more contributor
  * license agreements.  See the NOTICE file distributed with this work for
@@ -19,13 +20,14 @@
  * with Crate these terms will supersede the license and you may use the
  * software solely pursuant to the terms of the relevant commercial agreement.
  */
+
 namespace Crate\DBAL\Schema;
 
 use Crate\DBAL\Platforms\CratePlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Types\Type;
 
 /**
  * Schema manager for the CrateDB RDBMS.
@@ -114,7 +116,7 @@ class CrateSchemaManager extends AbstractSchemaManager
      *
      * @return array
      */
-    private function flatten(array $array, string $prefix = '') : array
+    private function flatten(array $array, string $prefix = ''): array
     {
         $result = array();
         foreach ($array as $key => $value) {
@@ -130,7 +132,7 @@ class CrateSchemaManager extends AbstractSchemaManager
     /**
      * {@inheritDoc}
      */
-    public function listTableDetails($name) : Table
+    public function listTableDetails($name): Table
     {
         $columns = $this->listTableColumns($name);
         $indexes = $this->listTableIndexes($name);

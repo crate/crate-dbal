@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Licensed to CRATE Technology GmbH("Crate") under one or more contributor
  * license agreements.  See the NOTICE file distributed with this work for
@@ -22,12 +23,12 @@
 
 namespace Crate\DBAL\Driver\PDOCrate;
 
-use Crate\PDO\PDOStatement;
 use Crate\PDO\PDOInterface;
+use Crate\PDO\PDOStatement;
 use Doctrine\DBAL\Driver\PDO\Exception;
 use Doctrine\DBAL\Driver\PDOStatementImplementations;
-use Doctrine\DBAL\Driver\Statement as StatementInterface;
 use Doctrine\DBAL\Driver\Result as ResultInterface;
+use Doctrine\DBAL\Driver\Statement as StatementInterface;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\Deprecations\Deprecation;
 use PDO;

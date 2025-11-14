@@ -28,14 +28,14 @@ use Crate\DBAL\Platforms\CratePlatform;
 use Crate\DBAL\Types\ArrayType;
 use Crate\DBAL\Types\MapType;
 use Doctrine\Common\EventManager;
-use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Events;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Tests\Platforms\AbstractPlatformTestCase;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 
 class CratePlatformTest extends AbstractPlatformTestCase {

@@ -15,8 +15,8 @@ use Doctrine\DBAL\Exception\TableExistsException;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\DBAL\Query;
-
 use Doctrine\DBAL\Schema\Exception\ColumnDoesNotExist;
+
 use function strpos;
 
 /** @internal */

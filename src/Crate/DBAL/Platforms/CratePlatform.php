@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Licensed to CRATE Technology GmbH("Crate") under one or more contributor
  * license agreements.  See the NOTICE file distributed with this work for
@@ -19,6 +20,7 @@
  * with Crate these terms will supersede the license and you may use the
  * software solely pursuant to the terms of the relevant commercial agreement.
  */
+
 namespace Crate\DBAL\Platforms;
 
 use Crate\DBAL\Types\MapType;
@@ -28,20 +30,19 @@ use Doctrine\DBAL\Event\SchemaCreateTableEventArgs;
 use Doctrine\DBAL\Events;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use Doctrine\DBAL\Schema\Identifier;
 use Doctrine\DBAL\Schema\Index;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use InvalidArgumentException;
 
 class CratePlatform extends AbstractPlatform
 {
-
-    const TIMESTAMP_FORMAT =  'Y-m-d\TH:i:s';
-    const TIMESTAMP_FORMAT_TZ =  'Y-m-d\TH:i:sO';
-    const TABLE_WHERE_CLAUSE_FORMAT = '%s.table_name = %s AND %s.schema_name = %s';
+    public const TIMESTAMP_FORMAT =  'Y-m-d\TH:i:s';
+    public const TIMESTAMP_FORMAT_TZ =  'Y-m-d\TH:i:sO';
+    public const TABLE_WHERE_CLAUSE_FORMAT = '%s.table_name = %s AND %s.schema_name = %s';
 
     /**
      * {@inheritDoc}
@@ -605,7 +606,7 @@ class CratePlatform extends AbstractPlatform
         $options['indexes'] = array();
         $options['primary'] = array();
 
-        if (($createFlags&self::CREATE_INDEXES) > 0) {
+        if (($createFlags & self::CREATE_INDEXES) > 0) {
             foreach ($table->getIndexes() as $index) {
                 /* @var $index Index */
                 if ($index->isPrimary()) {
@@ -686,7 +687,7 @@ class CratePlatform extends AbstractPlatform
                 $columnListSql .= ', ' . $this->getIndexDeclarationSQL($index, $definition);
             }
         }
- 
+
         if (isset($options['foreignKeys'])) {
             throw DBALException::notSupported("Create Table: foreign keys");
         }
@@ -831,7 +832,7 @@ class CratePlatform extends AbstractPlatform
     {
         throw DBALException::notSupported(__METHOD__);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -839,7 +840,7 @@ class CratePlatform extends AbstractPlatform
     {
         throw DBALException::notSupported(__METHOD__);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -854,7 +855,7 @@ class CratePlatform extends AbstractPlatform
      *
      * @return string
      */
-    public function getTableOptionsSQL(string $table) : string
+    public function getTableOptionsSQL(string $table): string
     {
         return "SELECT clustered_by, number_of_shards, partitioned_by, number_of_replicas, column_policy, settings " .
                "FROM information_schema.tables c " .

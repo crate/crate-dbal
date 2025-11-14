@@ -23,9 +23,9 @@
 namespace Crate\Test\DBAL\Functional;
 
 use Crate\DBAL\Platforms\CratePlatform;
-use Crate\DBAL\Types\TimestampType;
 use Crate\DBAL\Types\ArrayType;
 use Crate\DBAL\Types\MapType;
+use Crate\DBAL\Types\TimestampType;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 use PHPUnit\Framework\TestCase;

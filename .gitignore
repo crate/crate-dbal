@@ -3,6 +3,7 @@
 .project
 .vagrant
 .phpunit.result.cache
+*.cache
 *-console.log
 .crate-docs
 /composer.lock

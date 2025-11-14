@@ -21,8 +21,8 @@
  */
 namespace Crate\Test\DBAL\Functional;
 
-use Crate\Test\DBAL\DBALFunctionalTestCase;
 use Crate\PDO\PDOCrateDB;
+use Crate\Test\DBAL\DBALFunctionalTestCase;
 use Doctrine\DBAL\DriverManager;
 
 class ConnectionTestCase extends DBALFunctionalTestCase

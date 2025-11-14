@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Licensed to CRATE Technology GmbH("Crate") under one or more contributor
  * license agreements.  See the NOTICE file distributed with this work for
@@ -19,6 +20,7 @@
  * with Crate these terms will supersede the license and you may use the
  * software solely pursuant to the terms of the relevant commercial agreement.
  */
+
 namespace Crate\DBAL\Platforms\Keywords;
 
 use Doctrine\DBAL\Platforms\Keywords\KeywordList;
