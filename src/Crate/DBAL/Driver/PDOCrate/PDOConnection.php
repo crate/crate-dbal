@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Licensed to CRATE Technology GmbH("Crate") under one or more contributor
  * license agreements.  See the NOTICE file distributed with this work for
@@ -23,10 +24,18 @@
 namespace Crate\DBAL\Driver\PDOCrate;
 
 use Crate\PDO\PDOCrateDB;
-use Doctrine\DBAL\Driver\ServerInfoAwareConnection;
+use Crate\PDO\PDOStatement;
+use Doctrine\DBAL\Driver\Connection as ConnectionInterface;
+use Doctrine\DBAL\Driver\PDO\Exception;
+use Doctrine\DBAL\Driver\Result as ResultInterface;
+use Doctrine\DBAL\ParameterType;
+use PDO;
+use PDOException;
 
-class PDOConnection extends PDOCrateDB implements ServerInfoAwareConnection
+class PDOConnection implements ConnectionInterface
 {
+    private PDOCrateDB $connection;
+
     /**
      * @param string $dsn
      * @param string $user
@@ -35,18 +44,86 @@ class PDOConnection extends PDOCrateDB implements ServerInfoAwareConnection
      */
     public function __construct($dsn, $user = null, $password = null, ?array $options = null)
     {
-        parent::__construct($dsn, $user, $password, $options);
-        $this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, CrateStatement::class);
-        $this->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $this->connection = new PDOCrateDB($dsn, $user, $password, $options);
+        $this->connection->setAttribute(PDO::ATTR_STATEMENT_CLASS, PDOStatement::class);
+        $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    }
+
+    public function getServerVersion()
+    {
+        // Unable to detect platform version.
+        return null;
+    }
+
+    public function getNativeConnection(): PDOCrateDB
+    {
+        return $this->connection;
     }
 
     /**
-     * Checks whether a query is required to retrieve the database server version.
+     * {@inheritDoc}
      *
-     * @return boolean True if a query is required to retrieve the database server version, false otherwise.
+     * References:
+     * - https://github.com/doctrine/dbal/issues/2025
+     * - https://github.com/doctrine/dbal/pull/517
+     * - https://github.com/doctrine/dbal/pull/373
      */
-    public function requiresQueryForServerVersion()
+    public function prepare($sql, $options = []): CrateStatement
     {
-        return false;
+        try {
+            return new CrateStatement($this->connection, $sql, $options);
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function exec($sql): int
+    {
+        try {
+            $result = $this->connection->exec($sql);
+            assert($result !== false);
+            return $result;
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
+        }
+    }
+
+    public function query(string $sql): ResultInterface
+    {
+        try {
+            $stmt = $this->prepare($sql);
+            $stmt->execute();
+            return new Result($stmt);
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
+        }
+    }
+
+    public function quote($value, $type = ParameterType::STRING): string
+    {
+        return $this->connection->quote($value, $type);
+    }
+
+    public function lastInsertId($name = null): string|false
+    {
+        return $this->connection->lastInsertId($name);
+    }
+
+    public function beginTransaction(): bool
+    {
+        return true;
+    }
+
+    public function commit(): bool
+    {
+        return true;
+    }
+
+    public function rollBack(): bool
+    {
+        return true;
     }
 }

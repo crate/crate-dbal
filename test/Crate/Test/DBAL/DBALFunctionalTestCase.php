@@ -112,7 +112,7 @@ abstract class DBALFunctionalTestCase extends TestCase
 
     public function refresh($table_name)
     {
-        $this->_conn->query('REFRESH TABLE ' . $table_name);
+        $this->_conn->executeStatement('REFRESH TABLE ' . $table_name);
     }
 
     public function prepareStatement($sql)

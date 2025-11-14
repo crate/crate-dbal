@@ -28,14 +28,15 @@ use Crate\DBAL\Platforms\CratePlatform;
 use Crate\DBAL\Types\ArrayType;
 use Crate\DBAL\Types\MapType;
 use Doctrine\Common\EventManager;
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Events;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
+use Doctrine\DBAL\Tests\Platforms\AbstractPlatformTestCase;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\Tests\DBAL\Platforms\AbstractPlatformTestCase;
+use Doctrine\DBAL\Types\Types;
 
 class CratePlatformTest extends AbstractPlatformTestCase {
 
@@ -104,7 +105,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function testAlterTableChangeQuotedColumn() : void
     {
-        $this->markTestSkipped('Platform does not support ALTER TABLE.');
+        $this->markTestSkipped('Platform does not support renaming indexes.');
     }
 
     protected function getQuotedColumnInPrimaryKeySQL() : array
@@ -169,6 +170,11 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     }
 
     protected function getQuotedAlterTableChangeColumnLengthSQL() : array {}
+
+    public function testQuotesAlterTableRenameIndex() : void
+    {
+        $this->markTestSkipped('Platform does not support ALTER TABLE.');
+    }
 
     /**
      * @group DBAL-807
@@ -370,7 +376,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $expectedSql = $this->getGenerateAlterTableSql();
 
         $tableDiff = new TableDiff('mytable');
-        $tableDiff->addedColumns['quota'] = new \Doctrine\DBAL\Schema\Column('quota', \Doctrine\DBAL\Types\Type::getType('integer'), array('notnull' => false));
+        $tableDiff->addedColumns['quota'] = new Column('quota', Type::getType('integer'), array('notnull' => false));
 
         $sql = $this->platform->getAlterTableSQL($tableDiff);
 
@@ -399,7 +405,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->platform->setEventManager($eventManager);
 
         $tableDiff = new TableDiff('mytable');
-        $tableDiff->addedColumns['added'] = new \Doctrine\DBAL\Schema\Column('added', \Doctrine\DBAL\Types\Type::getType('integer'), array());
+        $tableDiff->addedColumns['added'] = new Column('added', Type::getType('integer'), array());
 
         $this->platform->getAlterTableSQL($tableDiff);
     }
@@ -455,8 +461,8 @@ class CratePlatformTest extends AbstractPlatformTestCase {
             array('platformOptions'=>array(
                 'type'=>MapType::STRICT,
                 'fields'=>array(
-                    new Column('num', Type::getType(Type::INTEGER)),
-                    new Column('text', Type::getType(Type::STRING)),
+                    new Column('num', Type::getType(Types::INTEGER)),
+                    new Column('text', Type::getType(Types::STRING)),
                     new Column('arr', Type::getType(ArrayType::NAME)),
                     new Column('obj', Type::getType(MapType::NAME)),
                 ),
@@ -471,7 +477,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->assertEquals($this->getSQLDeclaration($column), 'arr ARRAY ( TEXT )');
 
         $column = new Column('arr', Type::getType(ArrayType::NAME),
-            array('platformOptions'=> array('type'=>Type::INTEGER)));
+            array('platformOptions'=> array('type'=>Types::INTEGER)));
         $this->assertEquals($this->getSQLDeclaration($column), 'arr ARRAY ( INTEGER )');
 
     }
@@ -499,11 +505,73 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     /**
      * @return array<int, array{string, array<string, mixed>}>
      */
-    public function asciiStringSqlDeclarationDataProvider() : array
+    public static function asciiStringSqlDeclarationDataProvider() : array
     {
         return [
             ['TEXT', ['length' => 12]],
             ['TEXT', ['length' => 12, 'fixed' => true]],
         ];
     }
+
+    /** @return string[] */
+    protected function getAlterTableRenameIndexSQL(): array
+    {
+        return [
+            'DROP INDEX idx_foo',
+            'CREATE INDEX idx_bar ON mytable (id)',
+        ];
+    }
+
+    public function testAlterTableRenameIndex(): void
+    {
+        $this->markTestSkipped('Platform does not support renaming indexes.');
+    }
+
+    public function testAlterTableRenameIndexInSchema(): void
+    {
+        $this->markTestSkipped('Platform does not support renaming indexes.');
+    }
+
+    public function testRegistersCommentedDoctrineMappingTypeImplicitly(): void
+    {
+        $type = Type::getType(Types::ARRAY);
+        $this->platform->registerDoctrineTypeMapping('foo', Types::ARRAY);
+
+        self::assertFalse($this->platform->isCommentedDoctrineType($type));
+    }
+
+    public function testCaseInsensitiveDoctrineTypeMappingFromType(): void
+    {
+        $type = new class () extends Type {
+            /**
+             * {@inheritDoc}
+             */
+            public function getMappedDatabaseTypes(AbstractPlatform $platform): array
+            {
+                return ['OBJECT'];
+            }
+
+            public function getName(): string
+            {
+                return 'map';
+            }
+
+            /**
+             * {@inheritDoc}
+             */
+            public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
+            {
+                return $platform->getDecimalTypeDeclarationSQL($column);
+            }
+        };
+
+        if (Type::hasType($type->getName())) {
+            Type::overrideType($type->getName(), get_class($type));
+        } else {
+            Type::addType($type->getName(), get_class($type));
+        }
+
+        self::assertSame($type->getName(), $this->platform->getDoctrineTypeMapping('ObJecT'));
+    }
+
 }

@@ -89,8 +89,8 @@ Here's an example of how the ``MapType`` can be used:
     $objDefinition = array(
       'type' => MapType::STRICT,
        'fields' => array(
-         new Column('id',  Type::getType('integer'), array()),
-         new Column('name',  Type::getType('string'), array()),
+         new Column('id', Type::getType('integer'), array()),
+         new Column('name', Type::getType('string'), array()),
          ),
        );
     $table->addColumn(

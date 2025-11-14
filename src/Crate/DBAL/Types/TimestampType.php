@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Licensed to CRATE Technology GmbH("Crate") under one or more contributor
  * license agreements.  See the NOTICE file distributed with this work for
@@ -19,11 +20,12 @@
  * with Crate these terms will supersede the license and you may use the
  * software solely pursuant to the terms of the relevant commercial agreement.
  */
+
 namespace Crate\DBAL\Types;
 
 use DateTime;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\Type;
 
 /**
  * Type that maps a Crate SQL TIMESTAMP (aka Long) to a PHP DateTime object.
@@ -31,8 +33,8 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 class TimestampType extends Type
 {
-    const NAME = 'timestamp';
-    const S_TO_MS = 1000;
+    public const NAME = 'timestamp';
+    public const S_TO_MS = 1000;
 
     /**
      * Gets the name of this type.
@@ -47,7 +49,7 @@ class TimestampType extends Type
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
         return ($value !== null && $value instanceof DateTime)
-            ? $value->getTimestamp()*self::S_TO_MS : null;
+            ? $value->getTimestamp() * self::S_TO_MS : null;
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform)
@@ -61,7 +63,7 @@ class TimestampType extends Type
         }
 
         $val = new DateTime();
-        $val->setTimestamp($value/self::S_TO_MS);
+        $val->setTimestamp($value / self::S_TO_MS);
 
         return $val;
     }
