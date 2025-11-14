@@ -37,18 +37,17 @@ use PDO;
  */
 final class CrateStatement implements StatementInterface
 {
-
-    /**
-     * @var PDOInterface
-     */
-    private $pdo;
-
+    private PDOInterface $pdo;
     private PDOStatement $stmt;
 
-    public function __construct(PDOInterface $pdo, $sql)
+    /**
+     * @param string              $sql
+     * @param array<string,mixed> $options
+     */
+    public function __construct(PDOInterface $pdo, $sql, $options = [])
     {
-        $this->pdo = $pdo;
-        $this->stmt = $pdo->prepare($sql);
+        $this->pdo  = $pdo;
+        $this->stmt = $pdo->prepare($sql, $options);
     }
 
     /**
@@ -90,7 +89,7 @@ final class CrateStatement implements StatementInterface
      */
     public function bindValue($param, $value, $type = ParameterType::STRING)
     {
-        $this->stmt->bindValue($param, $value, $type);
+        return $this->stmt->bindValue($param, $value, $type);
     }
 
     /**
@@ -132,17 +131,17 @@ final class CrateStatement implements StatementInterface
     /**
      * {@inheritDoc}
      */
-    public function closeCursor(): int
+    public function closeCursor(): bool
     {
         return $this->stmt->closeCursor();
     }
 
     /**
-     * Gets the wrapped driver statement.
+     * Gets the wrapped CrateDB PDOStatement.
      *
-     * @return Driver\Statement
+     * @return PDOStatement
      */
-    public function getWrappedStatement()
+    public function getWrappedStatement(): PDOStatement
     {
         return $this->stmt;
     }

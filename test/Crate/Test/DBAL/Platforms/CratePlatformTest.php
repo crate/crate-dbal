@@ -376,7 +376,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $expectedSql = $this->getGenerateAlterTableSql();
 
         $tableDiff = new TableDiff('mytable');
-        $tableDiff->addedColumns['quota'] = new \Doctrine\DBAL\Schema\Column('quota', \Doctrine\DBAL\Types\Type::getType('integer'), array('notnull' => false));
+        $tableDiff->addedColumns['quota'] = new Column('quota', Type::getType('integer'), array('notnull' => false));
 
         $sql = $this->platform->getAlterTableSQL($tableDiff);
 
@@ -405,7 +405,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->platform->setEventManager($eventManager);
 
         $tableDiff = new TableDiff('mytable');
-        $tableDiff->addedColumns['added'] = new \Doctrine\DBAL\Schema\Column('added', \Doctrine\DBAL\Types\Type::getType('integer'), array());
+        $tableDiff->addedColumns['added'] = new Column('added', Type::getType('integer'), array());
 
         $this->platform->getAlterTableSQL($tableDiff);
     }

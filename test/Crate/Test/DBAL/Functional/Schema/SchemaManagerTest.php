@@ -40,7 +40,7 @@ class SchemaManagerTest extends DBALFunctionalTestCase
     public function setUp() : void
     {
         parent::setUp();
-        $this->_sm = $this->_conn->getSchemaManager();
+        $this->_sm = $this->_conn->createSchemaManager();
     }
 
     public function tearDown() : void
@@ -86,6 +86,7 @@ class SchemaManagerTest extends DBALFunctionalTestCase
         $table->setPrimaryKey(array('id'));
 
         // OBJECT schema definition via platform options
+        // Those intentionally use the `Type::getType()` notation and resolve to DBAL types.
         $mapOpts = array(
             'type' => MapType::STRICT,
             'fields' => array(

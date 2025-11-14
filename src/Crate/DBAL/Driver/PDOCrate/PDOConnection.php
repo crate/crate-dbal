@@ -91,20 +91,6 @@ class PDOConnection implements ConnectionInterface
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function quer2y(string $sql): Result
-    {
-        try {
-            $result = $this->connection->query($sql);
-            assert($result !== false);
-            return new Result($result);
-        } catch (PDOException $exception) {
-            throw Exception::new($exception);
-        }
-    }
-
     public function query(string $sql): ResultInterface
     {
         try {
@@ -121,7 +107,7 @@ class PDOConnection implements ConnectionInterface
         return $this->connection->quote($value, $type);
     }
 
-    public function lastInsertId($name = null): string
+    public function lastInsertId($name = null): string|false
     {
         return $this->connection->lastInsertId($name);
     }

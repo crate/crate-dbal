@@ -21,7 +21,7 @@
  */
 namespace Crate\DBAL\Schema;
 
-use Crate\DBAL\Platforms\CratePlatform4;
+use Crate\DBAL\Platforms\CratePlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Types\Type;
@@ -30,7 +30,7 @@ use Doctrine\DBAL\Schema\Table;
 /**
  * Schema manager for the CrateDB RDBMS.
  *
- * @extends AbstractSchemaManager<CratePlatform4>
+ * @extends AbstractSchemaManager<CratePlatform>
  */
 class CrateSchemaManager extends AbstractSchemaManager
 {
@@ -130,13 +130,13 @@ class CrateSchemaManager extends AbstractSchemaManager
     /**
      * {@inheritDoc}
      */
-    public function listTableDetails($tableName) : Table
+    public function listTableDetails($name) : Table
     {
-        $columns = $this->listTableColumns($tableName);
-        $indexes = $this->listTableIndexes($tableName);
+        $columns = $this->listTableColumns($name);
+        $indexes = $this->listTableIndexes($name);
         $options = [];
 
-        $s = $this->_conn->fetchAssociative($this->_platform->getTableOptionsSQL($tableName));
+        $s = $this->_conn->fetchAssociative($this->_platform->getTableOptionsSQL($name));
 
         $options['sharding_routing_column'] = $s['clustered_by'];
         $options['sharding_num_shards'] = $s['number_of_shards'];
@@ -144,6 +144,6 @@ class CrateSchemaManager extends AbstractSchemaManager
         $options['table_options'] = self::flatten($s['settings']);
         $options['table_options']['number_of_replicas'] = $s['number_of_replicas'];
         $options['table_options']['column_policy'] = $s['column_policy'];
-        return new Table($tableName, $columns, $indexes, [], [], $options);
+        return new Table($name, $columns, $indexes, [], [], $options);
     }
 }
