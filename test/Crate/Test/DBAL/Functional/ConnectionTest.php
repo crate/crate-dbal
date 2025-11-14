@@ -43,16 +43,19 @@ class ConnectionTestCase extends DBALFunctionalTestCase
         $auth = ['crate', 'secret'];
         $params = array(
             'driverClass' => 'Crate\DBAL\Driver\PDOCrate\Driver',
+            // TODO: Could work by inheriting.
+            // 'wrapperClass' => 'Crate\DBAL\Driver\PDOCrate\PDOConnection',
             'host' => 'localhost',
             'port' => 4200,
             'user' => $auth[0],
             'password' => $auth[1],
         );
         $conn = \Doctrine\DBAL\DriverManager::getConnection($params);
-        $this->assertEquals($auth[0], $conn->getUsername());
-        $this->assertEquals($auth[1], $conn->getPassword());
-        $auth_attr = $conn->getWrappedConnection()->getAttribute(PDOCrateDB::CRATE_ATTR_HTTP_BASIC_AUTH);
-        $this->assertEquals($auth_attr, $auth);
+        $conn->connect();
+        $credentials = $conn->getNativeConnection()->getAttribute(PDOCrateDB::CRATE_ATTR_HTTP_BASIC_AUTH);
+
+        // No leaks any longer: Any empty array is all we got.
+        $this->assertEquals($credentials, array());
     }
 
     public function testGetConnection()
@@ -76,8 +79,11 @@ class ConnectionTestCase extends DBALFunctionalTestCase
     {
         $sql = 'SELECT * FROM sys.cluster';
         $stmt = $this->_conn->prepare($sql);
+
+        // Well, it's three layers of Statement objects now.
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
-        $this->assertInstanceOf('Crate\PDO\PDOStatement', $stmt->getWrappedStatement());
+        $this->assertInstanceOf('Crate\DBAL\Driver\PDOCrate\CrateStatement', $stmt->getWrappedStatement());
+        $this->assertInstanceOf('Crate\PDO\PDOStatement', $stmt->getWrappedStatement()->getWrappedStatement());
 
     }
 

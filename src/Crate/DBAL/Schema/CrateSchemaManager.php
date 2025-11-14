@@ -21,11 +21,17 @@
  */
 namespace Crate\DBAL\Schema;
 
+use Crate\DBAL\Platforms\CratePlatform4;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Schema\Table;
 
+/**
+ * Schema manager for the CrateDB RDBMS.
+ *
+ * @extends AbstractSchemaManager<CratePlatform4>
+ */
 class CrateSchemaManager extends AbstractSchemaManager
 {
     /**
@@ -130,7 +136,7 @@ class CrateSchemaManager extends AbstractSchemaManager
         $indexes = $this->listTableIndexes($tableName);
         $options = [];
 
-        $s = $this->_conn->fetchAssoc($this->_platform->getTableOptionsSQL($tableName));
+        $s = $this->_conn->fetchAssociative($this->_platform->getTableOptionsSQL($tableName));
 
         $options['sharding_routing_column'] = $s['clustered_by'];
         $options['sharding_num_shards'] = $s['number_of_shards'];

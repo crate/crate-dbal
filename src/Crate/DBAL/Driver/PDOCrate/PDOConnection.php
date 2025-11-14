@@ -23,13 +23,19 @@
 namespace Crate\DBAL\Driver\PDOCrate;
 
 use Crate\PDO\PDOCrateDB;
+use Crate\PDO\PDOStatement;
 use Doctrine\DBAL\Driver\PDO\Exception;
-use Doctrine\DBAL\Driver\PDO\Statement;
-use Doctrine\DBAL\Driver\ServerInfoAwareConnection;
-use Doctrine\DBAL\Driver\Statement as StatementInterface;
+use Doctrine\DBAL\Driver\Result as ResultInterface;
+use Doctrine\DBAL\Driver\Connection as ConnectionInterface;
+use Doctrine\DBAL\ParameterType;
+use PDO;
+use PDOException;
 
-class PDOConnection extends PDOCrateDB implements ServerInfoAwareConnection
+class PDOConnection implements ConnectionInterface
 {
+
+    private PDOCrateDB $connection;
+
     /**
      * @param string $dsn
      * @param string $user
@@ -38,19 +44,20 @@ class PDOConnection extends PDOCrateDB implements ServerInfoAwareConnection
      */
     public function __construct($dsn, $user = null, $password = null, ?array $options = null)
     {
-        parent::__construct($dsn, $user, $password, $options);
-        $this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, CrateStatement::class);
-        $this->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $this->connection = new PDOCrateDB($dsn, $user, $password, $options);
+        $this->connection->setAttribute(PDO::ATTR_STATEMENT_CLASS, PDOStatement::class);
+        $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
-    /**
-     * Checks whether a query is required to retrieve the database server version.
-     *
-     * @return boolean True if a query is required to retrieve the database server version, false otherwise.
-     */
-    public function requiresQueryForServerVersion()
+    public function getServerVersion()
     {
-        return false;
+        // Unable to detect platform version.
+        return null;
+    }
+
+    public function getNativeConnection(): PDOCrateDB
+    {
+        return $this->connection;
     }
 
     /**
@@ -61,13 +68,10 @@ class PDOConnection extends PDOCrateDB implements ServerInfoAwareConnection
      * - https://github.com/doctrine/dbal/pull/517
      * - https://github.com/doctrine/dbal/pull/373
      */
-    public function prepare($sql, $options = null): StatementInterface
+    public function prepare($sql, $options = []): CrateStatement
     {
         try {
-            $stmt = $this->connection->prepare($sql, $options);
-            assert($stmt instanceof PDOStatement);
-
-            return new Statement($stmt);
+            return new CrateStatement($this->connection, $sql, $options);
         } catch (PDOException $exception) {
             throw Exception::new($exception);
         }
@@ -80,12 +84,60 @@ class PDOConnection extends PDOCrateDB implements ServerInfoAwareConnection
     {
         try {
             $result = $this->connection->exec($sql);
-
             assert($result !== false);
-
             return $result;
         } catch (PDOException $exception) {
             throw Exception::new($exception);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function quer2y(string $sql): Result
+    {
+        try {
+            $result = $this->connection->query($sql);
+            assert($result !== false);
+            return new Result($result);
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
+        }
+    }
+
+    public function query(string $sql): ResultInterface
+    {
+        try {
+            $stmt = $this->prepare($sql);
+            $stmt->execute();
+            return new Result($stmt);
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
+        }
+    }
+
+    public function quote($value, $type = ParameterType::STRING): string
+    {
+        return $this->connection->quote($value, $type);
+    }
+
+    public function lastInsertId($name = null): string
+    {
+        return $this->connection->lastInsertId($name);
+    }
+
+    public function beginTransaction(): bool
+    {
+        return true;
+    }
+
+    public function commit(): bool
+    {
+        return true;
+    }
+
+    public function rollBack(): bool
+    {
+        return true;
     }
 }
