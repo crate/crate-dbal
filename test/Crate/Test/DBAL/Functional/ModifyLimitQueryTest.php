@@ -23,8 +23,7 @@
 namespace Crate\Test\DBAL\Functional;
 
 use Crate\Test\DBAL\DBALFunctionalTestCase;
-use Doctrine\DBAL\DBALException;
-
+use Doctrine\DBAL\Exception as DBALException;
 
 class ModifyLimitQueryTest extends DBALFunctionalTestCase
 {
@@ -65,7 +64,7 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
         }
     }
 
-    public function testModifyLimitQuerySimpleQuery()
+    public function testModifyLimitQuerySimpleQuery(): void
     {
         $this->_conn->insert('modify_limit_table', array('test_int' => 1));
         $this->_conn->insert('modify_limit_table', array('test_int' => 2));
@@ -97,7 +96,7 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
         $this->assertLimitResult(array(2, 1), $sql, 2, 2);
     }
 
-    public function testModifyLimitQueryGroupBy()
+    public function testModifyLimitQueryGroupBy(): void
     {
         $this->_conn->insert('modify_limit_table2', array('test_int' => 1, 'id' => 1));
         $this->_conn->insert('modify_limit_table2', array('test_int' => 1, 'id' => 2));
@@ -117,7 +116,7 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
     {
         $p = $this->_conn->getDatabasePlatform();
         $data = array();
-        foreach ($this->_conn->fetchAll($p->modifyLimitQuery($sql, $limit, $offset)) AS $row) {
+        foreach ($this->_conn->executeQuery($p->modifyLimitQuery($sql, $limit, $offset))->fetchAllAssociative() as $row) {
             $row = array_change_key_case($row, CASE_LOWER);
             $data[] = $row['test_int'];
         }

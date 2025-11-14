@@ -23,10 +23,10 @@ namespace Crate\DBAL\Platforms;
 
 use Crate\DBAL\Types\MapType;
 use Crate\DBAL\Types\TimestampType;
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Event\SchemaCreateTableColumnEventArgs;
 use Doctrine\DBAL\Event\SchemaCreateTableEventArgs;
 use Doctrine\DBAL\Events;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\Identifier;
 use Doctrine\DBAL\Schema\Index;
@@ -48,7 +48,6 @@ class CratePlatform extends AbstractPlatform
      */
     public function __construct()
     {
-        parent::__construct();
         $this->initializeDoctrineTypeMappings();
         if (!Type::hasType(MapType::NAME)) {
             Type::addType(MapType::NAME, 'Crate\DBAL\Types\MapType');
@@ -286,7 +285,7 @@ class CratePlatform extends AbstractPlatform
                 throw DBALException::notSupported("Alter Table: rename table");
             }
 
-            $sql = array_merge($sql, $this->_getAlterTableIndexForeignKeySQL($diff), $commentsSQL);
+            $sql = array_merge($sql, $this->getPreAlterTableIndexForeignKeySQL($diff), $commentsSQL);
         }
 
         return array_merge($sql, $tableSql, $columnSql);
@@ -321,7 +320,7 @@ class CratePlatform extends AbstractPlatform
         }
 
         return 'INDEX ' . $name->getQuotedName($this) .
-               ' USING FULLTEXT ('. $this->getIndexFieldDeclarationListSQL($columns) . ')';
+               ' USING FULLTEXT ('. $this->getIndexFieldDeclarationListSQL($index) . ')';
     }
 
     /**
@@ -796,7 +795,7 @@ class CratePlatform extends AbstractPlatform
         $columnData['unique'] = false;
         $columnData['version'] = $column->hasPlatformOption("version") ? $column->getPlatformOption("version") : false;
 
-        if (strtolower($columnData['type']) == $platform->getVarcharTypeDeclarationSQLSnippet(0, false)
+        if (strtolower($columnData['type']->getName()) == $platform->getVarcharTypeDeclarationSQLSnippet(0, false)
                 && $columnData['length'] === null) {
             $columnData['length'] = 255;
         }
@@ -866,7 +865,7 @@ class CratePlatform extends AbstractPlatform
      */
     public function getCurrentDatabaseExpression(): string
     {
-        // TODO: Implement getCurrentDatabaseExpression() method.
-        //       Added when upgrading to Doctrine3.
+        // Added by Doctrine 3.
+        return 'CURRENT_DATABASE()';
     }
 }

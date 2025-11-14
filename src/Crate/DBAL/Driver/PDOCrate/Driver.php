@@ -26,7 +26,6 @@ use Crate\DBAL\Platforms\CratePlatform;
 use Crate\DBAL\Platforms\CratePlatform4;
 use Crate\DBAL\Schema\CrateSchemaManager;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\API\ExceptionConverter;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\VersionAwarePlatformDriver;
 
@@ -70,7 +69,7 @@ class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
      */
     public function getDatabasePlatform()
     {
-        return new CratePlatform();
+        return new CratePlatform4();
     }
 
     /**
@@ -78,8 +77,8 @@ class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
      */
     public function getSchemaManager(Connection $conn, AbstractPlatform $platform)
     {
-        // TODO: `$platform` added when upgrading to Doctrine3 - what to do with it?
-        return new CrateSchemaManager($conn);
+        // Added by Doctrine 3.
+        return new CrateSchemaManager($conn, $conn->getDatabasePlatform());
     }
 
     /**
@@ -117,7 +116,7 @@ class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
      */
     public function getExceptionConverter(): ExceptionConverter
     {
-        // TODO: Implement getExceptionConverter() method.
-        //       Added when upgrading to Doctrine3.
+        // Added by Doctrine 3.
+        return new ExceptionConverter();
     }
 }

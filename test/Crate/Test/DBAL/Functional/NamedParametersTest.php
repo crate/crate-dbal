@@ -4,7 +4,7 @@ namespace Crate\Test\DBAL\Functional;
 
 use Crate\Test\DBAL\DBALFunctionalTestCase;
 use Doctrine\DBAL\Connection;
-use \PDO;
+use PDO;
 
 /**
  * @group DDC-1372

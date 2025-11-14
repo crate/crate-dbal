@@ -18,7 +18,7 @@ Example:
 
    $options = [];
    $options['sharding_shards'] = 5;
-   $myTable = new Table('my_table', [], [], [], 0, $options);
+   $myTable = new Table('my_table', [], [], [], [], $options);
 
 
 Sharding Options
@@ -66,7 +66,7 @@ Example on how to adjust the replicas:
    $options = [];
    $options['table_options'] = [];
    $options['table_options']['number_of_replicas'] = '2';
-   $myTable = new Table('my_table', [], [], [], 0, $options);
+   $myTable = new Table('my_table', [], [], [], [], $options);
 
 
 .. _CrateDB CREATE TABLE Documentation: https://cratedb.com/docs/crate/reference/en/latest/sql/statements/create-table.html
