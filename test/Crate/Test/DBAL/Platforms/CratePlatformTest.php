@@ -105,7 +105,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function testAlterTableChangeQuotedColumn() : void
     {
-        $this->markTestSkipped('Platform does not support ALTER TABLE.');
+        $this->markTestSkipped('Platform does not support renaming indexes.');
     }
 
     protected function getQuotedColumnInPrimaryKeySQL() : array

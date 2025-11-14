@@ -54,7 +54,7 @@ class ConnectionTestCase extends DBALFunctionalTestCase
         $conn->connect();
         $credentials = $conn->getNativeConnection()->getAttribute(PDOCrateDB::CRATE_ATTR_HTTP_BASIC_AUTH);
 
-        // No leaks any longer: Any empty array is all we got.
+        // No credential leaks any longer: Any empty array is all we got.
         $this->assertEquals(array(), $credentials);
     }
 
