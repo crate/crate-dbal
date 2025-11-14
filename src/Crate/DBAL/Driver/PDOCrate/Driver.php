@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Licensed to CRATE Technology GmbH("Crate") under one or more contributor
  * license agreements.  See the NOTICE file distributed with this work for
@@ -19,10 +20,11 @@
  * with Crate these terms will supersede the license and you may use the
  * software solely pursuant to the terms of the relevant commercial agreement.
  */
+
 namespace Crate\DBAL\Driver\PDOCrate;
 
-use Crate\DBAL\Platforms\CratePlatform1;
 use Crate\DBAL\Platforms\CratePlatform;
+use Crate\DBAL\Platforms\CratePlatform1;
 use Crate\DBAL\Platforms\CratePlatform4;
 use Crate\DBAL\Schema\CrateSchemaManager;
 use Doctrine\DBAL\Connection;
@@ -32,8 +34,8 @@ use SensitiveParameter;
 
 class Driver implements \Doctrine\DBAL\Driver
 {
-    const VERSION = '4.0.3';
-    const NAME = 'crate';
+    public const VERSION = '4.0.3';
+    public const NAME = 'crate';
 
     private const VERSION_057 = '0.57.0';
     private const VERSION_4 = '4.0.0';

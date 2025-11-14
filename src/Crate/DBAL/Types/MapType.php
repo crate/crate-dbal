@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Licensed to CRATE Technology GmbH("Crate") under one or more contributor
  * license agreements.  See the NOTICE file distributed with this work for
@@ -24,8 +25,8 @@ namespace Crate\DBAL\Types;
 
 use Crate\DBAL\Platforms\CratePlatform;
 use Crate\PDO\PDOCrateDB;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\Type;
 
 /**
  * Type that maps a PHP associative array (map) to an object SQL type.
@@ -35,11 +36,10 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
  */
 class MapType extends Type
 {
-
-    const NAME = 'map';
-    const STRICT = 'strict';
-    const DYNAMIC = 'dynamic';
-    const IGNORED = 'ignored';
+    public const NAME = 'map';
+    public const STRICT = 'strict';
+    public const DYNAMIC = 'dynamic';
+    public const IGNORED = 'ignored';
 
     /**
      * Gets the name of this type.

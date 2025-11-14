@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Licensed to CRATE Technology GmbH("Crate") under one or more contributor
  * license agreements.  See the NOTICE file distributed with this work for
@@ -23,8 +24,8 @@
 namespace Crate\DBAL\Types;
 
 use Crate\PDO\PDOCrateDB;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 
 /**
@@ -33,8 +34,7 @@ use Doctrine\DBAL\Types\Types;
  */
 class ArrayType extends Type
 {
-
-    const NAME = 'array';
+    public const NAME = 'array';
 
     /**
      * Gets the name of this type.
