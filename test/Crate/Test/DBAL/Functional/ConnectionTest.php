@@ -23,6 +23,7 @@ namespace Crate\Test\DBAL\Functional;
 
 use Crate\Test\DBAL\DBALFunctionalTestCase;
 use Crate\PDO\PDOCrateDB;
+use Doctrine\DBAL\DriverManager;
 
 class ConnectionTestCase extends DBALFunctionalTestCase
 {
@@ -50,12 +51,11 @@ class ConnectionTestCase extends DBALFunctionalTestCase
             'user' => $auth[0],
             'password' => $auth[1],
         );
-        $conn = \Doctrine\DBAL\DriverManager::getConnection($params);
+        $conn = DriverManager::getConnection($params);
         $conn->connect();
         $credentials = $conn->getNativeConnection()->getAttribute(PDOCrateDB::CRATE_ATTR_HTTP_BASIC_AUTH);
 
-        // No credential leaks any longer: Any empty array is all we got.
-        $this->assertEquals(array(), $credentials);
+        $this->assertEquals(array("crate", "secret"), $credentials);
     }
 
     public function testGetConnection()

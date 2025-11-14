@@ -17,6 +17,7 @@ use Crate\DBAL\Platforms\CratePlatform4;
 use Crate\DBAL\Types\MapType;
 
 // Initialize machinery.
+// This ensures that the 'map' type is registered in the type system from the beginning.
 $platform = new CratePlatform4();
 
 // Define table schema.
@@ -44,7 +45,7 @@ $schemaManager = $connection->createSchemaManager();
 
 // Provision database table.
 try {
-    $schemaManager->dropTable($table);
+    $schemaManager->dropTable($table->getName());
 } catch (TableNotFoundException) {
 }
 $schemaManager->createTable($table);
