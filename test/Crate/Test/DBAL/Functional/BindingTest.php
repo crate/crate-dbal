@@ -88,7 +88,7 @@ class BindingTestCase extends DBALFunctionalTestCase
 
     public function testBindTimestamp()
     {
-        if ($this->_conn->getSchemaManager()->tablesExist("foo")) {
+        if ($this->_conn->createSchemaManager()->tablesExist("foo")) {
             $this->execute("DROP TABLE foo");
         }
 

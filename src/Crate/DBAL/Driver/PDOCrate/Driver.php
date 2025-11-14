@@ -27,9 +27,9 @@ use Crate\DBAL\Platforms\CratePlatform4;
 use Crate\DBAL\Schema\CrateSchemaManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\VersionAwarePlatformDriver;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
 
-class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
+class Driver implements \Doctrine\DBAL\Driver
 {
     const VERSION = '4.0.3';
     const NAME = 'crate';
@@ -41,8 +41,12 @@ class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
      * {@inheritDoc}
      * @return PDOConnection The database connection.
      */
-    public function connect(array $params, $username = null, $password = null, array $driverOptions = array())
-    {
+    public function connect(
+        array $params,
+        $username = null,
+        $password = null,
+        array $driverOptions = array(),
+    ): PDOConnection {
         return new PDOConnection($this->constructPdoDsn($params), $username, $password, $driverOptions);
     }
 
@@ -51,7 +55,7 @@ class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
      *
      * @return string The DSN.
      */
-    private function constructPdoDsn(array $params)
+    private function constructPdoDsn(array $params): string
     {
         $dsn = self::NAME . ':';
         if (isset($params['host']) && $params['host'] != '') {
@@ -67,7 +71,7 @@ class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
     /**
      * {@inheritDoc}
      */
-    public function getDatabasePlatform()
+    public function getDatabasePlatform(): AbstractPlatform
     {
         return new CratePlatform4();
     }
@@ -75,16 +79,16 @@ class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
     /**
      * {@inheritDoc}
      */
-    public function getSchemaManager(Connection $conn, AbstractPlatform $platform)
+    public function getSchemaManager(Connection $conn, AbstractPlatform $platform): AbstractSchemaManager
     {
         // Added by Doctrine 3.
-        return new CrateSchemaManager($conn, $conn->getDatabasePlatform());
+        return new CrateSchemaManager($conn, $platform);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getName()
+    public function getName(): string
     {
         return self::NAME;
     }
@@ -92,7 +96,7 @@ class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
     /**
      * {@inheritDoc}
      */
-    public function getDatabase(Connection $conn)
+    public function getDatabase(Connection $conn): string|null
     {
         return null;
     }
@@ -100,7 +104,7 @@ class Driver implements \Doctrine\DBAL\Driver, VersionAwarePlatformDriver
     /**
      * {@inheritDoc}
      */
-    public function createDatabasePlatformForVersion($version)
+    public function createDatabasePlatformForVersion($version): AbstractPlatform
     {
         if (version_compare($version, self::VERSION_057, "<")) {
             return new CratePlatform();

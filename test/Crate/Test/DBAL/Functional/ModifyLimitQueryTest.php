@@ -24,6 +24,7 @@ namespace Crate\Test\DBAL\Functional;
 
 use Crate\Test\DBAL\DBALFunctionalTestCase;
 use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\Schema\Table;
 
 class ModifyLimitQueryTest extends DBALFunctionalTestCase
 {
@@ -35,16 +36,16 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
 
         if (!self::$tableCreated) {
             /* @var $sm \Doctrine\DBAL\Schema\AbstractSchemaManager */
-            $table = new \Doctrine\DBAL\Schema\Table("modify_limit_table");
+            $table = new Table("modify_limit_table");
             $table->addColumn('test_int', 'integer');
             $table->setPrimaryKey(array('test_int'));
 
-            $table2 = new \Doctrine\DBAL\Schema\Table("modify_limit_table2");
+            $table2 = new Table("modify_limit_table2");
             $table2->addColumn('id', 'integer', array('autoincrement' => true));
             $table2->addColumn('test_int', 'integer');
             $table2->setPrimaryKey(array('id'));
 
-            $sm = $this->_conn->getSchemaManager();
+            $sm = $this->_conn->createSchemaManager();
             $sm->createTable($table);
             $sm->createTable($table2);
             self::$tableCreated = true;
@@ -55,7 +56,7 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
     {
         parent::tearDown();
         if (self::$tableCreated) {
-            $sm = $this->_conn->getSchemaManager();
+            $sm = $this->_conn->createSchemaManager();
             try {
                 $sm->dropTable('modify_limit_table');
                 $sm->dropTable('modify_limit_table2');

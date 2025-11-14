@@ -32,9 +32,9 @@ class TableOptionsTest extends DBALFunctionalTestCase {
     public function tearDown() : void
     {
         parent::tearDown();
-        if ($this->_conn->getSchemaManager()->tablesExist("table_option_testf")) {
+        if ($this->_conn->createSchemaManager()->tablesExist("table_option_test")) {
             try {
-                $sm = $this->_conn->getSchemaManager();
+                $sm = $this->_conn->createSchemaManager();
                 $sm->dropTable('table_option_test');
             } catch(\Exception $e) {
                 $this->fail($e->getMessage());
@@ -83,7 +83,7 @@ class TableOptionsTest extends DBALFunctionalTestCase {
         $table->addColumn('parted', 'integer');
         $table->addColumn('date', 'timestamp');
 
-        $sm = $this->_conn->getSchemaManager();
+        $sm = $this->_conn->createSchemaManager();
         $sm->createTable($table);
 
         $schema = $sm->createSchema();

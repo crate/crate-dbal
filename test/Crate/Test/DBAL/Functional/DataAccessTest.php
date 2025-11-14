@@ -27,8 +27,9 @@ use Crate\Test\DBAL\DBALFunctionalTestCase;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Schema\Column;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 use PDO;
 
@@ -44,8 +45,8 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         if (self::$generated === false) {
             self::$generated = true;
             /* @var $sm \Doctrine\DBAL\Schema\AbstractSchemaManager */
-            $sm = $this->_conn->getSchemaManager();
-            $table = new \Doctrine\DBAL\Schema\Table("fetch_table");
+            $sm = $this->_conn->createSchemaManager();
+            $table = new Table("fetch_table");
             $table->addColumn('test_int', 'integer');
             $table->addColumn('test_string', 'string');
             $table->addColumn('test_datetime', 'timestamp', array('notnull' => false));
@@ -53,6 +54,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
             $platformOptions = array(
                 'type'   => MapType::STRICT,
                 'fields' => array(
+                    // Those intentionally use DBAL types.
                     new Column('id',    Type::getType('integer'), array()),
                     new Column('name',  Type::getType('string'), array()),
                     new Column('value', Type::getType('float'), array()),
@@ -78,7 +80,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
     public function tearDown() : void
     {
         if (self::$generated === true) {
-            $this->_conn->getSchemaManager()->dropTable('fetch_table');
+            $this->_conn->createSchemaManager()->dropTable('fetch_table');
             self::$generated = false;
         }
     }
@@ -93,7 +95,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $stmt->bindValue(2, 'foo', PDO::PARAM_STR);
         $result = $stmt->executeQuery();
 
-        $row = $result->fetch(PDO::FETCH_ASSOC);
+        $row = $result->fetchAssociative();
         $row = array_change_key_case($row, \CASE_LOWER);
         $this->assertEquals(array('test_int' => 1, 'test_string' => 'foo'), $row);
     }
@@ -158,6 +160,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
 
         $stmt->bindParam(1, $paramInt, PDO::PARAM_INT);
         $stmt->bindParam(2, $paramStr, PDO::PARAM_STR);
+        $stmt->execute();
         $column = $stmt->getWrappedStatement()->fetchColumn();
 
         $this->assertEquals(1, $column);
@@ -533,8 +536,9 @@ class DataAccessTestCase extends DBALFunctionalTestCase
     {
         $this->_conn->executeStatement('DELETE FROM fetch_table');
         $this->refresh("fetch_table");
-        $this->assertFalse($this->_conn->prepare('SELECT test_int FROM fetch_table')->getWrappedStatement()->fetchColumn());
-        $this->assertFalse($this->_conn->prepare('SELECT test_int FROM fetch_table')->getWrappedStatement()->fetchColumn());
+        $stmt = $this->_conn->prepare('SELECT test_int FROM fetch_table');
+        $stmt->execute();
+        $this->assertFalse($stmt->getWrappedStatement()->fetchColumn());
     }
 
     /**

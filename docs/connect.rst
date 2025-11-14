@@ -36,7 +36,7 @@ If you plan to query CrateDB via DBAL, you can get a connection from the
         'port' => 4200
     );
     $connection = \Doctrine\DBAL\DriverManager::getConnection($params);
-    $schemaManager = $connection->getSchemaManager();
+    $schemaManager = $connection->createSchemaManager();
 
 With these connection parameters, the ``DriverManager`` will attempt to
 authenticate as ``crate`` with a CrateDB node listening on ``localhost:4200``.
