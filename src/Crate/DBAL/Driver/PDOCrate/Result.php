@@ -22,7 +22,7 @@ final class Result implements ResultInterface
     /**
      * {@inheritDoc}
      */
-    public function fetchNumeric()
+    public function fetchNumeric(): false|array
     {
         return $this->fetch(PDO::FETCH_NUM);
     }
@@ -30,7 +30,7 @@ final class Result implements ResultInterface
     /**
      * {@inheritDoc}
      */
-    public function fetchAssociative()
+    public function fetchAssociative(): false|array
     {
         return $this->fetch(PDO::FETCH_ASSOC);
     }
@@ -38,7 +38,7 @@ final class Result implements ResultInterface
     /**
      * {@inheritDoc}
      */
-    public function fetchOne()
+    public function fetchOne(): mixed
     {
         return FetchUtils::fetchOne($this);
     }

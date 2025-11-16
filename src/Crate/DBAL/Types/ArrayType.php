@@ -57,7 +57,7 @@ class ArrayType extends Type
         return PDOCrateDB::PARAM_ARRAY;
     }
 
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
         if (!is_array($value) || (count($value) > 0 && !(array_keys($value) === range(0, count($value) - 1)))) {
             return null;
@@ -65,7 +65,7 @@ class ArrayType extends Type
         return $value;
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): mixed
     {
         return $value;
     }
@@ -78,7 +78,7 @@ class ArrayType extends Type
      * @return string
      * @throws \Doctrine\DBAL\Exception
      */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
         $options = !array_key_exists('platformOptions', $fieldDeclaration) ?
             array() : $fieldDeclaration['platformOptions'];

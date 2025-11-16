@@ -62,7 +62,7 @@ class MapType extends Type
         return PDOCrateDB::PARAM_OBJECT;
     }
 
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
         if (!is_array($value) || (count($value) > 0 && !(array_keys($value) !== range(0, count($value) - 1)))) {
             return null;
@@ -71,7 +71,7 @@ class MapType extends Type
         return $value;
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): mixed
     {
         return $value == null ?: (array) $value;
     }
@@ -84,7 +84,7 @@ class MapType extends Type
      * @return string
      * @throws \Doctrine\DBAL\Exception
      */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
         $options = !array_key_exists('platformOptions', $fieldDeclaration) ?
             array() : $fieldDeclaration['platformOptions'];
