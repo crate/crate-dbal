@@ -79,7 +79,7 @@ class CratePlatform4 extends CratePlatform1
     /**
      * {@inheritDoc}
      */
-    protected function getVarcharTypeDeclarationSQLSnippet($length, $fixed): string
+    protected function getVarcharTypeDeclarationSQLSnippet($length): string
     {
         return 'TEXT';
     }

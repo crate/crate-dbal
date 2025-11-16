@@ -24,6 +24,7 @@
 namespace Crate\DBAL\Types;
 
 use Crate\PDO\PDOCrateDB;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
@@ -52,7 +53,7 @@ class ArrayType extends Type
      *
      * @return integer
      */
-    public function getBindingType()
+    public function getBindingType(): ParameterType
     {
         return PDOCrateDB::PARAM_ARRAY;
     }

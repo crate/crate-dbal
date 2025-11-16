@@ -3,7 +3,7 @@
 namespace Crate\Test\DBAL\Functional;
 
 use Crate\Test\DBAL\DBALFunctionalTest;
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Schema\Table;
 use PDO;
 
@@ -19,7 +19,7 @@ class NamedParametersTest extends DBALFunctionalTest
             array(
                 'SELECT * FROM ddc1372_foobar f WHERE f.foo = :foo AND f.bar IN (:bar) ORDER BY f.id',
                 array('foo'=>1,'bar'=> array(1, 2, 3)),
-                array('foo'=>PDO::PARAM_INT,'bar'=> Connection::PARAM_INT_ARRAY,),
+                array('foo'=>PDO::PARAM_INT,'bar'=> ArrayParameterType::INTEGER,),
                 array(
                     array('id'=>1,'foo'=>1,'bar'=>1),
                     array('id'=>2,'foo'=>1,'bar'=>2),
@@ -30,7 +30,7 @@ class NamedParametersTest extends DBALFunctionalTest
             array(
                 'SELECT * FROM ddc1372_foobar f WHERE f.foo = :foo AND f.bar IN (:bar) ORDER BY f.id',
                 array('foo'=>1,'bar'=> array(1, 2, 3)),
-                array('bar'=> Connection::PARAM_INT_ARRAY,'foo'=>PDO::PARAM_INT),
+                array('bar'=> ArrayParameterType::INTEGER,'foo'=>PDO::PARAM_INT),
                 array(
                     array('id'=>1,'foo'=>1,'bar'=>1),
                     array('id'=>2,'foo'=>1,'bar'=>2),
@@ -41,7 +41,7 @@ class NamedParametersTest extends DBALFunctionalTest
             array(
                 'SELECT * FROM ddc1372_foobar f WHERE f.bar IN (:bar) AND f.foo = :foo ORDER BY f.id',
                 array('foo'=>1,'bar'=> array(1, 2, 3)),
-                array('bar'=> Connection::PARAM_INT_ARRAY,'foo'=>PDO::PARAM_INT),
+                array('bar'=> ArrayParameterType::INTEGER,'foo'=>PDO::PARAM_INT),
                 array(
                     array('id'=>1,'foo'=>1,'bar'=>1),
                     array('id'=>2,'foo'=>1,'bar'=>2),
@@ -52,7 +52,7 @@ class NamedParametersTest extends DBALFunctionalTest
             array(
                 'SELECT * FROM ddc1372_foobar f WHERE f.bar IN (:bar) AND f.foo = :foo ORDER BY f.id',
                 array('foo'=>1,'bar'=> array('1', '2', '3')),
-                array('bar'=> Connection::PARAM_STR_ARRAY,'foo'=>PDO::PARAM_INT),
+                array('bar'=> ArrayParameterType::STRING,'foo'=>PDO::PARAM_INT),
                 array(
                     array('id'=>1,'foo'=>1,'bar'=>1),
                     array('id'=>2,'foo'=>1,'bar'=>2),
@@ -63,7 +63,7 @@ class NamedParametersTest extends DBALFunctionalTest
             array(
                 'SELECT * FROM ddc1372_foobar f WHERE f.bar IN (:bar) AND f.foo IN (:foo) ORDER BY f.id',
                 array('foo'=>array('1'),'bar'=> array(1, 2, 3,4)),
-                array('bar'=> Connection::PARAM_STR_ARRAY,'foo'=>Connection::PARAM_INT_ARRAY),
+                array('bar'=> ArrayParameterType::STRING,'foo'=>ArrayParameterType::INTEGER),
                 array(
                     array('id'=>1,'foo'=>1,'bar'=>1),
                     array('id'=>2,'foo'=>1,'bar'=>2),
@@ -93,7 +93,7 @@ class NamedParametersTest extends DBALFunctionalTest
             array(
                 'SELECT * FROM ddc1372_foobar f WHERE f.bar NOT IN (:arg) AND f.foo IN (:arg) ORDER BY f.id',
                 array('arg'=>array(1, 2)),
-                array('arg'=>Connection::PARAM_INT_ARRAY),
+                array('arg'=>ArrayParameterType::INTEGER),
                 array(
                     array('id'=>3,'foo'=>1,'bar'=>3),
                     array('id'=>4,'foo'=>1,'bar'=>4),
@@ -107,7 +107,7 @@ class NamedParametersTest extends DBALFunctionalTest
     {
         parent::setUp();
 
-        if (!$this->_conn->createSchemaManager()->tablesExist("ddc1372_foobar")) {
+        if (!$this->_conn->createSchemaManager()->tablesExist(["ddc1372_foobar"])) {
             try {
                 $table = new Table("ddc1372_foobar");
                 $table->addColumn('id', 'integer');
@@ -148,7 +148,7 @@ class NamedParametersTest extends DBALFunctionalTest
     public function tearDown() : void
     {
         parent::tearDown();
-        if ($this->_conn->createSchemaManager()->tablesExist("ddc1372_foobar")) {
+        if ($this->_conn->createSchemaManager()->tablesExist(["ddc1372_foobar"])) {
             try {
                 $sm = $this->_conn->createSchemaManager();
                 $sm->dropTable('ddc1372_foobar');

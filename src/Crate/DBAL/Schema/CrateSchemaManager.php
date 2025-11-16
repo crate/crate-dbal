@@ -24,9 +24,13 @@
 namespace Crate\DBAL\Schema;
 
 use Crate\DBAL\Platforms\CratePlatform;
+use Crate\DBAL\Platforms\Exception;
+use Doctrine\DBAL\Result;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Schema\View;
 use Doctrine\DBAL\Types\Type;
 
 /**
@@ -78,7 +82,7 @@ class CrateSchemaManager extends AbstractSchemaManager
         }
 
         $dbType = strtolower($tableColumn['data_type']);
-        $type = $this->_platform->getDoctrineTypeMapping($dbType);
+        $type = $this->platform->getDoctrineTypeMapping($dbType);
 
         $options = array(
             'length'        => null,
@@ -138,7 +142,7 @@ class CrateSchemaManager extends AbstractSchemaManager
         $indexes = $this->listTableIndexes($name);
         $options = [];
 
-        $s = $this->_conn->fetchAssociative($this->_platform->getTableOptionsSQL($name));
+        $s = $this->connection->fetchAssociative($this->platform->getTableOptionsSQL($name));
 
         $options['sharding_routing_column'] = $s['clustered_by'];
         $options['sharding_num_shards'] = $s['number_of_shards'];
@@ -147,5 +151,53 @@ class CrateSchemaManager extends AbstractSchemaManager
         $options['table_options']['number_of_replicas'] = $s['number_of_replicas'];
         $options['table_options']['column_policy'] = $s['column_policy'];
         return new Table($name, $columns, $indexes, [], [], $options);
+    }
+
+    public function listTableNames() : array
+    {
+        return $this->connection->fetchFirstColumn($this->platform->getListTablesSQL());
+    }
+
+    protected function selectTableNames(string $databaseName): Result
+    {
+        return $this->connection->executeQuery($this->platform->getListTablesSQL());
+    }
+
+    protected function selectTableColumns(string $databaseName, ?string $tableName = null): Result
+    {
+        return $this->connection->executeQuery($this->platform->getListTableColumnsSQL($tableName, $databaseName));
+    }
+
+    protected function selectIndexColumns(string $databaseName, ?string $tableName = null): Result
+    {
+        throw Exception::notSupported(__METHOD__);
+    }
+
+    protected function selectForeignKeyColumns(string $databaseName, ?string $tableName = null): Result
+    {
+        throw Exception::notSupported(__METHOD__);
+    }
+
+    protected function fetchTableOptionsByTable(string $databaseName, ?string $tableName = null): array
+    {
+        throw Exception::notSupported(__METHOD__);
+    }
+
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+    protected function _getPortableTableDefinition(array $table): string
+    {
+        throw Exception::notSupported(__METHOD__);
+    }
+
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+    protected function _getPortableViewDefinition(array $view): View
+    {
+        throw Exception::notSupported(__METHOD__);
+    }
+
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+    protected function _getPortableTableForeignKeyDefinition(array $tableForeignKey): ForeignKeyConstraint
+    {
+        throw Exception::notSupported(__METHOD__);
     }
 }

@@ -92,9 +92,9 @@ final class CrateStatement implements StatementInterface
     /**
      * {@inheritDoc}
      */
-    public function bindValue($param, $value, $type = ParameterType::STRING): bool
+    public function bindValue($param, $value, $type = ParameterType::STRING): void
     {
-        return $this->stmt->bindValue($param, $value, $type);
+        $this->stmt->bindValue($param, $value, $type);
     }
 
     /**

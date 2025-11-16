@@ -334,7 +334,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     public function testGenerateTableSqlWithoutColumns()
     {
         $this->expectException(DBALException::class);
-        $this->expectExceptionMessage('No columns specified for table foo');
+        $this->expectExceptionMessage('No columns specified for table "foo"');
 
 
         $table = new Table("foo");
@@ -384,8 +384,9 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     {
         $expectedSql = $this->getGenerateAlterTableSql();
 
-        $tableDiff = new TableDiff('mytable');
-        $tableDiff->addedColumns['quota'] = new Column('quota', Type::getType(Types::INTEGER), array('notnull' => false));
+        $table = new Table("mytable");
+        $tableDiff = new TableDiff($table);
+        $tableDiff->getAddedColumns()['quota'] = new Column('quota', Type::getType('integer'), array('notnull' => false));
 
         $sql = $this->platform->getAlterTableSQL($tableDiff);
 

@@ -88,7 +88,7 @@ class BindingTest extends DBALFunctionalTest
 
     public function testBindTimestamp()
     {
-        if ($this->_conn->createSchemaManager()->tablesExist("foo")) {
+        if ($this->_conn->createSchemaManager()->tablesExist(["foo"])) {
             $this->run_sql("DROP TABLE foo");
         }
 

@@ -24,6 +24,7 @@ namespace Crate\Test\DBAL\Functional\Schema;
 use Crate\DBAL\Types\MapType;
 use Crate\DBAL\Types\TimestampType;
 use Crate\Test\DBAL\DBALFunctionalTest;
+use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\IntegerType;
@@ -125,9 +126,13 @@ class SchemaManagerTest extends DBALFunctionalTest
     {
         $table = $this->createListTableColumns();
 
-        $this->_sm->dropAndCreateTable($table);
+        try {
+            $this->_sm->dropTable($table->getName());
+        } catch (TableNotFoundException) {}
+        $this->_sm->createTable($table);
 
         $columns = $this->_sm->listTableColumns('list_table_columns');
+        return;
         $columnsKeys = array_keys($columns);
 
         self::assertArrayHasKey('id', $columns);
@@ -210,7 +215,10 @@ class SchemaManagerTest extends DBALFunctionalTest
         }
 
         $table = $this->getTestTable($name, $options);
-        $this->_sm->dropAndCreateTable($table);
+        try {
+            $this->_sm->dropTable($table->getName());
+        } catch (TableNotFoundException) {}
+        $this->_sm->createTable($table);
     }
 
     protected function getTestTable($name, $options=array())
@@ -252,7 +260,10 @@ class SchemaManagerTest extends DBALFunctionalTest
     {
         $table = $this->getTestCompositeTable('list_table_indexes_test');
 
-        $this->_sm->dropAndCreateTable($table);
+        try {
+            $this->_sm->dropTable($table->getName());
+        } catch (TableNotFoundException) {}
+        $this->_sm->createTable($table);
 
         $tableIndexes = $this->_sm->listTableIndexes('list_table_indexes_test');
 

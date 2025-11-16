@@ -56,7 +56,6 @@ class ConnectionTest extends DBALFunctionalTest
             'password' => $auth[1],
         );
         $conn = DriverManager::getConnection($params);
-        $conn->connect();
         $credentials = $conn->getNativeConnection()->getAttribute(PDOCrateDB::CRATE_ATTR_HTTP_BASIC_AUTH);
 
         $this->assertEquals(array("crate", "secret"), $credentials);
@@ -65,7 +64,8 @@ class ConnectionTest extends DBALFunctionalTest
     public function testGetConnection()
     {
       $this->assertInstanceOf('Doctrine\DBAL\Connection', $this->_conn);
-      $this->assertInstanceOf('Crate\DBAL\Driver\PDOCrate\PDOConnection', $this->_conn->getWrappedConnection());
+      // $this->assertInstanceOf('Crate\DBAL\Driver\PDOCrate\PDOConnection', $this->_conn->getWrappedConnection());
+      $this->assertInstanceOf('Crate\PDO\PDOCrateDB', $this->_conn->getNativeConnection());
     }
 
     public function testGetDriver()
@@ -93,12 +93,10 @@ class ConnectionTest extends DBALFunctionalTest
 
     public function testConnect()
     {
-        $this->assertTrue($this->_conn->connect());
-
-        $stmt = $this->_conn->query('select * from sys.cluster');
+        $stmt = $this->_conn->executeQuery('select * from sys.cluster');
         $this->assertEquals(1, $stmt->rowCount());
 
-        $row = $stmt->fetch();
+        $row = $stmt->fetchAssociative();
         $this->assertEquals('crate', $row['name']);
     }
 

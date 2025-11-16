@@ -25,6 +25,7 @@ namespace Crate\DBAL\Types;
 
 use Crate\DBAL\Platforms\CratePlatform;
 use Crate\PDO\PDOCrateDB;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 
@@ -57,7 +58,7 @@ class MapType extends Type
      *
      * @return integer
      */
-    public function getBindingType()
+    public function getBindingType(): ParameterType
     {
         return PDOCrateDB::PARAM_OBJECT;
     }

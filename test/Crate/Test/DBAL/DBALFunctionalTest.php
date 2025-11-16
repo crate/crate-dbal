@@ -22,11 +22,12 @@
 namespace Crate\Test\DBAL;
 
 use Doctrine\DBAL\DriverManager;
-use Doctrine\DBAL\Logging\DebugStack;
 use Doctrine\DBAL\Result;
 use Doctrine\DBAL\Statement;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
+use Slam\DbalDebugstackMiddleware\DebugStack;
+use Slam\DbalDebugstackMiddleware\Middleware;
 use Throwable;
 
 abstract class DBALFunctionalTest extends TestCase
@@ -44,7 +45,7 @@ abstract class DBALFunctionalTest extends TestCase
     protected $_conn;
 
     /**
-     * @var \Doctrine\DBAL\Logging\DebugStack
+     * @var \Slam\DbalDebugstackMiddleware\DebugStack
      */
     protected $_sqlLoggerStack;
 
@@ -69,7 +70,7 @@ abstract class DBALFunctionalTest extends TestCase
         $this->_conn = self::$_sharedConn;
 
         $this->_sqlLoggerStack = new DebugStack();
-        $this->_conn->getConfiguration()->setSQLLogger($this->_sqlLoggerStack);
+        $this->_conn->getConfiguration()->setMiddlewares([new Middleware($this->_sqlLoggerStack)]);
     }
 
     protected function onNotSuccessfulTest(Throwable $e) : void
@@ -78,10 +79,11 @@ abstract class DBALFunctionalTest extends TestCase
             throw $e;
         }
 
-        if(isset($this->_sqlLoggerStack->queries) && count($this->_sqlLoggerStack->queries)) {
+        $all_queries = $this->_sqlLoggerStack->popQueries();
+        if (count($all_queries)) {
             $queries = "";
-            $i = count($this->_sqlLoggerStack->queries);
-            foreach (array_reverse($this->_sqlLoggerStack->queries) AS $query) {
+            $i = count($all_queries);
+            foreach (array_reverse($all_queries) AS $query) {
                 $params = array_map(function($p) { if (is_object($p)) return get_class($p); else return "'".print_r($p, true)."'"; }, $query['params'] ?: array());
                 $queries .= ($i+1).". SQL: '".$query['sql']."' Params: ".implode(", ", $params).PHP_EOL;
                 $i--;
