@@ -2,7 +2,7 @@
 
 namespace Crate\Test\DBAL\Functional;
 
-use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Crate\Test\DBAL\DBALFunctionalTest;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Table;
 use PDO;
@@ -10,7 +10,7 @@ use PDO;
 /**
  * @group DDC-1372
  */
-class NamedParametersTest extends DBALFunctionalTestCase
+class NamedParametersTest extends DBALFunctionalTest
 {
 
     public function ticketProvider()

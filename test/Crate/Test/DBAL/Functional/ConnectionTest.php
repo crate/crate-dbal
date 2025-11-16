@@ -22,10 +22,10 @@
 namespace Crate\Test\DBAL\Functional;
 
 use Crate\PDO\PDOCrateDB;
-use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Crate\Test\DBAL\DBALFunctionalTest;
 use Doctrine\DBAL\DriverManager;
 
-class ConnectionTestCase extends DBALFunctionalTestCase
+class ConnectionTest extends DBALFunctionalTest
 {
     public function setUp() : void
     {

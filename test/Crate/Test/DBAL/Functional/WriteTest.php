@@ -23,14 +23,14 @@
 namespace Crate\Test\DBAL\Functional;
 
 use Crate\DBAL\Types\MapType;
-use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Crate\Test\DBAL\DBALFunctionalTest;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 use PDO;
 
-class WriteTest extends DBALFunctionalTestCase
+class WriteTest extends DBALFunctionalTest
 {
     static private $generated = false;
 

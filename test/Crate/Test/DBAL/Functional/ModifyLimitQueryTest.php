@@ -22,11 +22,11 @@
 
 namespace Crate\Test\DBAL\Functional;
 
-use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Crate\Test\DBAL\DBALFunctionalTest;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Schema\Table;
 
-class ModifyLimitQueryTest extends DBALFunctionalTestCase
+class ModifyLimitQueryTest extends DBALFunctionalTest
 {
     private static $tableCreated = false;
 

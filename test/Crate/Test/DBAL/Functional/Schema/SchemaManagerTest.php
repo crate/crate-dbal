@@ -23,14 +23,14 @@ namespace Crate\Test\DBAL\Functional\Schema;
 
 use Crate\DBAL\Types\MapType;
 use Crate\DBAL\Types\TimestampType;
-use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Crate\Test\DBAL\DBALFunctionalTest;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\IntegerType;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 
-class SchemaManagerTest extends DBALFunctionalTestCase
+class SchemaManagerTest extends DBALFunctionalTest
 {
     /**
      * @var \Doctrine\DBAL\Schema\AbstractSchemaManager

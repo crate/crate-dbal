@@ -29,10 +29,10 @@ use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 
-abstract class DBALFunctionalTestCase extends TestCase
+abstract class DBALFunctionalTest extends TestCase
 {
     /**
-     * Shared connection when a TestCase is run alone (outside of it's functional suite)
+     * Shared connection when a TestCase is run alone (outside its functional suite)
      *
      * @var \Doctrine\DBAL\Connection
      */

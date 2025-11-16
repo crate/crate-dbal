@@ -21,9 +21,9 @@
  */
 namespace Crate\Test\DBAL\Functional;
 
-use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Crate\Test\DBAL\DBALFunctionalTest;
 
-class BindingTest extends DBALFunctionalTestCase
+class BindingTest extends DBALFunctionalTest
 {
 
     public function testBindPositionalParam()

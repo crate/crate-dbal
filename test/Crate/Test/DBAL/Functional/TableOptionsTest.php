@@ -23,11 +23,11 @@
 namespace Crate\Test\DBAL\Functional;
 
 
-use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Crate\Test\DBAL\DBALFunctionalTest;
 use Doctrine\DBAL\Schema\Table;
 use InvalidArgumentException;
 
-class TableOptionsTest extends DBALFunctionalTestCase {
+class TableOptionsTest extends DBALFunctionalTest {
 
     public function tearDown() : void
     {

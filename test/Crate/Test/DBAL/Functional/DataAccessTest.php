@@ -23,7 +23,7 @@
 namespace Crate\Test\DBAL\Functional;
 
 use Crate\DBAL\Types\MapType;
-use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Crate\Test\DBAL\DBALFunctionalTest;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\ParameterType;
@@ -34,7 +34,7 @@ use Doctrine\DBAL\Types\Types;
 use PDO;
 
 
-class DataAccessTest extends DBALFunctionalTestCase
+class DataAccessTest extends DBALFunctionalTest
 {
     static private $generated = false;
 
