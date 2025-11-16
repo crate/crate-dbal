@@ -28,7 +28,7 @@ class CratePlatform4 extends CratePlatform1
     /**
      * {@inheritDoc}
      */
-    protected function initializeDoctrineTypeMappings()
+    protected function initializeDoctrineTypeMappings(): void
     {
         $this->doctrineTypeMapping = array(
                 'integer'       => 'integer',
@@ -55,7 +55,7 @@ class CratePlatform4 extends CratePlatform1
     /**
      * {@inheritDoc}
      */
-    public function getBigIntTypeDeclarationSQL(array $field)
+    public function getBigIntTypeDeclarationSQL(array $field): string
     {
         return 'BIGINT';
     }
@@ -63,7 +63,7 @@ class CratePlatform4 extends CratePlatform1
     /**
      * {@inheritDoc}
      */
-    public function getSmallIntTypeDeclarationSQL(array $field)
+    public function getSmallIntTypeDeclarationSQL(array $field): string
     {
         return 'SMALLINT';
     }
@@ -71,7 +71,7 @@ class CratePlatform4 extends CratePlatform1
     /**
      * {@inheritDoc}
      */
-    public function getFloatDeclarationSQL(array $field)
+    public function getFloatDeclarationSQL(array $field): string
     {
         return 'DOUBLE PRECISION';
     }
@@ -79,7 +79,7 @@ class CratePlatform4 extends CratePlatform1
     /**
      * {@inheritDoc}
      */
-    protected function getVarcharTypeDeclarationSQLSnippet($length, $fixed)
+    protected function getVarcharTypeDeclarationSQLSnippet($length, $fixed): string
     {
         return 'TEXT';
     }
@@ -87,7 +87,7 @@ class CratePlatform4 extends CratePlatform1
     /**
      * {@inheritDoc}
      */
-    public function getClobTypeDeclarationSQL(array $field)
+    public function getClobTypeDeclarationSQL(array $field): string
     {
         return 'TEXT';
     }

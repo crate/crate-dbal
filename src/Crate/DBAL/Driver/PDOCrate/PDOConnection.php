@@ -49,10 +49,11 @@ class PDOConnection implements ConnectionInterface
         $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
-    public function getServerVersion()
+    public function getServerVersion(): string
     {
         // Unable to detect platform version.
-        return null;
+        // TODO: Need to retrieve and propagate CrateDB server version here?
+        return "0.0.0";
     }
 
     public function getNativeConnection(): PDOCrateDB
@@ -107,23 +108,20 @@ class PDOConnection implements ConnectionInterface
         return $this->connection->quote($value, $type);
     }
 
-    public function lastInsertId($name = null): string|false
+    public function lastInsertId($name = null): string
     {
         return $this->connection->lastInsertId($name);
     }
 
-    public function beginTransaction(): bool
+    public function beginTransaction(): void
     {
-        return true;
     }
 
-    public function commit(): bool
+    public function commit(): void
     {
-        return true;
     }
 
-    public function rollBack(): bool
+    public function rollBack(): void
     {
-        return true;
     }
 }
