@@ -197,11 +197,11 @@ class WriteTest extends DBALFunctionalTestCase
 
         $this->assertEquals(1, $this->_conn->delete('write_table', array('test_int' => 2)));
         $this->refresh('write_table');
-        $this->assertEquals(1, count($this->_conn->fetchAllAssociative('SELECT * FROM write_table')));
+        $this->assertCount(1, $this->_conn->fetchAllAssociative('SELECT * FROM write_table'));
 
         $this->assertEquals(1, $this->_conn->delete('write_table', array('test_int' => 1)));
         $this->refresh('write_table');
-        $this->assertEquals(0, count($this->_conn->fetchAllAssociative('SELECT * FROM write_table')));
+        $this->assertCount(0, $this->_conn->fetchAllAssociative('SELECT * FROM write_table'));
     }
 
     public function testUpdate()

@@ -81,7 +81,7 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
         $this->assertLimitResult(array(3, 4), $sql, 2, 2);
     }
 
-    public function testModifyLimitQueryOrderBy()
+    public function testModifyLimitQueryOrderBy(): void
     {
         $this->_conn->insert('modify_limit_table', array('test_int' => 1));
         $this->_conn->insert('modify_limit_table', array('test_int' => 2));

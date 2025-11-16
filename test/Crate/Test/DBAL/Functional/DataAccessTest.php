@@ -113,7 +113,7 @@ class DataAccessTest extends DBALFunctionalTestCase
         $stmt->bindValue(2, $paramStr, PDO::PARAM_STR);
         $result = $stmt->executeQuery();
 
-        $row = $result->fetch(PDO::FETCH_ASSOC);
+        $row = $result->fetchAssociative();
         $row = array_change_key_case($row, \CASE_LOWER);
         $this->assertEquals(array('test_int' => 1, 'test_string' => 'foo'), $row);
     }
@@ -209,7 +209,7 @@ class DataAccessTest extends DBALFunctionalTestCase
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
         $result = $stmt->executeQuery(array($paramInt, $paramStr));
 
-        $row = $result->fetch(PDO::FETCH_ASSOC);
+        $row = $result->fetchAssociative();
         $this->assertTrue($row !== false);
         $row = array_change_key_case($row, \CASE_LOWER);
         $this->assertEquals(array('test_int' => 1, 'test_string' => 'foo'), $row);

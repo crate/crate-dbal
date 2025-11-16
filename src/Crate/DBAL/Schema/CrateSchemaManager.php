@@ -116,7 +116,7 @@ class CrateSchemaManager extends AbstractSchemaManager
      *
      * @return array
      */
-    private function flatten(array $array, string $prefix = ''): array
+    private static function flatten(array $array, string $prefix = ''): array
     {
         $result = array();
         foreach ($array as $key => $value) {

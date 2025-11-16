@@ -5,6 +5,8 @@
 
 $finder = (new PhpCsFixer\Finder())
     ->in(__DIR__)
+    ->exclude('build')
+    ->exclude('vendor')
 ;
 
 return (new PhpCsFixer\Config())

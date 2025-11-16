@@ -30,6 +30,7 @@ use Doctrine\DBAL\Driver\Statement as StatementInterface;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\Deprecations\Deprecation;
 use PDO;
+use PDOException;
 
 /**
  * @internal
@@ -63,7 +64,11 @@ final class CrateStatement implements StatementInterface
                 . ' Statement::bindValue() instead.',
             );
         }
-        $this->stmt->execute($params);
+        try {
+            $this->stmt->execute($params);
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
+        }
         return new Result($this);
     }
 
