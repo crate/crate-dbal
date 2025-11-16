@@ -67,7 +67,7 @@ class WriteTest extends DBALFunctionalTestCase
     public function tearDown() : void
     {
         if (self::$generated === true) {
-            $this->execute('drop table write_table');
+            $this->run_sql('drop table write_table');
             self::$generated = false;
         }
     }
@@ -79,27 +79,27 @@ class WriteTest extends DBALFunctionalTestCase
     public function testExecuteUpdateFirstTypeIsNull()
     {
         $sql = "INSERT INTO write_table (test_string, test_int) VALUES (?, ?)";
-        $this->_conn->executeUpdate($sql, array("text", 1111), array(null, PDO::PARAM_INT));
+        $this->_conn->executeStatement($sql, array("text", 1111), array(null, PDO::PARAM_INT));
         $this->refresh('write_table');
 
         $sql = "SELECT test_obj, test_string, test_int FROM write_table WHERE test_string = ? AND test_int = ?";
         $stmt = $this->_conn->prepare($sql);
         $nstmt = $stmt->getWrappedStatement();
 
-        $stmt->execute(array("text", 1111));
+        $stmt->executeQuery(array("text", 1111));
         $this->assertEquals(null, $nstmt->fetchColumn(0));
 
-        $stmt->execute(array("text", 1111));
+        $stmt->executeQuery(array("text", 1111));
         $this->assertEquals("text", $nstmt->fetchColumn(1));
 
-        $stmt->execute(array("text", 1111));
+        $stmt->executeQuery(array("text", 1111));
         $this->assertEquals(1111, $nstmt->fetchColumn(2));
     }
 
     public function testExecuteUpdate()
     {
         $sql = "INSERT INTO write_table (test_int) VALUES ( " . $this->_conn->quote(1, PDO::PARAM_INT) . ")";
-        $affected = $this->_conn->executeUpdate($sql);
+        $affected = $this->_conn->executeStatement($sql);
 
         $this->assertEquals(1, $affected, "executeUpdate() should return the number of affected rows!");
     }
@@ -107,7 +107,7 @@ class WriteTest extends DBALFunctionalTestCase
     public function testExecuteUpdateWithTypes()
     {
         $sql = "INSERT INTO write_table (test_int, test_string) VALUES (?, ?)";
-        $affected = $this->_conn->executeUpdate($sql, array(1, 'foo'), array(PDO::PARAM_INT, PDO::PARAM_STR));
+        $affected = $this->_conn->executeStatement($sql, array(1, 'foo'), array(PDO::PARAM_INT, PDO::PARAM_STR));
 
         $this->assertEquals(1, $affected, "executeUpdate() should return the number of affected rows!");
     }

@@ -30,7 +30,7 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 use PHPUnit\Framework\TestCase;
 
-class TypeConversionTestCase extends TestCase {
+class TypeConversionTest extends TestCase {
 
     private $platform;
 

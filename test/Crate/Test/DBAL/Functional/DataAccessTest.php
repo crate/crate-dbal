@@ -34,7 +34,7 @@ use Doctrine\DBAL\Types\Types;
 use PDO;
 
 
-class DataAccessTestCase extends DBALFunctionalTestCase
+class DataAccessTest extends DBALFunctionalTestCase
 {
     static private $generated = false;
 
@@ -109,8 +109,8 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $stmt = $this->_conn->prepare($sql);
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
 
-        $stmt->bindParam(1, $paramInt, PDO::PARAM_INT);
-        $stmt->bindParam(2, $paramStr, PDO::PARAM_STR);
+        $stmt->bindValue(1, $paramInt, PDO::PARAM_INT);
+        $stmt->bindValue(2, $paramStr, PDO::PARAM_STR);
         $result = $stmt->executeQuery();
 
         $row = $result->fetch(PDO::FETCH_ASSOC);
@@ -127,8 +127,8 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $stmt = $this->_conn->prepare($sql);
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
 
-        $stmt->bindParam(1, $paramInt, PDO::PARAM_INT);
-        $stmt->bindParam(2, $paramStr, PDO::PARAM_STR);
+        $stmt->bindValue(1, $paramInt, PDO::PARAM_INT);
+        $stmt->bindValue(2, $paramStr, PDO::PARAM_STR);
         $result = $stmt->executeQuery();
 
         $rows = $result->fetchAllAssociative();
@@ -158,9 +158,9 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $stmt = $this->_conn->prepare($sql);
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
 
-        $stmt->bindParam(1, $paramInt, PDO::PARAM_INT);
-        $stmt->bindParam(2, $paramStr, PDO::PARAM_STR);
-        $stmt->execute();
+        $stmt->bindValue(1, $paramInt, PDO::PARAM_INT);
+        $stmt->bindValue(2, $paramStr, PDO::PARAM_STR);
+        $stmt->executeStatement();
         $column = $stmt->getWrappedStatement()->fetchColumn();
 
         $this->assertEquals(1, $column);
@@ -175,8 +175,8 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $stmt = $this->_conn->prepare($sql);
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
 
-        $stmt->bindParam(1, $paramInt, PDO::PARAM_INT);
-        $stmt->bindParam(2, $paramStr, PDO::PARAM_STR);
+        $stmt->bindValue(1, $paramInt, PDO::PARAM_INT);
+        $stmt->bindValue(2, $paramStr, PDO::PARAM_STR);
         $result = $stmt->executeQuery();
 
         $rows = array();
@@ -207,7 +207,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $sql = "SELECT test_int, test_string FROM fetch_table WHERE test_int = ? AND test_string = ?";
         $stmt = $this->_conn->prepare($sql);
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
-        $result = $stmt->execute(array($paramInt, $paramStr));
+        $result = $stmt->executeQuery(array($paramInt, $paramStr));
 
         $row = $result->fetch(PDO::FETCH_ASSOC);
         $this->assertTrue($row !== false);
@@ -288,7 +288,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $datetime = new \DateTime('2010-02-02 20:20:20');
 
         $sql = 'INSERT INTO fetch_table (test_int, test_string, test_datetime) VALUES (?, ?, ?)';
-        $affectedRows = $this->_conn->executeUpdate($sql,
+        $affectedRows = $this->_conn->executeStatement($sql,
             array(1 => 50,              2 => 'foo',             3 => $datetime),
             array(1 => PDO::PARAM_INT,  2 => PDO::PARAM_STR,    3 => Types::DATETIME_MUTABLE)
         );
@@ -328,14 +328,14 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $stmt = $this->_conn->executeQuery('SELECT test_int FROM fetch_table WHERE test_int IN (?) ORDER BY test_int',
             array(array(100, 101, 102, 103, 104)), array(Connection::PARAM_INT_ARRAY));
 
-        $data = $stmt->fetchAll(PDO::FETCH_NUM);
+        $data = $stmt->fetchAllNumeric();
         $this->assertEquals(5, count($data));
         $this->assertEquals(array(array(100), array(101), array(102), array(103), array(104)), $data);
 
         $stmt = $this->_conn->executeQuery('SELECT test_int FROM fetch_table WHERE test_string IN (?) ORDER BY test_int',
             array(array('foo100', 'foo101', 'foo102', 'foo103', 'foo104')), array(Connection::PARAM_STR_ARRAY));
 
-        $data = $stmt->fetchAll(PDO::FETCH_NUM);
+        $data = $stmt->fetchAllNumeric();
         $this->assertEquals(5, count($data));
         $this->assertEquals(array(array(100), array(101), array(102), array(103), array(104)), $data);
     }
@@ -382,7 +382,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
     {
         $this->markTestSkipped("Bit comparison expressions not supported by CrateDB");
 
-        $this->_conn->executeQuery('DELETE FROM fetch_table')->execute();
+        $this->_conn->executeStatement('DELETE FROM fetch_table');
         $platform = $this->_conn->getDatabasePlatform();
         $bitmap   = array();
 
@@ -406,7 +406,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
         $sql[]  = 'FROM fetch_table';
 
         $stmt   = $this->_conn->executeQuery(implode(PHP_EOL, $sql));
-        $data   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $data   = $stmt->fetchAllAssociative();
 
 
         $this->assertEquals(4, count($data));
@@ -447,9 +447,9 @@ class DataAccessTestCase extends DBALFunctionalTestCase
 
         $sql    = "SELECT test_int, test_string, test_datetime FROM fetch_table";
         $stmt   = $this->_conn->prepare($sql);
-        $stmt->execute();
+        $result = $stmt->executeQuery();
 
-        $results = $stmt->fetchAll(
+        $results = $result->fetch(
             PDO::FETCH_CLASS,
             __NAMESPACE__.'\\MyFetchClass'
         );
@@ -468,14 +468,14 @@ class DataAccessTestCase extends DBALFunctionalTestCase
     public function testFetchAllStyleColumn()
     {
         $sql = "DELETE FROM fetch_table";
-        $this->_conn->executeUpdate($sql);
+        $this->_conn->executeStatement($sql);
 
         $this->_conn->insert('fetch_table', array('test_int' => 1, 'test_string' => 'foo'));
         $this->_conn->insert('fetch_table', array('test_int' => 10, 'test_string' => 'foo'));
         $this->refresh("fetch_table");
 
         $sql = "SELECT test_int FROM fetch_table ORDER BY test_int ASC";
-        $rows = $this->_conn->query($sql)->fetchAll(PDO::FETCH_COLUMN);
+        $rows = $this->_conn->query($sql)->fetchFirstColumn();
 
         $this->assertEquals(array(1, 10), $rows);
     }
@@ -536,9 +536,8 @@ class DataAccessTestCase extends DBALFunctionalTestCase
     {
         $this->_conn->executeStatement('DELETE FROM fetch_table');
         $this->refresh("fetch_table");
-        $stmt = $this->_conn->prepare('SELECT test_int FROM fetch_table');
-        $stmt->execute();
-        $this->assertFalse($stmt->getWrappedStatement()->fetchColumn());
+        $this->assertFalse($this->_conn->fetchOne('SELECT test_int FROM fetch_table'));
+        $this->assertFalse($this->_conn->executeQuery('SELECT test_int FROM fetch_table')->fetchOne());
     }
 
     /**
@@ -557,7 +556,7 @@ class DataAccessTestCase extends DBALFunctionalTestCase
 
     private function setupFixture()
     {
-        $this->_conn->executeQuery('DELETE FROM fetch_table')->execute();
+        $this->_conn->executeStatement('DELETE FROM fetch_table');
         $this->_conn->insert('fetch_table', array(
             'test_int'      => 1,
             'test_string'   => 'foo',

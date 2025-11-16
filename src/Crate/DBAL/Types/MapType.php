@@ -82,7 +82,7 @@ class MapType extends Type
      * @param array $fieldDeclaration The field declaration.
      * @param AbstractPlatform $platform The currently used database platform.
      * @return string
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
@@ -98,7 +98,7 @@ class MapType extends Type
      * @param array $field
      *
      * @return string
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function getMapTypeDeclarationSQL(AbstractPlatform $platform, array $field, array $options)
     {

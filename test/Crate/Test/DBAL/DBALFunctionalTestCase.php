@@ -23,6 +23,8 @@ namespace Crate\Test\DBAL;
 
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Logging\DebugStack;
+use Doctrine\DBAL\Result;
+use Doctrine\DBAL\Statement;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
 use Throwable;
@@ -105,17 +107,17 @@ abstract class DBALFunctionalTestCase extends TestCase
         throw $e;
     }
 
-    public function execute($stmt)
+    public function run_sql($stmt): Result
     {
-        return $this->_conn->query($stmt);
+        return $this->_conn->executeQuery($stmt);
     }
 
-    public function refresh($table_name)
+    public function refresh($table_name): void
     {
         $this->_conn->executeStatement('REFRESH TABLE ' . $table_name);
     }
 
-    public function prepareStatement($sql)
+    public function prepareStatement($sql): Statement
     {
         return $this->_conn->prepare($sql);
     }

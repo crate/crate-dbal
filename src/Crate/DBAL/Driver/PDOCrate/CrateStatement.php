@@ -25,8 +25,6 @@ namespace Crate\DBAL\Driver\PDOCrate;
 
 use Crate\PDO\PDOInterface;
 use Crate\PDO\PDOStatement;
-use Doctrine\DBAL\Driver\PDO\Exception;
-use Doctrine\DBAL\Driver\PDOStatementImplementations;
 use Doctrine\DBAL\Driver\Result as ResultInterface;
 use Doctrine\DBAL\Driver\Statement as StatementInterface;
 use Doctrine\DBAL\ParameterType;
@@ -62,7 +60,7 @@ final class CrateStatement implements StatementInterface
                 'doctrine/dbal',
                 'https://github.com/doctrine/dbal/pull/5556',
                 'Passing $params to Statement::execute() is deprecated. Bind parameters using'
-                . ' Statement::bindParam() or Statement::bindValue() instead.',
+                . ' Statement::bindValue() instead.',
             );
         }
         $this->stmt->execute($params);
@@ -94,10 +92,16 @@ final class CrateStatement implements StatementInterface
     }
 
     /**
+     * @deprecated Use bindValue() instead.
      * {@inheritDoc}
      */
     public function bindParam($param, &$variable, $type = ParameterType::STRING, $length = null)
     {
+        Deprecation::trigger(
+            'doctrine/dbal',
+            'https://github.com/doctrine/dbal/pull/5563',
+            'Statement::bindParam() was deprecated. Please use Statement::bindValue() instead.',
+        );
         return $this->stmt->bindParam($param, $variable, $type, $length);
     }
 
@@ -110,18 +114,6 @@ final class CrateStatement implements StatementInterface
         $cursor_offset = 0,
     ) {
         return $this->stmt->fetch($fetch_style, $cursor_orientation, $cursor_offset);
-    }
-
-    /**
-     * @phpstan-param PDO::FETCH_* $mode
-     *
-     * @return list<mixed>
-     *
-     * @throws Exception
-     */
-    public function fetchAll(int $mode): array
-    {
-        return $this->stmt->fetchAll($mode);
     }
 
     public function fetchColumn($column_number = 0)
