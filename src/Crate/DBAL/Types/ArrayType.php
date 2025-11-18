@@ -95,7 +95,7 @@ class ArrayType extends Type
      * @return string
      * @throws \Doctrine\DBAL\Exception
      */
-    public function getArrayTypeDeclarationSQL(AbstractPlatform $platform, array $field, array $options)
+    public function getArrayTypeDeclarationSQL(AbstractPlatform $platform, array $field, array $options): string
     {
         $type = array_key_exists('type', $options) ? $options['type'] : Types::STRING;
         return 'ARRAY ( ' . Type::getType($type)->getSQLDeclaration($field, $platform) . ' )';

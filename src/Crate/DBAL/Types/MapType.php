@@ -64,7 +64,7 @@ class MapType extends Type
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
-        if (!is_array($value) || (count($value) > 0 && !(array_keys($value) !== range(0, count($value) - 1)))) {
+        if (!is_array($value) || (count($value) > 0 && array_keys($value) === range(0, count($value) - 1))) {
             return null;
         }
 
@@ -73,7 +73,10 @@ class MapType extends Type
 
     public function convertToPHPValue($value, AbstractPlatform $platform): mixed
     {
-        return $value == null ?: (array) $value;
+        if ($value === null) {
+            return null;
+        }
+        return (array) $value;
     }
 
     /**
@@ -100,7 +103,7 @@ class MapType extends Type
      * @return string
      * @throws \Doctrine\DBAL\Exception
      */
-    public function getMapTypeDeclarationSQL(AbstractPlatform $platform, array $field, array $options)
+    public function getMapTypeDeclarationSQL(AbstractPlatform $platform, array $field, array $options): string
     {
         $type = array_key_exists('type', $options) ? $options['type'] : MapType::DYNAMIC;
 

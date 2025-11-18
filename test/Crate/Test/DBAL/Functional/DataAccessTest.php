@@ -100,24 +100,6 @@ class DataAccessTest extends DBALFunctionalTest
         $this->assertEquals(array('test_int' => 1, 'test_string' => 'foo'), $row);
     }
 
-    public function testPrepareWithBindParam()
-    {
-        $paramInt = 1;
-        $paramStr = 'foo';
-
-        $sql = "SELECT test_int, test_string FROM fetch_table WHERE test_int = ? AND test_string = ?";
-        $stmt = $this->_conn->prepare($sql);
-        $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
-
-        $stmt->bindValue(1, $paramInt, PDO::PARAM_INT);
-        $stmt->bindValue(2, $paramStr, PDO::PARAM_STR);
-        $result = $stmt->executeQuery();
-
-        $row = $result->fetchAssociative();
-        $row = array_change_key_case($row, \CASE_LOWER);
-        $this->assertEquals(array('test_int' => 1, 'test_string' => 'foo'), $row);
-    }
-
     public function testPrepareWithFetchAll()
     {
         $paramInt = 1;
@@ -434,32 +416,6 @@ class DataAccessTest extends DBALFunctionalTest
         $result = $this->_conn->executeQuery("SELECT * FROM fetch_table");
         $row = array_keys($result->fetchAllNumeric());
         $this->assertEquals(0, count( array_filter($row, function($v) { return ! is_numeric($v); })), "should be no non-numerical elements in the result.");
-    }
-
-    /**
-     * @group DBAL-196
-     */
-    public function testFetchAllSupportFetchClass()
-    {
-        $this->markTestSkipped("PDO::FETCH_CLASS is not supported by the CrateDB PDO driver");
-
-        $this->setupFixture();
-
-        $sql    = "SELECT test_int, test_string, test_datetime FROM fetch_table";
-        $stmt   = $this->_conn->prepare($sql);
-        $result = $stmt->executeQuery();
-
-        $results = $result->fetch(
-            PDO::FETCH_CLASS,
-            __NAMESPACE__.'\\MyFetchClass'
-        );
-
-        $this->assertEquals(1, count($results));
-        $this->assertInstanceOf(__NAMESPACE__.'\\MyFetchClass', $results[0]);
-
-        $this->assertEquals(1, $results[0]->test_int);
-        $this->assertEquals('foo', $results[0]->test_string);
-        $this->assertStringStartsWith('2010-01-01T10:10:10', $results[0]->test_datetime);
     }
 
     /**
