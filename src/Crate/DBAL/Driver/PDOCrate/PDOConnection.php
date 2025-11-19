@@ -106,7 +106,11 @@ class PDOConnection implements ConnectionInterface
 
     public function quote($value, $type = ParameterType::STRING): string
     {
-        return $this->connection->quote($value, $type);
+        try {
+            return $this->connection->quote($value, $type);
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
+        }
     }
 
     public function lastInsertId($name = null): string

@@ -101,14 +101,14 @@ final class CrateStatement implements StatementInterface
      * @deprecated Use bindValue() instead.
      * {@inheritDoc}
      */
-    public function bindParam($param, &$variable, $type = ParameterType::STRING, $length = null): void
+    public function bindParam($param, &$variable, $type = ParameterType::STRING, $length = null): bool
     {
         Deprecation::trigger(
             'doctrine/dbal',
             'https://github.com/doctrine/dbal/pull/5563',
             'Statement::bindParam() was deprecated. Please use Statement::bindValue() instead.',
         );
-        $this->stmt->bindParam($param, $variable, $type, $length);
+        return $this->stmt->bindParam($param, $variable, $type, $length);
     }
 
     /**
@@ -132,7 +132,11 @@ final class CrateStatement implements StatementInterface
      */
     public function closeCursor(): bool
     {
-        return $this->stmt->closeCursor();
+        try {
+            return $this->stmt->closeCursor();
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
+        }
     }
 
     /**
