@@ -156,7 +156,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
      */
     public function testQuotesAlterTableRenameColumn() : void
     {
-        $this->markTestSkipped('Platform does not support ALTER TABLE.');
+        $this->markTestSkipped('Platform does not support renaming columns.');
     }
 
     protected function getQuotedAlterTableRenameColumnSQL() : array {}
@@ -166,14 +166,14 @@ class CratePlatformTest extends AbstractPlatformTestCase {
      */
     public function testQuotesAlterTableChangeColumnLength() : void
     {
-        $this->markTestSkipped('Platform does not support ALTER TABLE.');
+        $this->markTestSkipped('Platform does not support changing column lengths.');
     }
 
     protected function getQuotedAlterTableChangeColumnLengthSQL() : array {}
 
     public function testQuotesAlterTableRenameIndex() : void
     {
-        $this->markTestSkipped('Platform does not support ALTER TABLE.');
+        $this->markTestSkipped('Platform does not support renaming indexes.');
     }
 
     /**
@@ -181,7 +181,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
      */
     public function testQuotesAlterTableRenameIndexInSchema() : void
     {
-        $this->markTestSkipped('Platform does not support ALTER TABLE.');
+        $this->markTestSkipped('Platform does not support renaming indexes.');
     }
 
     protected function getCommentOnColumnSQL() : array
@@ -198,7 +198,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
      */
     public function testGeneratesAlterTableRenameColumnSQL() : void
     {
-        $this->markTestSkipped('Platform does not support ALTER TABLE.');
+        $this->markTestSkipped('Platform does not support renaming columns.');
     }
 
     public function getAlterTableRenameColumnSQL() : array {}
@@ -218,7 +218,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
      */
     public function testGeneratesAlterTableRenameIndexUsedByForeignKeySQL() : void
     {
-        $this->markTestSkipped('Platform does not support ALTER TABLE.');
+        $this->markTestSkipped('Platform does not support renaming indexes.');
     }
 
     protected function getGeneratesAlterTableRenameIndexUsedByForeignKeySQL() : array {}
