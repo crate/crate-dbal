@@ -75,6 +75,11 @@ class SchemaManagerTest extends DBALFunctionalTest
 
     public function createListTableColumns()
     {
+        // Note that DBAL3 no longer accepts string constants on its `Column` ctor,
+        // so use the `Type::getType()` notation instead when defining columns
+        // using `new Column(...)`. Also note that the `addColumn` method still DOES
+        // accept type names.
+
         $table = new Table('list_table_columns');
         $table->addColumn('text', Types::STRING);
         $table->addColumn('ts', TimestampType::NAME);
@@ -85,8 +90,7 @@ class SchemaManagerTest extends DBALFunctionalTest
         $table->addColumn('id', 'integer', array('notnull' => true));
         $table->setPrimaryKey(array('id'));
 
-        // OBJECT schema definition via platform options
-        // Those intentionally use the `Type::getType()` notation and resolve to DBAL types.
+        // OBJECT schema definition via platform options.
         $mapOpts = array(
             'type' => MapType::STRICT,
             'fields' => array(
