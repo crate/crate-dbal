@@ -44,8 +44,6 @@ class ConnectionTest extends DBALFunctionalTest
         $auth = ['crate', 'secret'];
         $params = array(
             'driverClass' => 'Crate\DBAL\Driver\PDOCrate\Driver',
-            // TODO: Could work by inheriting.
-            // 'wrapperClass' => 'Crate\DBAL\Driver\PDOCrate\PDOConnection',
             'host' => 'localhost',
             'port' => 4200,
             'user' => $auth[0],
