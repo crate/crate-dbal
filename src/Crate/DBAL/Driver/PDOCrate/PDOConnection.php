@@ -45,6 +45,7 @@ class PDOConnection implements ConnectionInterface
     public function __construct($dsn, $user = null, $password = null, ?array $options = null)
     {
         $this->connection = new PDOCrateDB($dsn, $user, $password, $options);
+        // FIXME: `[PDOStatement::class, []]` might be correct, but fails in `crate-pdo`.
         $this->connection->setAttribute(PDO::ATTR_STATEMENT_CLASS, PDOStatement::class);
         $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }

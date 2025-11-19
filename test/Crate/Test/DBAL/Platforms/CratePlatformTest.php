@@ -105,7 +105,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function testAlterTableChangeQuotedColumn() : void
     {
-        $this->markTestSkipped('Platform does not support renaming indexes.');
+        $this->markTestSkipped('Platform does not support renaming columns.');
     }
 
     protected function getQuotedColumnInPrimaryKeySQL() : array
@@ -356,7 +356,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->expectExceptionMessage("Unique constraints are not supported. Use `primary key` instead");
 
         $table = new Table("foo");
-        $table->addColumn("unique_string", "string");
+        $table->addColumn("unique_string", Types::STRING);
         $table->addUniqueIndex(array("unique_string"));
         $this->platform->getCreateTableSQL($table);
     }
@@ -367,7 +367,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->expectExceptionMessage("Unique constraints are not supported. Use `primary key` instead");
 
         $table = new Table("foo");
-        $table->addColumn("unique_string", "string")->setCustomSchemaOption("unique", true);
+        $table->addColumn("unique_string", Types::STRING)->setCustomSchemaOption("unique", true);
         $this->platform->getCreateTableSQL($table);
     }
 
@@ -376,7 +376,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $expectedSql = $this->getGenerateAlterTableSql();
 
         $tableDiff = new TableDiff('mytable');
-        $tableDiff->addedColumns['quota'] = new Column('quota', Type::getType('integer'), array('notnull' => false));
+        $tableDiff->addedColumns['quota'] = new Column('quota', Type::getType(Types::INTEGER), array('notnull' => false));
 
         $sql = $this->platform->getAlterTableSQL($tableDiff);
 
@@ -405,7 +405,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->platform->setEventManager($eventManager);
 
         $tableDiff = new TableDiff('mytable');
-        $tableDiff->addedColumns['added'] = new Column('added', Type::getType('integer'), array());
+        $tableDiff->addedColumns['added'] = new Column('added', Type::getType(Types::INTEGER), array());
 
         $this->platform->getAlterTableSQL($tableDiff);
     }
@@ -413,8 +413,8 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     public function testGenerateTableWithMultiColumnUniqueIndex() : void
     {
         $table = new Table('test');
-        $table->addColumn('foo', 'string', array('notnull' => false, 'length' => 255));
-        $table->addColumn('bar', 'string', array('notnull' => false, 'length' => 255));
+        $table->addColumn('foo', Types::STRING, array('notnull' => false, 'length' => 255));
+        $table->addColumn('bar', Types::STRING, array('notnull' => false, 'length' => 255));
         $table->addUniqueIndex(array("foo", "bar"));
 
         $this->expectException(DBALException::class);
@@ -426,8 +426,8 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     public function testGenerateTableWithMultiColumnIndex()
     {
         $table = new Table('test');
-        $table->addColumn('foo', 'string', array('notnull' => false, 'length' => 255));
-        $table->addColumn('bar', 'string', array('notnull' => false, 'length' => 255));
+        $table->addColumn('foo', Types::STRING, array('notnull' => false, 'length' => 255));
+        $table->addColumn('bar', Types::STRING, array('notnull' => false, 'length' => 255));
         $table->addIndex(array("foo", "bar"));
 
         $sql = $this->platform->getCreateTableSQL($table);
@@ -565,13 +565,17 @@ class CratePlatformTest extends AbstractPlatformTestCase {
             }
         };
 
-        if (Type::hasType($type->getName())) {
-            Type::overrideType($type->getName(), get_class($type));
-        } else {
-            Type::addType($type->getName(), get_class($type));
+        $typeName     = $type->getName();
+        $originalType = Type::getType($typeName);
+
+        Type::overrideType($typeName, get_class($type));
+
+        try {
+            self::assertSame($typeName, $this->platform->getDoctrineTypeMapping('ObJecT'));
+        } finally {
+            Type::overrideType($typeName, get_class($originalType));
         }
 
-        self::assertSame($type->getName(), $this->platform->getDoctrineTypeMapping('ObJecT'));
     }
 
 }

@@ -27,7 +27,7 @@ use Doctrine\DBAL\Platforms\Keywords\KeywordList;
 
 class CrateKeywords extends KeywordList
 {
-    public function getName()
+    public function getName(): string
     {
         return 'Crate';
     }

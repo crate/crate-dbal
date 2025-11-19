@@ -92,23 +92,23 @@ final class CrateStatement implements StatementInterface
     /**
      * {@inheritDoc}
      */
-    public function bindValue($param, $value, $type = ParameterType::STRING): void
+    public function bindValue($param, $value, $type = ParameterType::STRING): bool
     {
-        $this->stmt->bindValue($param, $value, $type);
+        return $this->stmt->bindValue($param, $value, $type);
     }
 
     /**
      * @deprecated Use bindValue() instead.
      * {@inheritDoc}
      */
-    public function bindParam($param, &$variable, $type = ParameterType::STRING, $length = null)
+    public function bindParam($param, &$variable, $type = ParameterType::STRING, $length = null): void
     {
         Deprecation::trigger(
             'doctrine/dbal',
             'https://github.com/doctrine/dbal/pull/5563',
             'Statement::bindParam() was deprecated. Please use Statement::bindValue() instead.',
         );
-        return $this->stmt->bindParam($param, $variable, $type, $length);
+        $this->stmt->bindParam($param, $variable, $type, $length);
     }
 
     /**

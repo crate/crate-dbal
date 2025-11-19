@@ -63,7 +63,7 @@ class TimestampType extends Type
         }
 
         $val = new DateTime();
-        $val->setTimestamp($value / self::S_TO_MS);
+        $val->setTimestamp((int) ($value / self::S_TO_MS));
 
         return $val;
     }
