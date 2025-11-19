@@ -110,7 +110,11 @@ class PDOConnection implements ConnectionInterface
 
     public function lastInsertId($name = null): string
     {
-        return $this->connection->lastInsertId($name);
+        try {
+            return $this->connection->lastInsertId($name);
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
+        }
     }
 
     public function beginTransaction(): void
