@@ -25,6 +25,7 @@ namespace Crate\DBAL\Driver\PDOCrate;
 
 use Crate\PDO\PDOInterface;
 use Crate\PDO\PDOStatement;
+use Doctrine\DBAL\Driver\PDO\Exception;
 use Doctrine\DBAL\Driver\Result as ResultInterface;
 use Doctrine\DBAL\Driver\Statement as StatementInterface;
 use Doctrine\DBAL\ParameterType;
