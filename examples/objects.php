@@ -16,9 +16,19 @@ use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Tools\DsnParser;
 use Doctrine\DBAL\Types\Type;
 
-// Initialize machinery.
-// This ensures that the 'map' type is registered in the type system from the beginning.
-$platform = new CratePlatform4();
+// Register driver.
+$dsnParser = new DsnParser(array('crate' => 'Crate\DBAL\Driver\PDOCrate\Driver'));
+
+// Compute connection options.
+$options = $dsnParser->parse('crate://crate:crate@localhost:4200/');
+
+// Select platform. It is highly encouraged to use the platform
+// class that matches your database vendor and version best.
+// https://www.doctrine-project.org/projects/doctrine-dbal/en/3.10/reference/platforms.html
+$options['platform'] = new CratePlatform4();
+
+// Connect to database.
+$connection = DriverManager::getConnection($options);
 
 // Define table schema.
 $table = new Table('example');
@@ -35,15 +45,8 @@ $table->addColumn(
     array('platformOptions' => $objDefinition),
 );
 
-// Register driver.
-$dsnParser = new DsnParser(array('crate' => 'Crate\DBAL\Driver\PDOCrate\Driver'));
-
-// Connect to database.
-$connectionParams = $dsnParser->parse('crate://crate:crate@localhost:4200/');
-$connection = DriverManager::getConnection($connectionParams);
-$schemaManager = $connection->createSchemaManager();
-
 // Provision database table.
+$schemaManager = $connection->createSchemaManager();
 try {
     $schemaManager->dropTable($table->getName());
 } catch (TableNotFoundException) {
