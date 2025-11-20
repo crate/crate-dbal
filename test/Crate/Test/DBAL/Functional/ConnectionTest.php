@@ -135,4 +135,30 @@ class ConnectionTest extends DBALFunctionalTest
         $this->_conn->rollBack();
     }
 
+    public function testGetServerVersionNativeConnection()
+    {
+        // Retrieve server version.
+        $serverVersion = $this->_conn->getNativeConnection()->getServerVersion();
+        $this->assertNotNull($serverVersion, 'Server version should not be null');
+        $this->assertNotEquals('0.0.0', $serverVersion, 'Server version should not be 0.0.0');
+        $this->assertMatchesRegularExpression(
+            '/^\d+\.\d+\.\d+/',
+            $serverVersion,
+            'Server version should follow semantic versioning'
+        );
+    }
+
+    public function testGetServerVersionWrappedConnection()
+    {
+        // Retrieve server version.
+        $serverVersion = $this->_conn->getWrappedConnection()->getServerVersion();
+        $this->assertNotNull($serverVersion, 'Server version should not be null');
+        $this->assertNotEquals('0.0.0', $serverVersion, 'Server version should not be 0.0.0');
+        $this->assertMatchesRegularExpression(
+            '/^\d+\.\d+\.\d+/',
+            $serverVersion,
+            'Server version should follow semantic versioning'
+        );
+    }
+
 }

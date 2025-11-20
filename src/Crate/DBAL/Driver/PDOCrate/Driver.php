@@ -30,9 +30,10 @@ use Crate\DBAL\Schema\CrateSchemaManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use Doctrine\DBAL\VersionAwarePlatformDriver;
 use SensitiveParameter;
 
-class Driver implements \Doctrine\DBAL\Driver
+class Driver implements VersionAwarePlatformDriver
 {
     public const VERSION = '4.0.3';
     public const NAME = 'crate';
