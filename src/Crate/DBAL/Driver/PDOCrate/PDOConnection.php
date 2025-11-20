@@ -51,9 +51,11 @@ class PDOConnection implements ConnectionInterface
 
     public function getServerVersion(): string
     {
-        // Unable to detect platform version.
-        // TODO: Need to retrieve and propagate CrateDB server version here?
-        return "5.0.0";
+        try {
+            return $this->connection->getServerVersion();
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
+        }
     }
 
     public function getNativeConnection(): PDOCrateDB
