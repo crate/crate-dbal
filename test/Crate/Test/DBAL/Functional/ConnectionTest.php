@@ -21,12 +21,18 @@
  */
 namespace Crate\Test\DBAL\Functional;
 
+use Crate\PDO\Exception\UnsupportedException;
 use Crate\PDO\PDOCrateDB;
 use Crate\Test\DBAL\DBALFunctionalTest;
+use Doctrine\DBAL\ConnectionException;
+use Doctrine\DBAL\Driver\Exception;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\Deprecations\PHPUnit\VerifyDeprecations;
 
 class ConnectionTest extends DBALFunctionalTest
 {
+    use VerifyDeprecations;
+
     public function setUp() : void
     {
         $this->resetSharedConn();
@@ -96,5 +102,37 @@ class ConnectionTest extends DBALFunctionalTest
         $this->assertEquals('crate', $row['name']);
     }
 
-}
+    public function testBeginTransaction()
+    {
+        $this->assertTrue($this->_conn->beginTransaction());
+    }
 
+    public function testCommitWithBeginTransaction()
+    {
+        $this->_conn->beginTransaction();
+        $this->assertTrue($this->_conn->commit());
+    }
+
+    public function testCommitWithoutBeginTransaction()
+    {
+        $this->expectException(ConnectionException::class);
+        $this->expectExceptionMessage('There is no active transaction.');
+        $this->_conn->commit();
+    }
+
+    public function testRollbackWithBeginTransaction()
+    {
+        $this->_conn->beginTransaction();
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Unsupported functionality');
+        $this->_conn->rollBack();
+    }
+
+    public function testRollbackWithoutBeginTransaction()
+    {
+        $this->expectException(ConnectionException::class);
+        $this->expectExceptionMessage('There is no active transaction.');
+        $this->_conn->rollBack();
+    }
+
+}
