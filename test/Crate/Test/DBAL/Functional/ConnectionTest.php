@@ -23,10 +23,14 @@ namespace Crate\Test\DBAL\Functional;
 
 use Crate\PDO\PDOCrateDB;
 use Crate\Test\DBAL\DBALFunctionalTest;
+use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\Deprecations\PHPUnit\VerifyDeprecations;
 
 class ConnectionTest extends DBALFunctionalTest
 {
+    use VerifyDeprecations;
+
     public function setUp() : void
     {
         $this->resetSharedConn();
@@ -96,5 +100,27 @@ class ConnectionTest extends DBALFunctionalTest
         $this->assertEquals('crate', $row['name']);
     }
 
-}
+    public function testBeginTransaction()
+    {
+        $this->expectDeprecationWithIdentifier('https://github.com/crate/crate-dbal/issues/155');
+        $this->_conn->beginTransaction();
 
+        $this->expectNoDeprecationWithIdentifier('https://github.com/crate/crate-dbal/issues/155');
+        $this->_conn->beginTransaction();
+    }
+
+    public function testCommit()
+    {
+        $this->expectException(ConnectionException::class);
+        $this->expectExceptionMessage('There is no active transaction.');
+        $this->_conn->commit();
+    }
+
+    public function testRollback()
+    {
+        $this->expectException(ConnectionException::class);
+        $this->expectExceptionMessage('There is no active transaction.');
+        $this->_conn->rollback();
+    }
+
+}

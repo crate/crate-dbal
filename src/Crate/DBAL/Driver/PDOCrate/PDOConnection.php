@@ -29,12 +29,14 @@ use Doctrine\DBAL\Driver\Connection as ConnectionInterface;
 use Doctrine\DBAL\Driver\PDO\Exception;
 use Doctrine\DBAL\Driver\Result as ResultInterface;
 use Doctrine\DBAL\ParameterType;
+use Doctrine\Deprecations\Deprecation;
 use PDO;
 use PDOException;
 
 class PDOConnection implements ConnectionInterface
 {
     private PDOCrateDB $connection;
+    private array $transaction_unsupported_warning_emitted = [];
 
     /**
      * @param string $dsn
@@ -124,13 +126,31 @@ class PDOConnection implements ConnectionInterface
 
     public function beginTransaction(): void
     {
+        Deprecation::trigger(
+            'crate/crate-dbal',
+            'https://github.com/crate/crate-dbal/issues/155',
+            'CrateDB does not support transactions. ' .
+            'Ignoring this and all future `BEGIN TRANSACTION` commands.',
+        );
     }
 
     public function commit(): void
     {
+        Deprecation::trigger(
+            'crate/crate-dbal',
+            'https://github.com/crate/crate-dbal/issues/155',
+            'CrateDB does not support transactions. ' .
+            'Ignoring this and all future `COMMIT` commands.',
+        );
     }
 
     public function rollBack(): void
     {
+        Deprecation::trigger(
+            'crate/crate-dbal',
+            'https://github.com/crate/crate-dbal/issues/155',
+            'CrateDB does not support transactions. ' .
+            'Ignoring this and all future `ROLLBACK` commands.',
+        );
     }
 }
