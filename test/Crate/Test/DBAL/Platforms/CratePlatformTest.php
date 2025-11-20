@@ -35,6 +35,7 @@ use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
 use Doctrine\DBAL\Tests\Platforms\AbstractPlatformTestCase;
+use Doctrine\DBAL\TransactionIsolationLevel;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 
@@ -73,6 +74,14 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     public function getGenerateUniqueIndexSql() : string
     {
         $this->markTestSkipped('Platform does not support CREATE UNIQUE INDEX.');
+    }
+
+    public function testGetDefaultTransactionIsolationLevel()
+    {
+        $this->assertEquals(
+            TransactionIsolationLevel::READ_UNCOMMITTED,
+            $this->platform->getDefaultTransactionIsolationLevel(),
+        );
     }
 
     public function testGeneratesForeignKeyCreationSql() : void

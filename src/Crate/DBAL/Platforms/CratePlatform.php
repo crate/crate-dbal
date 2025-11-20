@@ -35,6 +35,7 @@ use Doctrine\DBAL\Schema\Identifier;
 use Doctrine\DBAL\Schema\Index;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
+use Doctrine\DBAL\TransactionIsolationLevel;
 use Doctrine\DBAL\Types\Type;
 use InvalidArgumentException;
 
@@ -57,6 +58,16 @@ class CratePlatform extends AbstractPlatform
             Type::addType(TimestampType::NAME, 'Crate\DBAL\Types\TimestampType');
         }
         Type::overrideType('array', 'Crate\DBAL\Types\ArrayType');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDefaultTransactionIsolationLevel()
+    {
+        // CrateDB provides `READ_UNCOMMITTED` isolation levels.
+        // https://github.com/crate/crate/blob/master/server/src/main/java/io/crate/analyze/ShowStatementAnalyzer.java#L69-L85
+        return TransactionIsolationLevel::READ_UNCOMMITTED;
     }
 
     /**

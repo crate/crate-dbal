@@ -6,6 +6,7 @@ Unreleased
 ==========
 
 - Added support for Doctrine DBAL 3, dropped support for Doctrine DBAL 2.
+- Made `TransactionIsolationLevel::READ_UNCOMMITTED` the new default.
 
 2025/11/13 4.0.3
 ================
