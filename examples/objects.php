@@ -6,7 +6,7 @@
  */
 require __DIR__ . '/../vendor/autoload.php';
 
-use Crate\DBAL\Platforms\CratePlatform4;
+use Crate\DBAL\Driver\PDOCrate\Driver as CrateDBDriver;
 use Crate\DBAL\Types\MapType;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception\TableNotFoundException;
@@ -16,16 +16,18 @@ use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Tools\DsnParser;
 use Doctrine\DBAL\Types\Type;
 
-// Register driver.
-$dsnParser = new DsnParser(array('crate' => 'Crate\DBAL\Driver\PDOCrate\Driver'));
 
-// Compute connection options.
-$options = $dsnParser->parse('crate://crate:crate@localhost:4200/');
-
-// Select platform. It is highly encouraged to use the platform
-// class that matches your database vendor and version best.
+// Register driver and select platform.
+// Because DBAL can't connect to the database to determine its version dynamically,
+// it is the obligation of the user to provide the CrateDB version number.
+// Remark: Please let us know if you find a way how to set up more ergonomically.
 // https://www.doctrine-project.org/projects/doctrine-dbal/en/3.10/reference/platforms.html
-$options['platform'] = new CratePlatform4();
+$driver = new CrateDBDriver();
+$dsnParser = new DsnParser(["crate" => $driver::class]);
+$driver->createDatabasePlatformForVersion('6.0.0');
+
+// Create connection options from data source URL.
+$options = $dsnParser->parse('crate://crate:crate@localhost:4200/');
 
 // Connect to database.
 $connection = DriverManager::getConnection($options);
