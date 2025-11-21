@@ -86,6 +86,16 @@ Here's what we changed in the above example:
     :ref:`data types <data-types>` appendix for more information about type
     maps and column type definitions.
 
+Eventual consistency
+====================
+
+Note that CrateDB is primarily an analytical database for big data, so it
+implements `eventual consistency`_ and does not support traditional ACID
+transactions.
+
+Please use `REFRESH TABLE`_ for establishing read-after-write consistency
+when applicable.
+
 Next steps
 ==========
 
@@ -98,4 +108,6 @@ your setup process.
 .. _Doctrine provided example: https://www.doctrine-project.org/projects/doctrine-orm/en/3.0/reference/configuration.html#obtaining-an-entitymanager
 .. _Object-Relational Mapping: https://www.doctrine-project.org/projects/orm.html
 .. _Doctrine ORM documentation: https://www.doctrine-project.org/projects/doctrine-orm/en/3.0/index.html
+.. _eventual consistency: https://community.cratedb.com/t/fundamentals-of-eventual-consistency-in-cratedb/1235
+.. _REFRESH TABLE: https://cratedb.com/docs/crate/reference/en/5.10/general/dql/refresh.html
 .. _standard DBAL parameters: https://www.doctrine-project.org/projects/doctrine-dbal/en/3.0/reference/configuration.html
