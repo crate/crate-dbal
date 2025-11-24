@@ -86,9 +86,7 @@ class PDOConnection implements ConnectionInterface
     public function exec($sql): int
     {
         try {
-            $result = $this->connection->exec($sql);
-            assert($result !== false);
-            return $result;
+            return $this->connection->exec($sql);
         } catch (PDOException $exception) {
             throw Exception::new($exception);
         }
