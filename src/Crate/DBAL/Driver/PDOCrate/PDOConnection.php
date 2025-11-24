@@ -94,13 +94,8 @@ class PDOConnection implements ConnectionInterface
 
     public function query(string $sql): ResultInterface
     {
-        try {
-            $stmt = $this->prepare($sql);
-            $stmt->execute();
-            return new Result($stmt);
-        } catch (PDOException $exception) {
-            throw Exception::new($exception);
-        }
+        $stmt = $this->prepare($sql);
+        return $stmt->execute();
     }
 
     public function quote($value, $type = ParameterType::STRING): string
