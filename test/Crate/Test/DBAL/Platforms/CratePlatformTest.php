@@ -28,14 +28,16 @@ use Crate\DBAL\Platforms\CratePlatform;
 use Crate\DBAL\Types\ArrayType;
 use Crate\DBAL\Types\MapType;
 use Doctrine\Common\EventManager;
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Events;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
+use Doctrine\DBAL\Tests\Platforms\AbstractPlatformTestCase;
+use Doctrine\DBAL\TransactionIsolationLevel;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\Tests\DBAL\Platforms\AbstractPlatformTestCase;
+use Doctrine\DBAL\Types\Types;
 
 class CratePlatformTest extends AbstractPlatformTestCase {
 
@@ -74,6 +76,14 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->markTestSkipped('Platform does not support CREATE UNIQUE INDEX.');
     }
 
+    public function testGetDefaultTransactionIsolationLevel()
+    {
+        $this->assertEquals(
+            TransactionIsolationLevel::READ_UNCOMMITTED,
+            $this->platform->getDefaultTransactionIsolationLevel(),
+        );
+    }
+
     public function testGeneratesForeignKeyCreationSql() : void
     {
         $this->markTestSkipped('Platform does not support FOREIGN KEY constraints.');
@@ -104,7 +114,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
 
     public function testAlterTableChangeQuotedColumn() : void
     {
-        $this->markTestSkipped('Platform does not support ALTER TABLE.');
+        $this->markTestSkipped('Platform does not support renaming columns.');
     }
 
     protected function getQuotedColumnInPrimaryKeySQL() : array
@@ -155,7 +165,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
      */
     public function testQuotesAlterTableRenameColumn() : void
     {
-        $this->markTestSkipped('Platform does not support ALTER TABLE.');
+        $this->markTestSkipped('Platform does not support renaming columns.');
     }
 
     protected function getQuotedAlterTableRenameColumnSQL() : array {}
@@ -165,17 +175,22 @@ class CratePlatformTest extends AbstractPlatformTestCase {
      */
     public function testQuotesAlterTableChangeColumnLength() : void
     {
-        $this->markTestSkipped('Platform does not support ALTER TABLE.');
+        $this->markTestSkipped('Platform does not support changing column lengths.');
     }
 
     protected function getQuotedAlterTableChangeColumnLengthSQL() : array {}
+
+    public function testQuotesAlterTableRenameIndex() : void
+    {
+        $this->markTestSkipped('Platform does not support renaming indexes.');
+    }
 
     /**
      * @group DBAL-807
      */
     public function testQuotesAlterTableRenameIndexInSchema() : void
     {
-        $this->markTestSkipped('Platform does not support ALTER TABLE.');
+        $this->markTestSkipped('Platform does not support renaming indexes.');
     }
 
     protected function getCommentOnColumnSQL() : array
@@ -192,7 +207,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
      */
     public function testGeneratesAlterTableRenameColumnSQL() : void
     {
-        $this->markTestSkipped('Platform does not support ALTER TABLE.');
+        $this->markTestSkipped('Platform does not support renaming columns.');
     }
 
     public function getAlterTableRenameColumnSQL() : array {}
@@ -212,7 +227,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
      */
     public function testGeneratesAlterTableRenameIndexUsedByForeignKeySQL() : void
     {
-        $this->markTestSkipped('Platform does not support ALTER TABLE.');
+        $this->markTestSkipped('Platform does not support renaming indexes.');
     }
 
     protected function getGeneratesAlterTableRenameIndexUsedByForeignKeySQL() : array {}
@@ -350,7 +365,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->expectExceptionMessage("Unique constraints are not supported. Use `primary key` instead");
 
         $table = new Table("foo");
-        $table->addColumn("unique_string", "string");
+        $table->addColumn("unique_string", Types::STRING);
         $table->addUniqueIndex(array("unique_string"));
         $this->platform->getCreateTableSQL($table);
     }
@@ -361,7 +376,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->expectExceptionMessage("Unique constraints are not supported. Use `primary key` instead");
 
         $table = new Table("foo");
-        $table->addColumn("unique_string", "string")->setCustomSchemaOption("unique", true);
+        $table->addColumn("unique_string", Types::STRING)->setCustomSchemaOption("unique", true);
         $this->platform->getCreateTableSQL($table);
     }
 
@@ -370,7 +385,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $expectedSql = $this->getGenerateAlterTableSql();
 
         $tableDiff = new TableDiff('mytable');
-        $tableDiff->addedColumns['quota'] = new \Doctrine\DBAL\Schema\Column('quota', \Doctrine\DBAL\Types\Type::getType('integer'), array('notnull' => false));
+        $tableDiff->addedColumns['quota'] = new Column('quota', Type::getType(Types::INTEGER), array('notnull' => false));
 
         $sql = $this->platform->getAlterTableSQL($tableDiff);
 
@@ -399,7 +414,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->platform->setEventManager($eventManager);
 
         $tableDiff = new TableDiff('mytable');
-        $tableDiff->addedColumns['added'] = new \Doctrine\DBAL\Schema\Column('added', \Doctrine\DBAL\Types\Type::getType('integer'), array());
+        $tableDiff->addedColumns['added'] = new Column('added', Type::getType(Types::INTEGER), array());
 
         $this->platform->getAlterTableSQL($tableDiff);
     }
@@ -407,8 +422,8 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     public function testGenerateTableWithMultiColumnUniqueIndex() : void
     {
         $table = new Table('test');
-        $table->addColumn('foo', 'string', array('notnull' => false, 'length' => 255));
-        $table->addColumn('bar', 'string', array('notnull' => false, 'length' => 255));
+        $table->addColumn('foo', Types::STRING, array('notnull' => false, 'length' => 255));
+        $table->addColumn('bar', Types::STRING, array('notnull' => false, 'length' => 255));
         $table->addUniqueIndex(array("foo", "bar"));
 
         $this->expectException(DBALException::class);
@@ -420,8 +435,8 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     public function testGenerateTableWithMultiColumnIndex()
     {
         $table = new Table('test');
-        $table->addColumn('foo', 'string', array('notnull' => false, 'length' => 255));
-        $table->addColumn('bar', 'string', array('notnull' => false, 'length' => 255));
+        $table->addColumn('foo', Types::STRING, array('notnull' => false, 'length' => 255));
+        $table->addColumn('bar', Types::STRING, array('notnull' => false, 'length' => 255));
         $table->addIndex(array("foo", "bar"));
 
         $sql = $this->platform->getCreateTableSQL($table);
@@ -455,8 +470,8 @@ class CratePlatformTest extends AbstractPlatformTestCase {
             array('platformOptions'=>array(
                 'type'=>MapType::STRICT,
                 'fields'=>array(
-                    new Column('num', Type::getType(Type::INTEGER)),
-                    new Column('text', Type::getType(Type::STRING)),
+                    new Column('num', Type::getType(Types::INTEGER)),
+                    new Column('text', Type::getType(Types::STRING)),
                     new Column('arr', Type::getType(ArrayType::NAME)),
                     new Column('obj', Type::getType(MapType::NAME)),
                 ),
@@ -471,7 +486,7 @@ class CratePlatformTest extends AbstractPlatformTestCase {
         $this->assertEquals($this->getSQLDeclaration($column), 'arr ARRAY ( TEXT )');
 
         $column = new Column('arr', Type::getType(ArrayType::NAME),
-            array('platformOptions'=> array('type'=>Type::INTEGER)));
+            array('platformOptions'=> array('type'=>Types::INTEGER)));
         $this->assertEquals($this->getSQLDeclaration($column), 'arr ARRAY ( INTEGER )');
 
     }
@@ -499,11 +514,77 @@ class CratePlatformTest extends AbstractPlatformTestCase {
     /**
      * @return array<int, array{string, array<string, mixed>}>
      */
-    public function asciiStringSqlDeclarationDataProvider() : array
+    public static function asciiStringSqlDeclarationDataProvider() : array
     {
         return [
             ['TEXT', ['length' => 12]],
             ['TEXT', ['length' => 12, 'fixed' => true]],
         ];
     }
+
+    /** @return string[] */
+    protected function getAlterTableRenameIndexSQL(): array
+    {
+        return [
+            'DROP INDEX idx_foo',
+            'CREATE INDEX idx_bar ON mytable (id)',
+        ];
+    }
+
+    public function testAlterTableRenameIndex(): void
+    {
+        $this->markTestSkipped('Platform does not support renaming indexes.');
+    }
+
+    public function testAlterTableRenameIndexInSchema(): void
+    {
+        $this->markTestSkipped('Platform does not support renaming indexes.');
+    }
+
+    public function testRegistersCommentedDoctrineMappingTypeImplicitly(): void
+    {
+        $type = Type::getType(Types::ARRAY);
+        $this->platform->registerDoctrineTypeMapping('foo', Types::ARRAY);
+
+        self::assertFalse($this->platform->isCommentedDoctrineType($type));
+    }
+
+    public function testCaseInsensitiveDoctrineTypeMappingFromType(): void
+    {
+        $type = new class () extends Type {
+            /**
+             * {@inheritDoc}
+             */
+            public function getMappedDatabaseTypes(AbstractPlatform $platform): array
+            {
+                return ['OBJECT'];
+            }
+
+            public function getName(): string
+            {
+                return 'map';
+            }
+
+            /**
+             * {@inheritDoc}
+             */
+            public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
+            {
+                return $platform->getDecimalTypeDeclarationSQL($column);
+            }
+        };
+
+        $typeName     = $type->getName();
+        $originalType = Type::getType($typeName);
+
+        Type::overrideType($typeName, get_class($type));
+
+        try {
+            self::assertSame($typeName, $this->platform->getDoctrineTypeMapping('ObJecT'));
+        } finally {
+            Type::overrideType($typeName, get_class($originalType));
+        }
+
+    }
+
 }

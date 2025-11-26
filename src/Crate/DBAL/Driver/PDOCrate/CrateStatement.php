@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Licensed to CRATE Technology GmbH("Crate") under one or more contributor
  * license agreements.  See the NOTICE file distributed with this work for
@@ -22,14 +23,129 @@
 
 namespace Crate\DBAL\Driver\PDOCrate;
 
-use Doctrine\DBAL\Driver\PDOStatementImplementations;
-use Doctrine\DBAL\Driver\Statement as StatementInterface;
+use Crate\PDO\PDOInterface;
 use Crate\PDO\PDOStatement;
+use Doctrine\DBAL\Driver\PDO\Exception;
+use Doctrine\DBAL\Driver\Result as ResultInterface;
+use Doctrine\DBAL\Driver\Statement as StatementInterface;
+use Doctrine\DBAL\ParameterType;
+use Doctrine\Deprecations\Deprecation;
+use PDO;
+use PDOException;
 
 /**
  * @internal
  */
-class CrateStatement extends PDOStatement implements StatementInterface
+final class CrateStatement implements StatementInterface
 {
-    use PDOStatementImplementations;
+    private PDOInterface $pdo;
+    private PDOStatement $stmt;
+
+    /**
+     * @param string              $sql
+     * @param array<string,mixed> $options
+     */
+    public function __construct(PDOInterface $pdo, $sql, $options = [])
+    {
+        $this->pdo  = $pdo;
+        $this->stmt = $pdo->prepare($sql, $options);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function execute($params = null): ResultInterface
+    {
+
+        if ($params !== null) {
+            Deprecation::trigger(
+                'doctrine/dbal',
+                'https://github.com/doctrine/dbal/pull/5556',
+                'Passing $params to Statement::execute() is deprecated. Bind parameters using'
+                . ' Statement::bindValue() instead.',
+            );
+        }
+        try {
+            $this->stmt->execute($params);
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
+        }
+        return new Result($this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function columnCount(): int
+    {
+        return $this->stmt->columnCount();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function rowCount(): int
+    {
+        return $this->stmt->rowCount();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function bindValue($param, $value, $type = ParameterType::STRING): bool
+    {
+        return $this->stmt->bindValue($param, $value, $type);
+    }
+
+    /**
+     * @deprecated Use bindValue() instead.
+     * {@inheritDoc}
+     */
+    public function bindParam($param, &$variable, $type = ParameterType::STRING, $length = null): bool
+    {
+        Deprecation::trigger(
+            'doctrine/dbal',
+            'https://github.com/doctrine/dbal/pull/5563',
+            'Statement::bindParam() was deprecated. Please use Statement::bindValue() instead.',
+        );
+        return $this->stmt->bindParam($param, $variable, $type, $length);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function fetch(
+        $fetch_style = PDO::FETCH_ASSOC,
+        $cursor_orientation = PDO::FETCH_ORI_NEXT,
+        $cursor_offset = 0,
+    ) {
+        return $this->stmt->fetch($fetch_style, $cursor_orientation, $cursor_offset);
+    }
+
+    public function fetchColumn($column_number = 0)
+    {
+        return $this->stmt->fetchColumn($column_number);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function closeCursor(): bool
+    {
+        try {
+            return $this->stmt->closeCursor();
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
+        }
+    }
+
+    /**
+     * Gets the wrapped CrateDB PDOStatement.
+     *
+     * @return PDOStatement
+     */
+    public function getWrappedStatement(): PDOStatement
+    {
+        return $this->stmt;
+    }
 }

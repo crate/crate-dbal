@@ -23,13 +23,14 @@ namespace Crate\Test\DBAL\Functional\Schema;
 
 use Crate\DBAL\Types\MapType;
 use Crate\DBAL\Types\TimestampType;
-use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Crate\Test\DBAL\DBALFunctionalTest;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\IntegerType;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 
-class SchemaManagerTest extends DBALFunctionalTestCase
+class SchemaManagerTest extends DBALFunctionalTest
 {
     /**
      * @var \Doctrine\DBAL\Schema\AbstractSchemaManager
@@ -39,7 +40,7 @@ class SchemaManagerTest extends DBALFunctionalTestCase
     public function setUp() : void
     {
         parent::setUp();
-        $this->_sm = $this->_conn->getSchemaManager();
+        $this->_sm = $this->_conn->createSchemaManager();
     }
 
     public function tearDown() : void
@@ -74,17 +75,22 @@ class SchemaManagerTest extends DBALFunctionalTestCase
 
     public function createListTableColumns()
     {
+        // Note that DBAL3 no longer accepts string constants on its `Column` ctor,
+        // so use the `Type::getType()` notation instead when defining columns
+        // using `new Column(...)`. Also note that the `addColumn` method still DOES
+        // accept type names.
+
         $table = new Table('list_table_columns');
-        $table->addColumn('text', Type::STRING);
+        $table->addColumn('text', Types::STRING);
         $table->addColumn('ts', TimestampType::NAME);
-        $table->addColumn('num_float_double', Type::FLOAT);
-        $table->addColumn('num_short', Type::SMALLINT);
-        $table->addColumn('num_int', Type::INTEGER);
-        $table->addColumn('num_long', Type::BIGINT);
+        $table->addColumn('num_float_double', Types::FLOAT);
+        $table->addColumn('num_short', Types::SMALLINT);
+        $table->addColumn('num_int', Types::INTEGER);
+        $table->addColumn('num_long', Types::BIGINT);
         $table->addColumn('id', 'integer', array('notnull' => true));
         $table->setPrimaryKey(array('id'));
 
-        // OBJECT schema definition via platform options
+        // OBJECT schema definition via platform options.
         $mapOpts = array(
             'type' => MapType::STRICT,
             'fields' => array(
@@ -101,7 +107,7 @@ class SchemaManagerTest extends DBALFunctionalTestCase
 
         // ARRAY schema definition via platform options
         $arrOpts = array(
-            'type' => Type::FLOAT,
+            'type' => Types::FLOAT,
         );
         $table->addColumn('arr_float', 'array',
             array('platformOptions'=>$arrOpts));
@@ -209,7 +215,7 @@ class SchemaManagerTest extends DBALFunctionalTestCase
 
     protected function getTestTable($name, $options=array())
     {
-        $table = new Table($name, array(), array(), array(), false, $options);
+        $table = new Table($name, array(), array(), array(), array(), $options);
         $table->setSchemaConfig($this->_sm->createSchemaConfig());
         $table->addColumn('id', 'integer', array('notnull' => true));
         $table->setPrimaryKey(array('id'));
@@ -220,7 +226,7 @@ class SchemaManagerTest extends DBALFunctionalTestCase
 
     protected function getTestCompositeTable($name)
     {
-        $table = new Table($name, array(), array(), array(), false, array());
+        $table = new Table($name, array(), array(), array(), array(), array());
         $table->setSchemaConfig($this->_sm->createSchemaConfig());
         $table->addColumn('id', 'integer', array('notnull' => true));
         $table->addColumn('other_id', 'integer', array('notnull' => true));

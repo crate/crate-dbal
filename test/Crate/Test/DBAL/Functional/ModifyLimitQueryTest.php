@@ -22,11 +22,11 @@
 
 namespace Crate\Test\DBAL\Functional;
 
-use Crate\Test\DBAL\DBALFunctionalTestCase;
-use Doctrine\DBAL\DBALException;
+use Crate\Test\DBAL\DBALFunctionalTest;
+use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\Schema\Table;
 
-
-class ModifyLimitQueryTest extends DBALFunctionalTestCase
+class ModifyLimitQueryTest extends DBALFunctionalTest
 {
     private static $tableCreated = false;
 
@@ -36,16 +36,16 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
 
         if (!self::$tableCreated) {
             /* @var $sm \Doctrine\DBAL\Schema\AbstractSchemaManager */
-            $table = new \Doctrine\DBAL\Schema\Table("modify_limit_table");
+            $table = new Table("modify_limit_table");
             $table->addColumn('test_int', 'integer');
             $table->setPrimaryKey(array('test_int'));
 
-            $table2 = new \Doctrine\DBAL\Schema\Table("modify_limit_table2");
+            $table2 = new Table("modify_limit_table2");
             $table2->addColumn('id', 'integer', array('autoincrement' => true));
             $table2->addColumn('test_int', 'integer');
             $table2->setPrimaryKey(array('id'));
 
-            $sm = $this->_conn->getSchemaManager();
+            $sm = $this->_conn->createSchemaManager();
             $sm->createTable($table);
             $sm->createTable($table2);
             self::$tableCreated = true;
@@ -56,7 +56,7 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
     {
         parent::tearDown();
         if (self::$tableCreated) {
-            $sm = $this->_conn->getSchemaManager();
+            $sm = $this->_conn->createSchemaManager();
             try {
                 $sm->dropTable('modify_limit_table');
                 $sm->dropTable('modify_limit_table2');
@@ -65,7 +65,7 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
         }
     }
 
-    public function testModifyLimitQuerySimpleQuery()
+    public function testModifyLimitQuerySimpleQuery(): void
     {
         $this->_conn->insert('modify_limit_table', array('test_int' => 1));
         $this->_conn->insert('modify_limit_table', array('test_int' => 2));
@@ -81,7 +81,7 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
         $this->assertLimitResult(array(3, 4), $sql, 2, 2);
     }
 
-    public function testModifyLimitQueryOrderBy()
+    public function testModifyLimitQueryOrderBy(): void
     {
         $this->_conn->insert('modify_limit_table', array('test_int' => 1));
         $this->_conn->insert('modify_limit_table', array('test_int' => 2));
@@ -97,7 +97,7 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
         $this->assertLimitResult(array(2, 1), $sql, 2, 2);
     }
 
-    public function testModifyLimitQueryGroupBy()
+    public function testModifyLimitQueryGroupBy(): void
     {
         $this->_conn->insert('modify_limit_table2', array('test_int' => 1, 'id' => 1));
         $this->_conn->insert('modify_limit_table2', array('test_int' => 1, 'id' => 2));
@@ -117,7 +117,7 @@ class ModifyLimitQueryTest extends DBALFunctionalTestCase
     {
         $p = $this->_conn->getDatabasePlatform();
         $data = array();
-        foreach ($this->_conn->fetchAll($p->modifyLimitQuery($sql, $limit, $offset)) AS $row) {
+        foreach ($this->_conn->executeQuery($p->modifyLimitQuery($sql, $limit, $offset))->fetchAllAssociative() as $row) {
             $row = array_change_key_case($row, CASE_LOWER);
             $data[] = $row['test_int'];
         }

@@ -23,12 +23,14 @@
 namespace Crate\Test\DBAL\Functional;
 
 use Crate\DBAL\Types\MapType;
-use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Crate\Test\DBAL\DBALFunctionalTest;
 use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use PDO;
 
-class WriteTest extends DBALFunctionalTestCase
+class WriteTest extends DBALFunctionalTest
 {
     static private $generated = false;
 
@@ -39,25 +41,25 @@ class WriteTest extends DBALFunctionalTestCase
         if (self::$generated === false) {
             self::$generated = true;
             /* @var $sm \Doctrine\DBAL\Schema\AbstractSchemaManager */
-            $table = new \Doctrine\DBAL\Schema\Table("write_table");
-            $table->addColumn('test_int', Type::INTEGER);
-            $table->addColumn('test_string', Type::STRING);
-            $table->addColumn('test_float', Type::FLOAT);
-            $table->addColumn('test_array', Type::TARRAY, array('columnDefinition'=>'ARRAY(STRING)'));
+            $table = new Table("write_table");
+            $table->addColumn('test_int', Types::INTEGER);
+            $table->addColumn('test_string', Types::STRING);
+            $table->addColumn('test_float', Types::FLOAT);
+            $table->addColumn('test_array', Types::ARRAY, array('columnDefinition'=>'ARRAY(STRING)'));
             $table->addColumn("test_map", MapType::NAME);
-            $table->addColumn("test_bool", Type::BOOLEAN);
+            $table->addColumn("test_bool", Types::BOOLEAN);
 
             $platformOptions = array(
                 'type'   => MapType::STRICT,
                 'fields' => array(
-                    new Column('id',    Type::getType(Type::INTEGER), array()),
-                    new Column('name',  Type::getType(Type::STRING), array()),
-                    new Column('value', Type::getType(Type::FLOAT), array()),
+                    new Column('id',    Type::getType(Types::INTEGER), array()),
+                    new Column('name',  Type::getType(Types::STRING), array()),
+                    new Column('value', Type::getType(Types::FLOAT), array()),
                 ),
             );
             $table->addColumn('test_obj', MapType::NAME, array('platformOptions'=>$platformOptions));
 
-            $sm = $this->_conn->getSchemaManager();
+            $sm = $this->_conn->createSchemaManager();
             $sm->createTable($table);
         }
     }
@@ -65,7 +67,7 @@ class WriteTest extends DBALFunctionalTestCase
     public function tearDown() : void
     {
         if (self::$generated === true) {
-            $this->execute('drop table write_table');
+            $this->run_sql('drop table write_table');
             self::$generated = false;
         }
     }
@@ -77,19 +79,27 @@ class WriteTest extends DBALFunctionalTestCase
     public function testExecuteUpdateFirstTypeIsNull()
     {
         $sql = "INSERT INTO write_table (test_string, test_int) VALUES (?, ?)";
-        $this->_conn->executeUpdate($sql, array("text", 1111), array(null, PDO::PARAM_INT));
+        $this->_conn->executeStatement($sql, array("text", 1111), array(null, PDO::PARAM_INT));
         $this->refresh('write_table');
 
         $sql = "SELECT test_obj, test_string, test_int FROM write_table WHERE test_string = ? AND test_int = ?";
-        $this->assertEquals($this->_conn->fetchColumn($sql, array("text", 1111)), null);
-        $this->assertEquals($this->_conn->fetchColumn($sql, array("text", 1111), 1), "text");
-        $this->assertEquals($this->_conn->fetchColumn($sql, array("text", 1111), 2), 1111);
+        $stmt = $this->_conn->prepare($sql);
+        $nstmt = $stmt->getWrappedStatement();
+
+        $stmt->executeQuery(array("text", 1111));
+        $this->assertEquals(null, $nstmt->fetchColumn(0));
+
+        $stmt->executeQuery(array("text", 1111));
+        $this->assertEquals("text", $nstmt->fetchColumn(1));
+
+        $stmt->executeQuery(array("text", 1111));
+        $this->assertEquals(1111, $nstmt->fetchColumn(2));
     }
 
     public function testExecuteUpdate()
     {
         $sql = "INSERT INTO write_table (test_int) VALUES ( " . $this->_conn->quote(1, PDO::PARAM_INT) . ")";
-        $affected = $this->_conn->executeUpdate($sql);
+        $affected = $this->_conn->executeStatement($sql);
 
         $this->assertEquals(1, $affected, "executeUpdate() should return the number of affected rows!");
     }
@@ -97,7 +107,7 @@ class WriteTest extends DBALFunctionalTestCase
     public function testExecuteUpdateWithTypes()
     {
         $sql = "INSERT INTO write_table (test_int, test_string) VALUES (?, ?)";
-        $affected = $this->_conn->executeUpdate($sql, array(1, 'foo'), array(\PDO::PARAM_INT, \PDO::PARAM_STR));
+        $affected = $this->_conn->executeStatement($sql, array(1, 'foo'), array(PDO::PARAM_INT, PDO::PARAM_STR));
 
         $this->assertEquals(1, $affected, "executeUpdate() should return the number of affected rows!");
     }
@@ -109,9 +119,9 @@ class WriteTest extends DBALFunctionalTestCase
 
         $stmt->bindValue(1, 1);
         $stmt->bindValue(2, "foo");
-        $stmt->execute();
+        $rowcount = $stmt->executeStatement();
 
-        $this->assertEquals(1, $stmt->rowCount());
+        $this->assertEquals(1, $rowcount);
     }
 
     public function testPrepareWithPdoTypes()
@@ -119,11 +129,11 @@ class WriteTest extends DBALFunctionalTestCase
         $sql = "INSERT INTO write_table (test_int, test_string) VALUES (?, ?)";
         $stmt = $this->_conn->prepare($sql);
 
-        $stmt->bindValue(1, 1, \PDO::PARAM_INT);
-        $stmt->bindValue(2, "foo", \PDO::PARAM_STR);
-        $stmt->execute();
+        $stmt->bindValue(1, 1, PDO::PARAM_INT);
+        $stmt->bindValue(2, "foo", PDO::PARAM_STR);
+        $rowcount = $stmt->executeStatement();
 
-        $this->assertEquals(1, $stmt->rowCount());
+        $this->assertEquals(1, $rowcount);
     }
 
     public function testPrepareWithDbalTypes()
@@ -131,13 +141,14 @@ class WriteTest extends DBALFunctionalTestCase
         $sql = "INSERT INTO write_table (test_int, test_string, test_float, test_obj) VALUES (?, ?, ?, ?)";
         $stmt = $this->_conn->prepare($sql);
 
+        // Those intentionally use the `Type::getType()` notation, and resolve to DBAL type objects.
         $stmt->bindValue(1, 1, Type::getType('integer'));
         $stmt->bindValue(2, "foo", Type::getType('string'));
         $stmt->bindValue(3, 3.141592, Type::getType('float'));
         $stmt->bindValue(4, array('id'=>1, 'name'=>'christian', 'value'=>1.234), Type::getType('map'));
-        $stmt->execute();
+        $rowcount = $stmt->executeStatement();
 
-        $this->assertEquals(1, $stmt->rowCount());
+        $this->assertEquals(1, $rowcount);
     }
 
     public function testPrepareWithDbalTypeNames()
@@ -150,9 +161,9 @@ class WriteTest extends DBALFunctionalTestCase
         $stmt->bindValue(3, 3.141592, 'float');
         $stmt->bindValue(4, array('id'=>1, 'name'=>'christian', 'value'=>1.234), 'map');
         $stmt->bindValue(5, true, 'boolean');
-        $stmt->execute();
+        $rowcount = $stmt->executeStatement();
 
-        $this->assertEquals(1, $stmt->rowCount());
+        $this->assertEquals(1, $rowcount);
     }
 
     public function insertRows()
@@ -186,11 +197,11 @@ class WriteTest extends DBALFunctionalTestCase
 
         $this->assertEquals(1, $this->_conn->delete('write_table', array('test_int' => 2)));
         $this->refresh('write_table');
-        $this->assertEquals(1, count($this->_conn->fetchAll('SELECT * FROM write_table')));
+        $this->assertCount(1, $this->_conn->fetchAllAssociative('SELECT * FROM write_table'));
 
         $this->assertEquals(1, $this->_conn->delete('write_table', array('test_int' => 1)));
         $this->refresh('write_table');
-        $this->assertEquals(0, count($this->_conn->fetchAll('SELECT * FROM write_table')));
+        $this->assertCount(0, $this->_conn->fetchAllAssociative('SELECT * FROM write_table'));
     }
 
     public function testUpdate()

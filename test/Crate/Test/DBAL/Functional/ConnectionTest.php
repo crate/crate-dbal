@@ -21,11 +21,18 @@
  */
 namespace Crate\Test\DBAL\Functional;
 
-use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Crate\PDO\Exception\UnsupportedException;
 use Crate\PDO\PDOCrateDB;
+use Crate\Test\DBAL\DBALFunctionalTest;
+use Doctrine\DBAL\ConnectionException;
+use Doctrine\DBAL\Driver\Exception;
+use Doctrine\DBAL\DriverManager;
+use Doctrine\Deprecations\PHPUnit\VerifyDeprecations;
 
-class ConnectionTestCase extends DBALFunctionalTestCase
+class ConnectionTest extends DBALFunctionalTest
 {
+    use VerifyDeprecations;
+
     public function setUp() : void
     {
         $this->resetSharedConn();
@@ -48,11 +55,11 @@ class ConnectionTestCase extends DBALFunctionalTestCase
             'user' => $auth[0],
             'password' => $auth[1],
         );
-        $conn = \Doctrine\DBAL\DriverManager::getConnection($params);
-        $this->assertEquals($auth[0], $conn->getUsername());
-        $this->assertEquals($auth[1], $conn->getPassword());
-        $auth_attr = $conn->getWrappedConnection()->getAttribute(PDOCrateDB::CRATE_ATTR_HTTP_BASIC_AUTH);
-        $this->assertEquals($auth_attr, $auth);
+        $conn = DriverManager::getConnection($params);
+        $conn->connect();
+        $credentials = $conn->getNativeConnection()->getAttribute(PDOCrateDB::CRATE_ATTR_HTTP_BASIC_AUTH);
+
+        $this->assertEquals(array("crate", "secret"), $credentials);
     }
 
     public function testGetConnection()
@@ -66,12 +73,21 @@ class ConnectionTestCase extends DBALFunctionalTestCase
         $this->assertInstanceOf('Crate\DBAL\Driver\PDOCrate\Driver', $this->_conn->getDriver());
     }
 
+    /**
+     * @var \Doctrine\DBAL\Statement $stmt
+     *
+     * @return void
+     * @throws \Doctrine\DBAL\Exception
+     */
     public function testStatement()
     {
         $sql = 'SELECT * FROM sys.cluster';
         $stmt = $this->_conn->prepare($sql);
+
+        // Well, it's three layers of Statement objects now.
         $this->assertInstanceOf('Doctrine\DBAL\Statement', $stmt);
-        $this->assertInstanceOf('Crate\PDO\PDOStatement', $stmt->getWrappedStatement());
+        $this->assertInstanceOf('Crate\DBAL\Driver\PDOCrate\CrateStatement', $stmt->getWrappedStatement());
+        $this->assertInstanceOf('Crate\PDO\PDOStatement', $stmt->getWrappedStatement()->getWrappedStatement());
 
     }
 
@@ -86,5 +102,63 @@ class ConnectionTestCase extends DBALFunctionalTestCase
         $this->assertEquals('crate', $row['name']);
     }
 
-}
+    public function testBeginTransaction()
+    {
+        $this->assertTrue($this->_conn->beginTransaction());
+    }
 
+    public function testCommitWithBeginTransaction()
+    {
+        $this->_conn->beginTransaction();
+        $this->assertTrue($this->_conn->commit());
+    }
+
+    public function testCommitWithoutBeginTransaction()
+    {
+        $this->expectException(ConnectionException::class);
+        $this->expectExceptionMessage('There is no active transaction.');
+        $this->_conn->commit();
+    }
+
+    public function testRollbackWithBeginTransaction()
+    {
+        $this->_conn->beginTransaction();
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Unsupported functionality');
+        $this->_conn->rollBack();
+    }
+
+    public function testRollbackWithoutBeginTransaction()
+    {
+        $this->expectException(ConnectionException::class);
+        $this->expectExceptionMessage('There is no active transaction.');
+        $this->_conn->rollBack();
+    }
+
+    public function testGetServerVersionNativeConnection()
+    {
+        // Retrieve server version.
+        $serverVersion = $this->_conn->getNativeConnection()->getServerVersion();
+        $this->assertNotNull($serverVersion, 'Server version should not be null');
+        $this->assertNotEquals('0.0.0', $serverVersion, 'Server version should not be 0.0.0');
+        $this->assertMatchesRegularExpression(
+            '/^\d+\.\d+\.\d+/',
+            $serverVersion,
+            'Server version should follow semantic versioning'
+        );
+    }
+
+    public function testGetServerVersionWrappedConnection()
+    {
+        // Retrieve server version.
+        $serverVersion = $this->_conn->getWrappedConnection()->getServerVersion();
+        $this->assertNotNull($serverVersion, 'Server version should not be null');
+        $this->assertNotEquals('0.0.0', $serverVersion, 'Server version should not be 0.0.0');
+        $this->assertMatchesRegularExpression(
+            '/^\d+\.\d+\.\d+/',
+            $serverVersion,
+            'Server version should follow semantic versioning'
+        );
+    }
+
+}

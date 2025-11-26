@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Licensed to CRATE Technology GmbH("Crate") under one or more contributor
  * license agreements.  See the NOTICE file distributed with this work for
@@ -23,8 +24,9 @@
 namespace Crate\DBAL\Types;
 
 use Crate\PDO\PDOCrateDB;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 
 /**
  * Type that maps a PHP sequential array to an array SQL type.
@@ -32,8 +34,7 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
  */
 class ArrayType extends Type
 {
-
-    const NAME = 'array';
+    public const NAME = 'array';
 
     /**
      * Gets the name of this type.
@@ -56,7 +57,7 @@ class ArrayType extends Type
         return PDOCrateDB::PARAM_ARRAY;
     }
 
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
         if (!is_array($value) || (count($value) > 0 && !(array_keys($value) === range(0, count($value) - 1)))) {
             return null;
@@ -64,7 +65,7 @@ class ArrayType extends Type
         return $value;
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): mixed
     {
         return $value;
     }
@@ -75,9 +76,9 @@ class ArrayType extends Type
      * @param array $fieldDeclaration The field declaration.
      * @param AbstractPlatform $platform The currently used database platform.
      * @return string
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
         $options = !array_key_exists('platformOptions', $fieldDeclaration) ?
             array() : $fieldDeclaration['platformOptions'];
@@ -92,11 +93,11 @@ class ArrayType extends Type
      *
      * @param array $options
      * @return string
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function getArrayTypeDeclarationSQL(AbstractPlatform $platform, array $field, array $options)
+    public function getArrayTypeDeclarationSQL(AbstractPlatform $platform, array $field, array $options): string
     {
-        $type = array_key_exists('type', $options) ? $options['type'] : Type::STRING;
+        $type = array_key_exists('type', $options) ? $options['type'] : Types::STRING;
         return 'ARRAY ( ' . Type::getType($type)->getSQLDeclaration($field, $platform) . ' )';
     }
 }

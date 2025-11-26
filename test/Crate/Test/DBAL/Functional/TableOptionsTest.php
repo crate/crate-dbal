@@ -23,20 +23,18 @@
 namespace Crate\Test\DBAL\Functional;
 
 
-use Crate\DBAL\Platforms\CratePlatform;
-use Crate\Test\DBAL\DBALFunctionalTestCase;
-use Doctrine\DBAL\DBALException;
+use Crate\Test\DBAL\DBALFunctionalTest;
 use Doctrine\DBAL\Schema\Table;
 use InvalidArgumentException;
 
-class TableOptionsTest extends DBALFunctionalTestCase {
+class TableOptionsTest extends DBALFunctionalTest {
 
     public function tearDown() : void
     {
         parent::tearDown();
-        if ($this->_conn->getSchemaManager()->tablesExist("ddc1372_foobar")) {
+        if ($this->_conn->createSchemaManager()->tablesExist("table_option_test")) {
             try {
-                $sm = $this->_conn->getSchemaManager();
+                $sm = $this->_conn->createSchemaManager();
                 $sm->dropTable('table_option_test');
             } catch(\Exception $e) {
                 $this->fail($e->getMessage());
@@ -56,7 +54,7 @@ class TableOptionsTest extends DBALFunctionalTestCase {
         $options['table_options']['number_of_replicas'] = '0-2';
         $options['table_options']['write.wait_for_active_shards'] = 'ALL';
 
-        $table = new Table('t1', [], [], [], 0, $options);
+        $table = new Table('t1', [], [], [], [], $options);
         $table->addColumn('id', 'integer');
         $table->addColumn('parted', 'integer');
         $table->addColumn('date', 'timestamp');
@@ -80,12 +78,12 @@ class TableOptionsTest extends DBALFunctionalTestCase {
         $options['table_options']['number_of_replicas'] = '0-2';
         $options['table_options']['write.wait_for_active_shards'] = 'ALL';
 
-        $table = new Table('table_option_test', [], [], [], 0, $options);
+        $table = new Table('table_option_test', [], [], [], [], $options);
         $table->addColumn('id', 'integer');
         $table->addColumn('parted', 'integer');
         $table->addColumn('date', 'timestamp');
 
-        $sm = $this->_conn->getSchemaManager();
+        $sm = $this->_conn->createSchemaManager();
         $sm->createTable($table);
 
         $schema = $sm->createSchema();
@@ -106,7 +104,7 @@ class TableOptionsTest extends DBALFunctionalTestCase {
 
         $options = [];
         $options['partition_columns'] = 'parted';
-        $table = new Table('t1', [], [], [], 0, $options);
+        $table = new Table('t1', [], [], [], [], $options);
         $table->addColumn('parted', 'integer');
 
         $this->expectException(InvalidArgumentException::class);

@@ -21,10 +21,9 @@
  */
 namespace Crate\Test\DBAL\Functional;
 
-use Crate\Test\DBAL\DBALFunctionalTestCase;
-use Doctrine\DBAL\DBALException;
+use Crate\Test\DBAL\DBALFunctionalTest;
 
-class BindingTestCase extends DBALFunctionalTestCase
+class BindingTest extends DBALFunctionalTest
 {
 
     public function testBindPositionalParam()
@@ -32,27 +31,29 @@ class BindingTestCase extends DBALFunctionalTestCase
         $name = 'crate';
 
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = ?');
-        $stmt->bindParam(1, $name);
-        $stmt->execute();
+        $stmt->bindValue(1, $name);
+        $stmt->executeQuery();
 
         $noName = 'i0ejfNlzSFCloGYtSzddTw';
 
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = ? OR master_node = ?');
-        $stmt->bindParam(1, $name);
-        $stmt->bindParam(2, $noName);
-        $this->assertTrue($stmt->execute());
+        $stmt->bindValue(1, $name);
+        $stmt->bindValue(2, $noName);
+        $result = $stmt->executeQuery();
+        self::assertEquals(1, $result->rowCount());
     }
 
     public function testBindPositionalValue()
     {
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = ?');
         $stmt->bindValue(1, 'crate');
-        $stmt->execute();
+        $stmt->executeQuery();
 
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = ? OR master_node = ?');
         $stmt->bindValue(1, 'crate');
         $stmt->bindValue(2, 'i0ejfNlzSFCloGYtSzddTw');
-        $this->assertTrue($stmt->execute());
+        $result = $stmt->executeQuery();
+        self::assertEquals(1, $result->rowCount());
     }
 
     public function testBindNamedParam()
@@ -60,57 +61,57 @@ class BindingTestCase extends DBALFunctionalTestCase
         $name = 'crate';
 
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = :name');
-        $stmt->bindParam('name', $name);
-        $stmt->execute();
+        $stmt->bindValue('name', $name);
+        $stmt->executeQuery();
 
         $noName = 'i0ejfNlzSFCloGYtSzddTw';
 
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = :name OR master_node = :master_node');
-        $stmt->bindParam('name', $name);
-        $stmt->bindParam('master_node', $noName);
-        $this->assertTrue($stmt->execute());
+        $stmt->bindValue('name', $name);
+        $stmt->bindValue('master_node', $noName);
+        $result = $stmt->executeQuery();
+        self::assertEquals(1, $result->rowCount());
     }
 
     public function testBindNamedValue()
     {
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = :name');
         $stmt->bindValue('name', 'crate');
-        $stmt->execute();
+        $stmt->executeQuery();
 
         $stmt = $this->prepareStatement('SELECT * FROM sys.cluster WHERE name = :name OR master_node = :master_node');
         $stmt->bindValue('name', 'crate');
         $stmt->bindValue('master_node', 'i0ejfNlzSFCloGYtSzddTw');
-        $this->assertTrue($stmt->execute());
+        $result = $stmt->executeQuery();
+        self::assertEquals(1, $result->rowCount());
     }
 
     public function testBindTimestamp()
     {
-        if ($this->_conn->getSchemaManager()->tablesExist("foo")) {
-            $this->execute("DROP TABLE foo");
+        if ($this->_conn->createSchemaManager()->tablesExist("foo")) {
+            $this->run_sql("DROP TABLE foo");
         }
 
-        $this->execute("CREATE TABLE foo (id int, ts timestamp) with (number_of_replicas=0)");
-        $this->execute("INSERT INTO foo (id, ts) VALUES (1, 1413901591000)");
-        $this->execute("INSERT INTO foo (id, ts) VALUES (2, 1413901592000)");
-        $this->execute("INSERT INTO foo (id, ts) VALUES (3, 1413901593000)");
-        $this->execute("REFRESH TABLE foo");
+        $this->run_sql("CREATE TABLE foo (id int, ts timestamp) with (number_of_replicas=0)");
+        $this->run_sql("INSERT INTO foo (id, ts) VALUES (1, 1413901591000)");
+        $this->run_sql("INSERT INTO foo (id, ts) VALUES (2, 1413901592000)");
+        $this->run_sql("INSERT INTO foo (id, ts) VALUES (3, 1413901593000)");
+        $this->run_sql("REFRESH TABLE foo");
 
         $date = new \DateTime("2014-10-21 14:26:32"); // => 1413901592000
 
         $stmt = $this->prepareStatement('SELECT * FROM foo WHERE ts > ?');
         $stmt->bindValue(1, $date, 'datetimetz');
-        $stmt->execute();
-        $row = $stmt->fetchAll();
+        $row = $stmt->executeQuery()->fetchAllAssociative();
         $this->assertEquals($row[0]['id'], 3);
         $this->assertEquals($row[0]['ts'], 1413901593000);
 
         $stmt = $this->prepareStatement('SELECT * FROM foo WHERE ts < ?');
         $stmt->bindValue(1, $date, 'datetime');
-        $stmt->execute();
-        $row = $stmt->fetchAll();
+        $row = $stmt->executeQuery()->fetchAllAssociative();
         $this->assertEquals($row[0]['id'], 1);
         $this->assertEquals($row[0]['ts'], 1413901591000);
 
-        $this->execute("DROP TABLE foo");
+        $this->run_sql("DROP TABLE foo");
     }
 }

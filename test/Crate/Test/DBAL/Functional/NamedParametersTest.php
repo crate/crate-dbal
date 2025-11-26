@@ -2,14 +2,15 @@
 
 namespace Crate\Test\DBAL\Functional;
 
-use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Crate\Test\DBAL\DBALFunctionalTest;
 use Doctrine\DBAL\Connection;
-use \PDO;
+use Doctrine\DBAL\Schema\Table;
+use PDO;
 
 /**
  * @group DDC-1372
  */
-class NamedParametersTest extends DBALFunctionalTestCase
+class NamedParametersTest extends DBALFunctionalTest
 {
 
     public function ticketProvider()
@@ -106,16 +107,16 @@ class NamedParametersTest extends DBALFunctionalTestCase
     {
         parent::setUp();
 
-        if (!$this->_conn->getSchemaManager()->tablesExist("ddc1372_foobar")) {
+        if (!$this->_conn->createSchemaManager()->tablesExist("ddc1372_foobar")) {
             try {
-                $table = new \Doctrine\DBAL\Schema\Table("ddc1372_foobar");
+                $table = new Table("ddc1372_foobar");
                 $table->addColumn('id', 'integer');
                 $table->addColumn('foo','string');
                 $table->addColumn('bar','string');
                 $table->setPrimaryKey(array('id'));
 
 
-                $sm = $this->_conn->getSchemaManager();
+                $sm = $this->_conn->createSchemaManager();
                 $sm->createTable($table);
 
                 $this->_conn->insert('ddc1372_foobar', array(
@@ -147,9 +148,9 @@ class NamedParametersTest extends DBALFunctionalTestCase
     public function tearDown() : void
     {
         parent::tearDown();
-        if ($this->_conn->getSchemaManager()->tablesExist("ddc1372_foobar")) {
+        if ($this->_conn->createSchemaManager()->tablesExist("ddc1372_foobar")) {
             try {
-                $sm = $this->_conn->getSchemaManager();
+                $sm = $this->_conn->createSchemaManager();
                 $sm->dropTable('ddc1372_foobar');
             } catch(\Exception $e) {
                 $this->fail($e->getMessage());
@@ -167,7 +168,7 @@ class NamedParametersTest extends DBALFunctionalTestCase
     public function testTicket($query,$params,$types,$expected)
     {
         $stmt   = $this->_conn->executeQuery($query, $params, $types);
-        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $result = $stmt->fetchAllAssociative();
 
         foreach ($result as $k => $v) {
             $result[$k] = array_change_key_case($v, CASE_LOWER);

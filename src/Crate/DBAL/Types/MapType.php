@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Licensed to CRATE Technology GmbH("Crate") under one or more contributor
  * license agreements.  See the NOTICE file distributed with this work for
@@ -24,8 +25,8 @@ namespace Crate\DBAL\Types;
 
 use Crate\DBAL\Platforms\CratePlatform;
 use Crate\PDO\PDOCrateDB;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\Type;
 
 /**
  * Type that maps a PHP associative array (map) to an object SQL type.
@@ -35,11 +36,10 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
  */
 class MapType extends Type
 {
-
-    const NAME = 'map';
-    const STRICT = 'strict';
-    const DYNAMIC = 'dynamic';
-    const IGNORED = 'ignored';
+    public const NAME = 'map';
+    public const STRICT = 'strict';
+    public const DYNAMIC = 'dynamic';
+    public const IGNORED = 'ignored';
 
     /**
      * Gets the name of this type.
@@ -62,18 +62,21 @@ class MapType extends Type
         return PDOCrateDB::PARAM_OBJECT;
     }
 
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
-        if (!is_array($value) || (count($value) > 0 && !(array_keys($value) !== range(0, count($value) - 1)))) {
+        if (!is_array($value) || (count($value) > 0 && array_keys($value) === range(0, count($value) - 1))) {
             return null;
         }
 
         return $value;
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): mixed
     {
-        return $value == null ?: (array) $value;
+        if ($value === null) {
+            return null;
+        }
+        return (array) $value;
     }
 
     /**
@@ -82,9 +85,9 @@ class MapType extends Type
      * @param array $fieldDeclaration The field declaration.
      * @param AbstractPlatform $platform The currently used database platform.
      * @return string
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
         $options = !array_key_exists('platformOptions', $fieldDeclaration) ?
             array() : $fieldDeclaration['platformOptions'];
@@ -98,9 +101,9 @@ class MapType extends Type
      * @param array $field
      *
      * @return string
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function getMapTypeDeclarationSQL(AbstractPlatform $platform, array $field, array $options)
+    public function getMapTypeDeclarationSQL(AbstractPlatform $platform, array $field, array $options): string
     {
         $type = array_key_exists('type', $options) ? $options['type'] : MapType::DYNAMIC;
 

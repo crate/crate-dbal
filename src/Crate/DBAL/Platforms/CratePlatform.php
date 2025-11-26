@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Licensed to CRATE Technology GmbH("Crate") under one or more contributor
  * license agreements.  See the NOTICE file distributed with this work for
@@ -19,36 +20,36 @@
  * with Crate these terms will supersede the license and you may use the
  * software solely pursuant to the terms of the relevant commercial agreement.
  */
+
 namespace Crate\DBAL\Platforms;
 
 use Crate\DBAL\Types\MapType;
 use Crate\DBAL\Types\TimestampType;
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Event\SchemaCreateTableColumnEventArgs;
 use Doctrine\DBAL\Event\SchemaCreateTableEventArgs;
 use Doctrine\DBAL\Events;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use Doctrine\DBAL\Schema\Identifier;
 use Doctrine\DBAL\Schema\Index;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
+use Doctrine\DBAL\TransactionIsolationLevel;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use InvalidArgumentException;
 
 class CratePlatform extends AbstractPlatform
 {
-
-    const TIMESTAMP_FORMAT =  'Y-m-d\TH:i:s';
-    const TIMESTAMP_FORMAT_TZ =  'Y-m-d\TH:i:sO';
-    const TABLE_WHERE_CLAUSE_FORMAT = '%s.table_name = %s AND %s.schema_name = %s';
+    public const TIMESTAMP_FORMAT =  'Y-m-d\TH:i:s';
+    public const TIMESTAMP_FORMAT_TZ =  'Y-m-d\TH:i:sO';
+    public const TABLE_WHERE_CLAUSE_FORMAT = '%s.table_name = %s AND %s.schema_name = %s';
 
     /**
      * {@inheritDoc}
      */
     public function __construct()
     {
-        parent::__construct();
         $this->initializeDoctrineTypeMappings();
         if (!Type::hasType(MapType::NAME)) {
             Type::addType(MapType::NAME, 'Crate\DBAL\Types\MapType');
@@ -62,7 +63,17 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getSubstringExpression($value, $from = 0, $length = null)
+    public function getDefaultTransactionIsolationLevel()
+    {
+        // CrateDB provides `READ_UNCOMMITTED` isolation levels.
+        // https://github.com/crate/crate/blob/master/server/src/main/java/io/crate/analyze/ShowStatementAnalyzer.java#L69-L85
+        return TransactionIsolationLevel::READ_UNCOMMITTED;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSubstringExpression($value, $from = 0, $length = null): string
     {
         if ($length === null) {
             return 'SUBSTR(' . $value . ', ' . $from . ')';
@@ -82,7 +93,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getRegexpExpression()
+    public function getRegexpExpression(): string
     {
         return 'LIKE';
     }
@@ -90,7 +101,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getDateDiffExpression($date1, $date2)
+    public function getDateDiffExpression($date1, $date2): string
     {
         throw DBALException::notSupported(__METHOD__);
     }
@@ -98,7 +109,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function supportsSequences()
+    public function supportsSequences(): bool
     {
         return false;
     }
@@ -109,7 +120,7 @@ class CratePlatform extends AbstractPlatform
      *
      * {@inheritDoc}
      */
-    public function supportsSchemas()
+    public function supportsSchemas(): bool
     {
         return false;
     }
@@ -117,7 +128,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function supportsIdentityColumns()
+    public function supportsIdentityColumns(): bool
     {
         return true;
     }
@@ -133,7 +144,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function supportsCommentOnStatement()
+    public function supportsCommentOnStatement(): bool
     {
         return false;
     }
@@ -173,7 +184,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getListDatabasesSQL()
+    public function getListDatabasesSQL(): string
     {
         throw DBALException::notSupported(__METHOD__);
     }
@@ -251,7 +262,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getAlterTableSQL(TableDiff $diff)
+    public function getAlterTableSQL(TableDiff $diff): array
     {
         $sql = array();
         $commentsSQL = array();
@@ -286,7 +297,7 @@ class CratePlatform extends AbstractPlatform
                 throw DBALException::notSupported("Alter Table: rename table");
             }
 
-            $sql = array_merge($sql, $this->_getAlterTableIndexForeignKeySQL($diff), $commentsSQL);
+            $sql = array_merge($sql, $this->getPreAlterTableIndexForeignKeySQL($diff), $commentsSQL);
         }
 
         return array_merge($sql, $tableSql, $columnSql);
@@ -295,7 +306,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getColumnDeclarationSQL($name, array $column)
+    public function getColumnDeclarationSQL($name, array $column): string
     {
         if (isset($column['columnDefinition'])) {
             $columnDef = $this->getCustomTypeDeclarationSQL($column);
@@ -309,9 +320,11 @@ class CratePlatform extends AbstractPlatform
 
     /**
      * Generate table index column declaration
+     * @param string $name
+     * @param Index $index
      * @codeCoverageIgnore
      */
-    public function getIndexDeclarationSQL($name, Index $index)
+    public function getIndexDeclarationSQL($name, Index $index): string
     {
         $columns = $index->getQuotedColumns($this);
         $name = new Identifier($name);
@@ -321,7 +334,7 @@ class CratePlatform extends AbstractPlatform
         }
 
         return 'INDEX ' . $name->getQuotedName($this) .
-               ' USING FULLTEXT ('. $this->getIndexFieldDeclarationListSQL($columns) . ')';
+               ' USING FULLTEXT ('. $this->getIndexFieldDeclarationListSQL($index) . ')';
     }
 
     /**
@@ -329,7 +342,7 @@ class CratePlatform extends AbstractPlatform
      *
      * Crate wants boolean values converted to the strings 'true'/'false'.
      */
-    public function convertBooleans($item)
+    public function convertBooleans($item): mixed
     {
         if (is_array($item)) {
             foreach ($item as $key => $value) {
@@ -353,7 +366,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getBooleanTypeDeclarationSQL(array $field)
+    public function getBooleanTypeDeclarationSQL(array $field): string
     {
         return 'BOOLEAN';
     }
@@ -361,7 +374,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getIntegerTypeDeclarationSQL(array $field)
+    public function getIntegerTypeDeclarationSQL(array $field): string
     {
         return 'INTEGER';
     }
@@ -369,7 +382,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getBigIntTypeDeclarationSQL(array $field)
+    public function getBigIntTypeDeclarationSQL(array $field): string
     {
         return 'LONG';
     }
@@ -377,7 +390,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getSmallIntTypeDeclarationSQL(array $field)
+    public function getSmallIntTypeDeclarationSQL(array $field): string
     {
         return 'SHORT';
     }
@@ -385,7 +398,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getFloatDeclarationSQL(array $field)
+    public function getFloatDeclarationSQL(array $field): string
     {
         return 'DOUBLE';
     }
@@ -393,7 +406,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getDecimalTypeDeclarationSQL(array $columnDef)
+    public function getDecimalTypeDeclarationSQL(array $columnDef): string
     {
         return 'DOUBLE';
     }
@@ -401,7 +414,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getDateTimeTypeDeclarationSQL(array $fieldDeclaration)
+    public function getDateTimeTypeDeclarationSQL(array $fieldDeclaration): string
     {
         return 'TIMESTAMP';
     }
@@ -409,7 +422,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getDateTimeTzTypeDeclarationSQL(array $fieldDeclaration)
+    public function getDateTimeTzTypeDeclarationSQL(array $fieldDeclaration): string
     {
         return 'TIMESTAMP';
     }
@@ -417,7 +430,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getDateTypeDeclarationSQL(array $fieldDeclaration)
+    public function getDateTypeDeclarationSQL(array $fieldDeclaration): string
     {
         return 'TIMESTAMP';
     }
@@ -425,7 +438,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getTimeTypeDeclarationSQL(array $fieldDeclaration)
+    public function getTimeTypeDeclarationSQL(array $fieldDeclaration): string
     {
         return 'TIMESTAMP';
     }
@@ -433,15 +446,18 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    protected function _getCommonIntegerTypeDeclarationSQL(array $columnDef)
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+    protected function _getCommonIntegerTypeDeclarationSQL(array $columnDef): string
     {
         return '';
     }
 
     /**
      * {@inheritDoc}
+     * @param false|int $length
+     * @param $fixed
      */
-    protected function getVarcharTypeDeclarationSQLSnippet($length, $fixed)
+    protected function getVarcharTypeDeclarationSQLSnippet($length, $fixed): string
     {
         return 'STRING';
     }
@@ -449,7 +465,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getClobTypeDeclarationSQL(array $field)
+    public function getClobTypeDeclarationSQL(array $field): string
     {
         return 'STRING';
     }
@@ -475,7 +491,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getDateTimeTzFormatString()
+    public function getDateTimeTzFormatString(): string
     {
         return self::TIMESTAMP_FORMAT_TZ;
     }
@@ -483,7 +499,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getDateTimeFormatString()
+    public function getDateTimeFormatString(): string
     {
         return self::TIMESTAMP_FORMAT;
     }
@@ -491,7 +507,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getDateFormatString()
+    public function getDateFormatString(): string
     {
         return self::TIMESTAMP_FORMAT;
     }
@@ -499,7 +515,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getTimeFormatString()
+    public function getTimeFormatString(): string
     {
         return self::TIMESTAMP_FORMAT;
     }
@@ -507,7 +523,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getTruncateTableSQL($tableName, $cascade = false)
+    public function getTruncateTableSQL($tableName, $cascade = false): string
     {
         throw DBALException::notSupported(__METHOD__);
     }
@@ -523,7 +539,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    protected function initializeDoctrineTypeMappings()
+    protected function initializeDoctrineTypeMappings(): void
     {
         $this->doctrineTypeMapping = array(
             'short'         => 'smallint',
@@ -544,7 +560,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getDoctrineTypeMapping($dbType)
+    public function getDoctrineTypeMapping($dbType): string
     {
         // typed arrays will always end up in the same generic php array type
         if (substr_compare($dbType, 'array', -5) === 0) {
@@ -573,7 +589,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getBlobTypeDeclarationSQL(array $field)
+    public function getBlobTypeDeclarationSQL(array $field): string
     {
         throw DBALException::notSupported(__METHOD__);
     }
@@ -588,7 +604,7 @@ class CratePlatform extends AbstractPlatform
      *
      * @return array The sequence of SQL statements.
      */
-    public function getCreateTableSQL(Table $table, $createFlags = self::CREATE_INDEXES)
+    public function getCreateTableSQL(Table $table, $createFlags = self::CREATE_INDEXES): array
     {
         if (!is_int($createFlags)) {
             $msg = "Second argument of CratePlatform::getCreateTableSQL() has to be integer.";
@@ -605,7 +621,7 @@ class CratePlatform extends AbstractPlatform
         $options['indexes'] = array();
         $options['primary'] = array();
 
-        if (($createFlags&self::CREATE_INDEXES) > 0) {
+        if (($createFlags & self::CREATE_INDEXES) > 0) {
             foreach ($table->getIndexes() as $index) {
                 /* @var $index Index */
                 if ($index->isPrimary()) {
@@ -671,7 +687,8 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    protected function _getCreateTableSQL($name, array $columns, array $options = array())
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+    protected function _getCreateTableSQL($name, array $columns, array $options = array()): array
     {
         $columnListSql = $this->getColumnDeclarationListSQL($columns);
 
@@ -685,7 +702,7 @@ class CratePlatform extends AbstractPlatform
                 $columnListSql .= ', ' . $this->getIndexDeclarationSQL($index, $definition);
             }
         }
- 
+
         if (isset($options['foreignKeys'])) {
             throw DBALException::notSupported("Create Table: foreign keys");
         }
@@ -794,7 +811,8 @@ class CratePlatform extends AbstractPlatform
         $columnData['unique'] = false;
         $columnData['version'] = $column->hasPlatformOption("version") ? $column->getPlatformOption("version") : false;
 
-        if (strtolower($columnData['type']) == $platform->getVarcharTypeDeclarationSQLSnippet(0, false)
+        if (strtolower($columnData['type']->getName()) ==
+            strtolower($platform->getVarcharTypeDeclarationSQLSnippet(0, false))
                 && $columnData['length'] === null) {
             $columnData['length'] = 255;
         }
@@ -817,7 +835,7 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getCreateDatabaseSQL($database)
+    public function getCreateDatabaseSQL($database): string
     {
         throw DBALException::notSupported(__METHOD__);
     }
@@ -825,23 +843,23 @@ class CratePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getDropDatabaseSQL($database)
+    public function getDropDatabaseSQL($database): string
     {
         throw DBALException::notSupported(__METHOD__);
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public function getCreateForeignKeySQL(ForeignKeyConstraint $foreignKey, $table)
+    public function getCreateForeignKeySQL(ForeignKeyConstraint $foreignKey, $table): string
     {
         throw DBALException::notSupported(__METHOD__);
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public function getGuidTypeDeclarationSQL(array $field)
+    public function getGuidTypeDeclarationSQL(array $field): string
     {
         throw DBALException::notSupported(__METHOD__);
     }
@@ -852,10 +870,19 @@ class CratePlatform extends AbstractPlatform
      *
      * @return string
      */
-    public function getTableOptionsSQL(string $table) : string
+    public function getTableOptionsSQL(string $table): string
     {
         return "SELECT clustered_by, number_of_shards, partitioned_by, number_of_replicas, column_policy, settings " .
                "FROM information_schema.tables c " .
                "WHERE " . $this->getTableWhereClause($table);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCurrentDatabaseExpression(): string
+    {
+        // Added by Doctrine 3.
+        return 'CURRENT_DATABASE()';
     }
 }

@@ -25,12 +25,13 @@ namespace Crate\Test\DBAL\Functional\Types;
 
 use Crate\DBAL\Platforms\CratePlatform;
 use Crate\DBAL\Types\MapType;
-use Crate\Test\DBAL\DBALFunctionalTestCase;
+use Crate\Test\DBAL\DBALFunctionalTest;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 
-class MapTypeTest extends DBALFunctionalTestCase {
+class MapTypeTest extends DBALFunctionalTest {
 
     public function testStrictMapTableCreationWithSchemaManager() {
         $platform = $this->_conn->getDatabasePlatform();
@@ -39,8 +40,8 @@ class MapTypeTest extends DBALFunctionalTestCase {
         $objDefinition = array(
             'type' => MapType::STRICT,
             'fields' => array(
-                new Column('id',  Type::getType(Type::INTEGER), array()),
-                new Column('name',  Type::getType(Type::STRING), array()),
+                new Column('id',  Type::getType(Types::INTEGER), array()),
+                new Column('name',  Type::getType(Types::STRING), array()),
             ),
         );
         $table->addColumn(

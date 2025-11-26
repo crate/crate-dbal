@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Licensed to CRATE Technology GmbH("Crate") under one or more contributor
  * license agreements.  See the NOTICE file distributed with this work for
@@ -19,20 +20,28 @@
  * with Crate these terms will supersede the license and you may use the
  * software solely pursuant to the terms of the relevant commercial agreement.
  */
+
 namespace Crate\DBAL\Schema;
 
+use Crate\DBAL\Platforms\CratePlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Types\Type;
 
+/**
+ * Schema manager for the CrateDB RDBMS.
+ *
+ * @extends AbstractSchemaManager<CratePlatform>
+ */
 class CrateSchemaManager extends AbstractSchemaManager
 {
     /**
      * {@inheritdoc}
      *
      */
-    protected function _getPortableTableIndexesList($tableIndexes, $tableName = null)
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+    protected function _getPortableTableIndexesList($tableIndexes, $tableName = null): array
     {
         $buffer = [];
         foreach ($tableIndexes as $row) {
@@ -51,7 +60,8 @@ class CrateSchemaManager extends AbstractSchemaManager
     /**
      * {@inheritDoc}
      */
-    protected function _getPortableTableColumnDefinition($tableColumn)
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+    protected function _getPortableTableColumnDefinition($tableColumn): Column
     {
         $tableColumn = array_change_key_case($tableColumn, CASE_LOWER);
 
@@ -88,6 +98,7 @@ class CrateSchemaManager extends AbstractSchemaManager
     /**
      * {@inheritDoc}
      */
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     protected function _getPortableTablesList($tables)
     {
         $tableNames = array();
@@ -105,7 +116,7 @@ class CrateSchemaManager extends AbstractSchemaManager
      *
      * @return array
      */
-    private function flatten(array $array, string $prefix = '') : array
+    private static function flatten(array $array, string $prefix = ''): array
     {
         $result = array();
         foreach ($array as $key => $value) {
@@ -121,13 +132,13 @@ class CrateSchemaManager extends AbstractSchemaManager
     /**
      * {@inheritDoc}
      */
-    public function listTableDetails($tableName) : Table
+    public function listTableDetails($name): Table
     {
-        $columns = $this->listTableColumns($tableName);
-        $indexes = $this->listTableIndexes($tableName);
+        $columns = $this->listTableColumns($name);
+        $indexes = $this->listTableIndexes($name);
         $options = [];
 
-        $s = $this->_conn->fetchAssoc($this->_platform->getTableOptionsSQL($tableName));
+        $s = $this->_conn->fetchAssociative($this->_platform->getTableOptionsSQL($name));
 
         $options['sharding_routing_column'] = $s['clustered_by'];
         $options['sharding_num_shards'] = $s['number_of_shards'];
@@ -135,6 +146,6 @@ class CrateSchemaManager extends AbstractSchemaManager
         $options['table_options'] = self::flatten($s['settings']);
         $options['table_options']['number_of_replicas'] = $s['number_of_replicas'];
         $options['table_options']['column_policy'] = $s['column_policy'];
-        return new Table($tableName, $columns, $indexes, [], [], $options);
+        return new Table($name, $columns, $indexes, [], [], $options);
     }
 }
