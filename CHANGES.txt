@@ -5,6 +5,9 @@ CHANGES for crate-dbal
 Unreleased
 ==========
 
+2025/11/26 5.0.0
+================
+
 - Added support for Doctrine DBAL 3, dropped support for Doctrine DBAL 2.
 - Made `TransactionIsolationLevel::READ_UNCOMMITTED` the new default.
 

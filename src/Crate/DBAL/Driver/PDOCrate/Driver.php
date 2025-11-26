@@ -35,7 +35,7 @@ use SensitiveParameter;
 
 class Driver implements VersionAwarePlatformDriver
 {
-    public const VERSION = '4.0.3';
+    public const VERSION = '5.0.0';
     public const NAME = 'crate';
 
     private const VERSION_057 = '0.57.0';
