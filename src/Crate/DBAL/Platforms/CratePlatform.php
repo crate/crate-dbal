@@ -23,13 +23,17 @@
 
 namespace Crate\DBAL\Platforms;
 
+use Crate\DBAL\Platforms\Keywords\CrateKeywords;
+use Crate\DBAL\Schema\CrateSchemaManager;
+use Crate\DBAL\Types\ArrayType;
 use Crate\DBAL\Types\MapType;
 use Crate\DBAL\Types\TimestampType;
-use Doctrine\DBAL\Event\SchemaCreateTableColumnEventArgs;
-use Doctrine\DBAL\Event\SchemaCreateTableEventArgs;
-use Doctrine\DBAL\Events;
-use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Platforms\DateIntervalUnit;
+use Doctrine\DBAL\Platforms\Exception\NoColumnsSpecifiedForTable;
+use Doctrine\DBAL\Platforms\Keywords\KeywordList;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use Doctrine\DBAL\Schema\Identifier;
 use Doctrine\DBAL\Schema\Index;
@@ -52,18 +56,22 @@ class CratePlatform extends AbstractPlatform
     {
         $this->initializeDoctrineTypeMappings();
         if (!Type::hasType(MapType::NAME)) {
-            Type::addType(MapType::NAME, 'Crate\DBAL\Types\MapType');
+            Type::addType(MapType::NAME, MapType::class);
+            $this->registerDoctrineTypeMapping(10, MapType::NAME);
         }
         if (!Type::hasType(TimestampType::NAME)) {
-            Type::addType(TimestampType::NAME, 'Crate\DBAL\Types\TimestampType');
+            Type::addType(TimestampType::NAME, TimestampType::class);
         }
-        Type::overrideType('array', 'Crate\DBAL\Types\ArrayType');
+        if (!Type::hasType(ArrayType::NAME)) {
+            Type::addType(ArrayType::NAME, ArrayType::class);
+            $this->registerDoctrineTypeMapping(9, ArrayType::NAME);
+        }
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getDefaultTransactionIsolationLevel()
+    public function getDefaultTransactionIsolationLevel(): TransactionIsolationLevel
     {
         // CrateDB provides `READ_UNCOMMITTED` isolation levels.
         // https://github.com/crate/crate/blob/master/server/src/main/java/io/crate/analyze/ShowStatementAnalyzer.java#L69-L85
@@ -268,26 +276,26 @@ class CratePlatform extends AbstractPlatform
         $commentsSQL = array();
         $columnSql = array();
 
-        foreach ($diff->addedColumns as $column) {
+        foreach ($diff->getAddedColumns() as $column) {
             if ($this->onSchemaAlterTableAddColumn($column, $diff, $columnSql)) {
                 continue;
             }
 
             $query = 'ADD ' . $this->getColumnDeclarationSQL($column->getQuotedName($this), $column->toArray());
             $sql[] = 'ALTER TABLE ' . $diff->name . ' ' . $query;
-            if ($comment = $this->getColumnComment($column)) {
+            if ($comment = $column->getComment()) {
                 $commentsSQL[] = $this->getCommentOnColumnSQL($diff->name, $column->getName(), $comment);
             }
         }
 
-        if (count($diff->removedColumns) > 0) {
-            throw DBALException::notSupported("Alter Table: drop columns");
+        if (count($diff->getDroppedColumns()) > 0) {
+            throw Exception::notSupported("Alter Table: drop columns");
         }
-        if (count($diff->changedColumns) > 0) {
-            throw DBALException::notSupported("Alter Table: change column options");
+        if (count($diff->getChangedColumns()) > 0) {
+            throw Exception::notSupported("Alter Table: change column options");
         }
-        if (count($diff->renamedColumns) > 0) {
-            throw DBALException::notSupported("Alter Table: rename columns");
+        if (count($diff->getRenamedColumns()) > 0) {
+            throw Exception::notSupported("Alter Table: rename columns");
         }
 
         $tableSql = array();
@@ -309,7 +317,7 @@ class CratePlatform extends AbstractPlatform
     public function getColumnDeclarationSQL($name, array $column): string
     {
         if (isset($column['columnDefinition'])) {
-            $columnDef = $this->getCustomTypeDeclarationSQL($column);
+            $columnDef = $column['columnDefinition'];
         } else {
             $typeDecl = $column['type']->getSqlDeclaration($column, $this);
             $columnDef = $typeDecl;
@@ -324,10 +332,10 @@ class CratePlatform extends AbstractPlatform
      * @param Index $index
      * @codeCoverageIgnore
      */
-    public function getIndexDeclarationSQL($name, Index $index): string
+    public function getIndexDeclarationSQL(Index $index): string
     {
         $columns = $index->getQuotedColumns($this);
-        $name = new Identifier($name);
+        $name = new Identifier($index->getName());
 
         if (count($columns) == 0) {
             throw new \InvalidArgumentException("Incomplete definition. 'columns' required.");
@@ -457,7 +465,7 @@ class CratePlatform extends AbstractPlatform
      * @param false|int $length
      * @param $fixed
      */
-    protected function getVarcharTypeDeclarationSQLSnippet($length, $fixed): string
+    protected function getVarcharTypeDeclarationSQLSnippet($length): string
     {
         return 'STRING';
     }
@@ -612,7 +620,7 @@ class CratePlatform extends AbstractPlatform
         }
 
         if (count($table->getColumns()) === 0) {
-            throw DBALException::noColumnsSpecifiedForTable($table->getName());
+            throw NoColumnsSpecifiedForTable::new($table->getName());
         }
 
         $tableName = $table->getQuotedName($this);
@@ -644,28 +652,7 @@ class CratePlatform extends AbstractPlatform
         $columns = array();
 
         foreach ($table->getColumns() as $column) {
-            if (null !== $this->_eventManager &&
-                $this->_eventManager->hasListeners(Events::onSchemaCreateTableColumn)
-            ) {
-                $eventArgs = new SchemaCreateTableColumnEventArgs($column, $table, $this);
-                $this->_eventManager->dispatchEvent(Events::onSchemaCreateTableColumn, $eventArgs);
-
-                $columnSql = array_merge($columnSql, $eventArgs->getSql());
-
-                if ($eventArgs->isDefaultPrevented()) {
-                    continue;
-                }
-            }
             $columns[$column->getQuotedName($this)] = self::prepareColumnData($this, $column, $options['primary']);
-        }
-
-        if (null !== $this->_eventManager && $this->_eventManager->hasListeners(Events::onSchemaCreateTable)) {
-            $eventArgs = new SchemaCreateTableEventArgs($table, $columns, $options, $this);
-            $this->_eventManager->dispatchEvent(Events::onSchemaCreateTable, $eventArgs);
-
-            if ($eventArgs->isDefaultPrevented()) {
-                return array_merge($eventArgs->getSql(), $columnSql);
-            }
         }
 
         $sql = $this->_getCreateTableSQL($tableName, $columns, $options);
@@ -699,7 +686,7 @@ class CratePlatform extends AbstractPlatform
 
         if (isset($options['indexes']) && ! empty($options['indexes'])) {
             foreach ($options['indexes'] as $index => $definition) {
-                $columnListSql .= ', ' . $this->getIndexDeclarationSQL($index, $definition);
+                $columnListSql .= ', ' . $this->getIndexDeclarationSQL($definition);
             }
         }
 
@@ -798,8 +785,8 @@ class CratePlatform extends AbstractPlatform
      */
     public static function prepareColumnData(AbstractPlatform $platform, $column, $primaries = array())
     {
-        if ($column->hasCustomSchemaOption("unique") ? $column->getCustomSchemaOption("unique") : false) {
-            throw DBALException::notSupported("Unique constraints are not supported. Use `primary key` instead");
+        if ($column->hasPlatformOption("unique") ? $column->hasPlatformOption("unique") : false) {
+            throw Exception::notSupported("Unique constraints are not supported. Use `primary key` instead");
         }
 
         $columnData = array();
@@ -811,8 +798,7 @@ class CratePlatform extends AbstractPlatform
         $columnData['unique'] = false;
         $columnData['version'] = $column->hasPlatformOption("version") ? $column->getPlatformOption("version") : false;
 
-        if (strtolower($columnData['type']->getName()) ==
-            strtolower($platform->getVarcharTypeDeclarationSQLSnippet(0, false))
+        if ($columnData['type'] == $platform->getVarcharTypeDeclarationSQLSnippet(0, false)
                 && $columnData['length'] === null) {
             $columnData['length'] = 255;
         }
@@ -823,7 +809,7 @@ class CratePlatform extends AbstractPlatform
         $columnData['default'] = $column->getDefault();
         $columnData['columnDefinition'] = $column->getColumnDefinition();
         $columnData['autoincrement'] = $column->getAutoincrement();
-        $columnData['comment'] = $platform->getColumnComment($column);
+        $columnData['comment'] = $column->getComment();
         $columnData['platformOptions'] = $column->getPlatformOptions();
 
         if (in_array($column->getName(), $primaries)) {
@@ -884,5 +870,50 @@ class CratePlatform extends AbstractPlatform
     {
         // Added by Doctrine 3.
         return 'CURRENT_DATABASE()';
+    }
+
+    /**
+     * Obtains DBMS specific SQL code portion needed to set an index
+     * declaration to be used in statements like CREATE TABLE.
+     *
+     * @deprecated
+     */
+    public function getIndexFieldDeclarationListSQL(Index $index): string
+    {
+        return implode(', ', $index->getQuotedColumns($this));
+    }
+
+    public function createSchemaManager(Connection $connection): AbstractSchemaManager
+    {
+        return new CrateSchemaManager($connection, $this);
+    }
+
+    public function getLocateExpression(string $string, string $substring, ?string $start = null): string
+    {
+        throw Exception::notSupported(__METHOD__);
+    }
+
+    protected function getDateArithmeticIntervalExpression(
+        string $date,
+        string $operator,
+        string $interval,
+        DateIntervalUnit $unit,
+    ): string {
+        throw Exception::notSupported(__METHOD__);
+    }
+
+    public function getListViewsSQL(string $database): string
+    {
+        throw Exception::notSupported(__METHOD__);
+    }
+
+    public function getSetTransactionIsolationSQL(TransactionIsolationLevel $level): string
+    {
+        throw Exception::notSupported(__METHOD__);
+    }
+
+    protected function createReservedKeywordsList(): KeywordList
+    {
+        return new CrateKeywords();
     }
 }

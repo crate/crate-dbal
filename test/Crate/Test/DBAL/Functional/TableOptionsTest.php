@@ -32,7 +32,7 @@ class TableOptionsTest extends DBALFunctionalTest {
     public function tearDown() : void
     {
         parent::tearDown();
-        if ($this->_conn->createSchemaManager()->tablesExist("table_option_test")) {
+        if ($this->_conn->createSchemaManager()->tablesExist(["table_option_test"])) {
             try {
                 $sm = $this->_conn->createSchemaManager();
                 $sm->dropTable('table_option_test');

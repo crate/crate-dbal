@@ -308,14 +308,14 @@ class DataAccessTest extends DBALFunctionalTest
         $this->refresh('fetch_table');
 
         $stmt = $this->_conn->executeQuery('SELECT test_int FROM fetch_table WHERE test_int IN (?) ORDER BY test_int',
-            array(array(100, 101, 102, 103, 104)), array(Connection::PARAM_INT_ARRAY));
+            array(array(100, 101, 102, 103, 104)), array(ArrayParameterType::INTEGER));
 
         $data = $stmt->fetchAllNumeric();
         $this->assertEquals(5, count($data));
         $this->assertEquals(array(array(100), array(101), array(102), array(103), array(104)), $data);
 
         $stmt = $this->_conn->executeQuery('SELECT test_int FROM fetch_table WHERE test_string IN (?) ORDER BY test_int',
-            array(array('foo100', 'foo101', 'foo102', 'foo103', 'foo104')), array(Connection::PARAM_STR_ARRAY));
+            array(array('foo100', 'foo101', 'foo102', 'foo103', 'foo104')), array(ArrayParameterType::STRING));
 
         $data = $stmt->fetchAllNumeric();
         $this->assertEquals(5, count($data));

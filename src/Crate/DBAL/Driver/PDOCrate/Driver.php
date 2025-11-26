@@ -28,12 +28,13 @@ use Crate\DBAL\Platforms\CratePlatform1;
 use Crate\DBAL\Platforms\CratePlatform4;
 use Crate\DBAL\Schema\CrateSchemaManager;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver as DoctrineDriver;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
-use Doctrine\DBAL\VersionAwarePlatformDriver;
+use Doctrine\DBAL\ServerVersionProvider;
 use SensitiveParameter;
 
-class Driver implements VersionAwarePlatformDriver
+class Driver implements DoctrineDriver
 {
     public const VERSION = '5.0.0';
     public const NAME = 'crate';
@@ -75,8 +76,9 @@ class Driver implements VersionAwarePlatformDriver
 
     /**
      * {@inheritDoc}
+     * @param ServerVersionProvider $versionProvider
      */
-    public function getDatabasePlatform(): AbstractPlatform
+    public function getDatabasePlatform(ServerVersionProvider $versionProvider): AbstractPlatform
     {
         return new CratePlatform4();
     }
@@ -103,7 +105,7 @@ class Driver implements VersionAwarePlatformDriver
      */
     public function getDatabase(Connection $conn): string|null
     {
-        return null;
+        return 'doc';
     }
 
     /**

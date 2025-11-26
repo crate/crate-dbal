@@ -116,28 +116,28 @@ class PDOConnection implements ConnectionInterface
         }
     }
 
-    public function beginTransaction()
+    public function beginTransaction(): void
     {
         try {
-            return $this->connection->beginTransaction();
+            $this->connection->beginTransaction();
         } catch (PDOException $exception) {
             throw Exception::new($exception);
         }
     }
 
-    public function commit()
+    public function commit(): void
     {
         try {
-            return $this->connection->commit();
+            $this->connection->commit();
         } catch (PDOException $exception) {
             throw Exception::new($exception);
         }
     }
 
-    public function rollBack()
+    public function rollBack(): void
     {
         try {
-            return $this->connection->rollBack();
+            $this->connection->rollBack();
         } catch (PDOException $exception) {
             throw Exception::new($exception);
         }
