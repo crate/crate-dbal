@@ -73,4 +73,4 @@ DBAL
 | >= 2.2         | Based on Doctrine 2.10                       | Supported. |
 +----------------+----------------------------------------------+------------+
 
-.. _query builder: https://www.doctrine-project.org/projects/doctrine-dbal/en/3.0/reference/query-builder.html#join-clauses
+.. _query builder: https://www.doctrine-project.org/projects/doctrine-dbal/en/3.6/reference/query-builder.html#join-clauses
