@@ -78,7 +78,7 @@ jobs:
 
       # https://github.com/codecov/codecov-action
       - name: Upload coverage results to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v6
         if: always() && (matrix.php-version == '7.4' || startsWith(matrix.php-version, '8.'))
         with:
           files: ./build/logs/clover.xml
