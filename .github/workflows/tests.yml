@@ -62,7 +62,7 @@ jobs:
           # Select PHPUnit version suitable for PHP 7.2.
           tools: composer, phpunit:^8.5
 
-      - uses: ramsey/composer-install@v2
+      - uses: ramsey/composer-install@v4
 
       # Remark: --prefer-source is needed for "Doctrine\Tests\DBAL\Platforms\AbstractPlatformTestCase"
       - name: Install doctrine/dbal from source
