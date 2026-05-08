@@ -78,7 +78,14 @@ class Driver implements VersionAwarePlatformDriver
      */
     public function getDatabasePlatform(): AbstractPlatform
     {
-        return new CratePlatform4();
+        // FIXME: Chicken egg problem: No connection information here.
+        //        Is this meant to "activate" the right platform *after* a server
+        //        inquiry at all? Isn't it more likely it is NOT meant to work this way?
+        //        Let's investigate how the other vendors are doing it.
+        $conn = $this->connect();
+        $version = $conn->getServerVersion();
+        $platform = $this->createDatabasePlatformForVersion($version);
+        return $platform;
     }
 
     /**
